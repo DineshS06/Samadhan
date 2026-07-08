@@ -83,7 +83,7 @@ export default function MPLogin() {
         </div>
       </main>
 
-      <Footer variant="citizen" />
+      <Footer variant="mp" />
     </div>
   )
 }

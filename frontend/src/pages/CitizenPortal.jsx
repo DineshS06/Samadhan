@@ -17,6 +17,35 @@ const CATEGORY_ICONS = {
   agri: '🌾', employment: '💼', safety: '🛡️', environment: '🌿', transport: '🚌', other: '📋',
 }
 
+// Local storage key for submitted grievances (to share with MP dashboard)
+const STORAGE_KEY = 'submitted_grievances'
+
+// Get stored submissions from localStorage
+function getStoredSubmissions() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    return raw ? JSON.parse(raw) : []
+  } catch (e) {
+    console.warn('Failed to parse submitted grievances from localStorage', e)
+    return []
+  }
+}
+
+// Add a submission to localStorage
+function addSubmission(submission) {
+  try {
+    const current = getStoredSubmissions()
+    // Avoid duplicates by reference_id
+    const exists = current.some(s => s.reference_id === submission.reference_id)
+    if (!exists) {
+      const updated = [...current, submission]
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
+    }
+  } catch (e) {
+    console.warn('Failed to store submitted grievance', e)
+  }
+}
+
 const INITIAL = {
   name: '', phone: '', state: '', district: '', constituency: '', language: '',
   channel: 'web', category: '', village: '', ward_block: '', pincode: '',
@@ -139,6 +168,20 @@ export default function CitizenPortal() {
         location: data.result.location,
         severity_score: data.result.severity_score,
       })
+      // Store submission for MP dashboard (local storage)
+      const submission = {
+        reference_id: data.reference_id,
+        timestamp: Date.now(),
+        category: data.result.category,
+        location: data.result.location,
+        severity_score: data.result.severity_score,
+        summary: data.result.summary,
+        infrastructure_gap_score: data.result.infrastructure_gap_score,
+        lat: form.geolocation?.latitude ?? null,
+        lng: form.geolocation?.longitude ?? null,
+        source: form.geolocation ? 'citizen_gps' : 'citizen_locality',
+      }
+      addSubmission(submission)
       setForm(INITIAL)
     } catch (ex) {
       setError(ex.message)
