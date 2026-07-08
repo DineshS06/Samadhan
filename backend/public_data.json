@@ -1,0 +1,62 @@
+{
+  "Anandapuram": {
+    "lat": 17.6868,
+    "lng": 83.2185,
+    "constituency": "Visakhapatnam",
+    "district": "Visakhapatnam",
+    "existing_schools": 0,
+    "water_scarcity_index": "High",
+    "population": 12000,
+    "population_density_children": 1200
+  },
+  "Gajuwaka": {
+    "lat": 17.7042,
+    "lng": 83.2247,
+    "constituency": "Visakhapatnam",
+    "district": "Visakhapatnam",
+    "existing_schools": 4,
+    "water_scarcity_index": "Low",
+    "population": 45000,
+    "population_density_children": 400
+  },
+  "Block A": {
+    "lat": 17.6721,
+    "lng": 83.1954,
+    "constituency": "Visakhapatnam",
+    "district": "Visakhapatnam",
+    "existing_schools": 0,
+    "water_scarcity_index": "Medium",
+    "population": 8500,
+    "population_density_children": 1200
+  },
+  "Kothuru": {
+    "lat": 17.6612,
+    "lng": 83.2411,
+    "constituency": "Visakhapatnam",
+    "district": "Visakhapatnam",
+    "existing_schools": 2,
+    "water_scarcity_index": "High",
+    "population": 6200,
+    "population_density_children": 680
+  },
+  "Ward 4": {
+    "lat": 17.6868,
+    "lng": 83.2185,
+    "constituency": "Visakhapatnam",
+    "district": "Visakhapatnam",
+    "existing_schools": 1,
+    "water_scarcity_index": "High",
+    "population": 9800,
+    "population_density_children": 890
+  },
+  "Ward 6": {
+    "lat": 17.6988,
+    "lng": 83.2089,
+    "constituency": "Visakhapatnam",
+    "district": "Visakhapatnam",
+    "existing_schools": 2,
+    "water_scarcity_index": "Medium",
+    "population": 5400,
+    "population_density_children": 520
+  }
+}

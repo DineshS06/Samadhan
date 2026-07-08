@@ -1,0 +1,97 @@
+{
+  "metrics": {
+    "total_grievances": 1482,
+    "ai_prioritized_projects": 5,
+    "active_mplads_fund_crores": 5.0,
+    "allocated_funds_crores": 1.45
+  },
+  "projects": [
+    {
+      "id": 1,
+      "rank": 1,
+      "project_name": "Community Drinking Water Plant",
+      "location": "Anandapuram / Ward 1",
+      "public_demand_index": 100,
+      "infrastructure_gap_score": 110,
+      "category": "Water & Sanitation",
+      "severity_score": 5,
+      "summary": "Citizens report lack of safe drinking water supply",
+      "sanction_note_draft": "DRAFT ADMINISTRATIVE SANCTION TO DISTRICT COLLECTOR UNDER MPLADS\n\nFrom: Hon'ble Member of Parliament\nTo: The District Collector\n\nSubject: Recommendation for Community Drinking Water Plant at Anandapuram / Ward 1\n\nProject Scope:\nCitizens report lack of safe drinking water supply. This Water & Sanitation project addresses AI-prioritized citizen grievances corroborated with open government data indicators for the area.\n\nEstimated Budget Allocation:\nFunds to be allocated from MPLADS corpus based on district engineering estimates and DPR review.\n\nDepartment Accountability Guidelines:\n1. Concerned district department shall execute within stipulated timeline.\n2. Monthly progress reports to MP Office mandatory.\n3. Quality audit before final payment release.\n4. Citizen feedback via Gram Sabha / Ward Sabha upon completion.\n\nThis recommendation is issued under MPLADS guidelines for constituency development."
+    },
+    {
+      "id": 2,
+      "rank": 2,
+      "project_name": "Rural Road Resurfacing (PMGSY Link)",
+      "location": "Block A / Ward 2",
+      "public_demand_index": 100,
+      "infrastructure_gap_score": 100,
+      "category": "Roads & Connectivity",
+      "severity_score": 4,
+      "summary": "Poor road conditions affecting daily commute and trade",
+      "sanction_note_draft": "DRAFT ADMINISTRATIVE SANCTION TO DISTRICT COLLECTOR UNDER MPLADS\n\nFrom: Hon'ble Member of Parliament\nTo: The District Collector\n\nSubject: Recommendation for Rural Road Resurfacing (PMGSY Link) at Block A / Ward 2\n\nProject Scope:\nPoor road conditions affecting daily commute and trade. This Roads & Connectivity project addresses AI-prioritized citizen grievances corroborated with open government data indicators for the area.\n\nEstimated Budget Allocation:\nFunds to be allocated from MPLADS corpus based on district engineering estimates and DPR review.\n\nDepartment Accountability Guidelines:\n1. Concerned district department shall execute within stipulated timeline.\n2. Monthly progress reports to MP Office mandatory.\n3. Quality audit before final payment release.\n4. Citizen feedback via Gram Sabha / Ward Sabha upon completion.\n\nThis recommendation is issued under MPLADS guidelines for constituency development."
+    },
+    {
+      "id": 3,
+      "rank": 3,
+      "project_name": "Community Drinking Water Plant",
+      "location": "Kothuru / Ward 3",
+      "public_demand_index": 100,
+      "infrastructure_gap_score": 98,
+      "category": "Water & Sanitation",
+      "severity_score": 5,
+      "summary": "Citizens report lack of safe drinking water supply",
+      "sanction_note_draft": "DRAFT ADMINISTRATIVE SANCTION TO DISTRICT COLLECTOR UNDER MPLADS\n\nFrom: Hon'ble Member of Parliament\nTo: The District Collector\n\nSubject: Recommendation for Community Drinking Water Plant at Kothuru / Ward 3\n\nProject Scope:\nCitizens report lack of safe drinking water supply. This Water & Sanitation project addresses AI-prioritized citizen grievances corroborated with open government data indicators for the area.\n\nEstimated Budget Allocation:\nFunds to be allocated from MPLADS corpus based on district engineering estimates and DPR review.\n\nDepartment Accountability Guidelines:\n1. Concerned district department shall execute within stipulated timeline.\n2. Monthly progress reports to MP Office mandatory.\n3. Quality audit before final payment release.\n4. Citizen feedback via Gram Sabha / Ward Sabha upon completion.\n\nThis recommendation is issued under MPLADS guidelines for constituency development."
+    },
+    {
+      "id": 4,
+      "rank": 4,
+      "project_name": "Primary Health Sub-Centre Upgrade",
+      "location": "Gajuwaka / Ward 4",
+      "public_demand_index": 87,
+      "infrastructure_gap_score": 62,
+      "category": "Health",
+      "severity_score": 5,
+      "summary": "Healthcare facility shortage affecting emergency access",
+      "sanction_note_draft": "DRAFT ADMINISTRATIVE SANCTION TO DISTRICT COLLECTOR UNDER MPLADS\n\nFrom: Hon'ble Member of Parliament\nTo: The District Collector\n\nSubject: Recommendation for Primary Health Sub-Centre Upgrade at Gajuwaka / Ward 4\n\nProject Scope:\nHealthcare facility shortage affecting emergency access. This Health project addresses AI-prioritized citizen grievances corroborated with open government data indicators for the area.\n\nEstimated Budget Allocation:\nFunds to be allocated from MPLADS corpus based on district engineering estimates and DPR review.\n\nDepartment Accountability Guidelines:\n1. Concerned district department shall execute within stipulated timeline.\n2. Monthly progress reports to MP Office mandatory.\n3. Quality audit before final payment release.\n4. Citizen feedback via Gram Sabha / Ward Sabha upon completion.\n\nThis recommendation is issued under MPLADS guidelines for constituency development."
+    },
+    {
+      "id": 5,
+      "rank": 5,
+      "project_name": "Rural Road Resurfacing (PMGSY Link)",
+      "location": "Gajuwaka / Ward 5",
+      "public_demand_index": 72,
+      "infrastructure_gap_score": 52,
+      "category": "Roads & Connectivity",
+      "severity_score": 4,
+      "summary": "Poor road conditions affecting daily commute and trade",
+      "sanction_note_draft": "DRAFT ADMINISTRATIVE SANCTION TO DISTRICT COLLECTOR UNDER MPLADS\n\nFrom: Hon'ble Member of Parliament\nTo: The District Collector\n\nSubject: Recommendation for Rural Road Resurfacing (PMGSY Link) at Gajuwaka / Ward 5\n\nProject Scope:\nPoor road conditions affecting daily commute and trade. This Roads & Connectivity project addresses AI-prioritized citizen grievances corroborated with open government data indicators for the area.\n\nEstimated Budget Allocation:\nFunds to be allocated from MPLADS corpus based on district engineering estimates and DPR review.\n\nDepartment Accountability Guidelines:\n1. Concerned district department shall execute within stipulated timeline.\n2. Monthly progress reports to MP Office mandatory.\n3. Quality audit before final payment release.\n4. Citizen feedback via Gram Sabha / Ward Sabha upon completion.\n\nThis recommendation is issued under MPLADS guidelines for constituency development."
+    }
+  ],
+  "heatmap_points": [
+    {
+      "lat": 17.6868,
+      "lng": 83.2185,
+      "severity": "high",
+      "label": "Anandapuram"
+    },
+    {
+      "lat": 17.6721,
+      "lng": 83.1954,
+      "severity": "medium",
+      "label": "Block A"
+    },
+    {
+      "lat": 17.6612,
+      "lng": 83.2411,
+      "severity": "high",
+      "label": "Kothuru"
+    },
+    {
+      "lat": 17.7042,
+      "lng": 83.2247,
+      "severity": "high",
+      "label": "Gajuwaka"
+    }
+  ],
+  "last_updated": "2026-07-08T18:32:22.027204+05:30"
+}

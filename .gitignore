@@ -1,0 +1,21 @@
+# Environment
+.env
+backend/.env
+shared/uploads/
+shared/private_contacts.json
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node
+node_modules/
+frontend/dist/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
