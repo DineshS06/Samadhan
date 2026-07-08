@@ -1,4 +1,5 @@
 import { useLanguage } from '../i18n/LanguageContext'
+import logo from "../assets/logo.png";
 
 export default function Header({ subtitle, showLangToggle = true }) {
   const { lang, switchLang, t } = useLanguage()
@@ -6,9 +7,7 @@ export default function Header({ subtitle, showLangToggle = true }) {
   return (
     <header className="bg-[#032B5B] text-white px-4 sm:px-6 py-4 flex items-center gap-3 shadow-md">
       <div className="flex items-center gap-3 flex-1 min-w-0">
-        <div className="w-10 h-10 rounded-lg bg-[#F28C0F] flex items-center justify-center font-bold text-lg shrink-0">
-          S
-        </div>
+        <img src={logo} alt="Samadhan logo" className="h-10 w-auto" />
         <div className="min-w-0">
           <h1 className="text-base sm:text-lg font-bold tracking-tight truncate">{t.appTitle}</h1>
           <p className="text-xs text-blue-200 mt-0.5 truncate">{subtitle || t.citizenSubtitle}</p>

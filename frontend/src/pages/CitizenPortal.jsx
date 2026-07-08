@@ -36,18 +36,32 @@ function Section({ title, children }) {
 }
 
 export default function CitizenPortal() {
-  const { t, tc, tcd, tch, ts, categoryIds, channelIds } = useLanguage()
+  const { t, tc, tcd, tch, ts, categoryIds } = useLanguage()
   const [form, setForm] = useState(INITIAL)
   const [loading, setLoading] = useState(false)
   const [geoLoading, setGeoLoading] = useState(false)
   const [result, setResult] = useState(null)
   const [error, setError] = useState(null)
 
+  // Tracking state
+  const [trackId, setTrackId] = useState('')
+  const [trackResult, setTrackResult] = useState(null)
+  const [trackError, setTrackError] = useState(null)
+  const [trackLoading, setTrackLoading] = useState(false)
+
   const set = (key, val) => setForm((f) => ({ ...f, [key]: val }))
+
   const availableLanguages = getLanguagesForState(form.state)
   const districts = getDistrictsForState(form.state)
   const constituencies = getConstituenciesForState(form.state)
   const locationReady = Boolean(form.state && form.district.trim() && form.constituency.trim())
+
+  // Auto-fetch location on mount if not yet set
+  useEffect(() => {
+    if (!form.geolocation && navigator.geolocation) {
+      useMyLocation()
+    }
+  }, [])
 
   useEffect(() => {
     if (form.language && !availableLanguages.includes(form.language)) set('language', '')
@@ -86,8 +100,12 @@ export default function CitizenPortal() {
     if (!form.category) return t.valCategory
     if (!form.name.trim()) return t.valName
     if (!form.phone.trim()) return t.valPhone
-    if (!/^[6-9]\d{9}$/.test(form.phone.replace(/\D/g, '').slice(-10))) return t.valPhoneFormat
+    // Phone: exactly 10 digits
+    const digits = form.phone.replace(/\D/g, '')
+    if (!/^[6-9]\d{9}$/.test(digits)) return t.valPhoneFormat
     if (!form.village.trim() && !form.geolocation) return t.valVillage
+    // PIN code: exactly 6 digits
+    if (!/^\d{6}$/.test(form.pincode)) return t.valPincode
     if (!form.text.trim()) return t.valText
     return null
   }
@@ -111,11 +129,61 @@ export default function CitizenPortal() {
         phone: form.phone.replace(/\D/g, '').slice(-10),
       })
       setResult(data)
+      // Auto-fill tracking with submitted grievance info
+      setTrackId(data.reference_id)
+      setTrackResult({
+        reference_id: data.reference_id,
+        status: 'Submitted',
+        details: data.result.summary || '',
+        category: data.result.category,
+        location: data.result.location,
+        severity_score: data.result.severity_score,
+      })
       setForm(INITIAL)
     } catch (ex) {
       setError(ex.message)
     } finally {
       setLoading(false)
+    }
+  }
+
+  // Real tracking function - calls backend API to get grievance details
+  const handleTrackSubmit = async (e) => {
+    e.preventDefault()
+    if (!trackId.trim()) { setTrackError('Please enter a Reference ID'); return }
+    setTrackLoading(true)
+    setTrackError(null)
+    try {
+      const response = await fetch(`/api/grievance/${trackId.trim().toUpperCase()}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to fetch grievance details')
+      }
+
+      // Format the response to match what the UI expects
+      if (data.success && data.result) {
+        const result = data.result
+        // Map the backend response to the frontend tracking result format
+        setTrackResult({
+          reference_id: data.reference_id,
+          status: result.status || 'Submitted', // Default status if not provided
+          details: result.summary || result.details || 'No details available',
+          category: result.category || 'Unknown',
+          location: result.location || 'Location not specified',
+          severity_score: result.severity_score || 3
+        })
+      } else {
+        throw new Error('Invalid response format from server')
+      }
+    } catch (ex) {
+      setTrackError(ex.message)
+    } finally {
+      setTrackLoading(false)
     }
   }
 
@@ -131,7 +199,6 @@ export default function CitizenPortal() {
 
         {!result ? (
           <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
-
             <Section title={t.yourDetails}>
               <div className="space-y-4">
                 <FormField label={t.state} required>
@@ -175,26 +242,27 @@ export default function CitizenPortal() {
                         ))}
                       </div>
                     </FormField>
+
+                    {/* Removed channel section as per request */}
                   </>
                 )}
-
-                <FormField label={t.channel}>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    {channelIds.map((id) => (
-                      <button key={id} type="button" onClick={() => set('channel', id)}
-                        className={`px-3 py-2 rounded-lg border text-xs font-medium transition-colors ${
-                          form.channel === id ? 'border-[#F28C0F] bg-orange-50 text-[#032B5B]' : 'border-slate-200 text-slate-600'
-                        }`}>{CHANNEL_ICONS[id]} {tch(id)}</button>
-                    ))}
-                  </div>
-                </FormField>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField label={t.name} required>
                     <input type="text" value={form.name} onChange={(e) => set('name', e.target.value)} className={inputClass} placeholder={t.namePh} required />
                   </FormField>
                   <FormField label={t.phone} required hint={t.phoneHint}>
-                    <input type="tel" value={form.phone} onChange={(e) => set('phone', e.target.value)} className={inputClass} placeholder={t.phonePh} required maxLength={15} />
+                    <input
+                      type="tel"
+                      value={form.phone}
+                      onChange={(e) => set('phone', e.target.value)}
+                      className={inputClass}
+                      placeholder={t.phonePh}
+                      required
+                      maxLength={10}
+                      pattern="[0-9]{10}"
+                      title="Please enter a 10‑digit mobile number"
+                    />
                   </FormField>
                 </div>
 
@@ -221,26 +289,26 @@ export default function CitizenPortal() {
               {!locationReady ? (
                 <p className="text-sm text-slate-600 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">{t.locationLockedHint}</p>
               ) : (
-              <div className="space-y-4">
-                <button type="button" onClick={useMyLocation} disabled={geoLoading}
-                  className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#032B5B] hover:bg-[#0a4080] text-white text-sm font-medium px-4 py-2.5 rounded-lg disabled:opacity-50">
-                  {geoLoading ? t.gpsLoading : `📍 ${t.useGps}`}
-                </button>
-                {form.geolocation && (
-                  <p className="text-xs text-green-700 font-mono">✓ {t.gpsCaptured}</p>
-                )}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <FormField label={t.village} required={!form.geolocation}>
-                    <input type="text" value={form.village} onChange={(e) => set('village', e.target.value)} className={inputClass} placeholder={t.villagePh} required={!form.geolocation} />
-                  </FormField>
-                  <FormField label={t.ward}>
-                    <input type="text" value={form.ward_block} onChange={(e) => set('ward_block', e.target.value)} className={inputClass} placeholder={t.wardPh} />
-                  </FormField>
-                  <FormField label={t.pincode}>
-                    <input type="text" value={form.pincode} onChange={(e) => set('pincode', e.target.value)} className={inputClass} maxLength={6} />
-                  </FormField>
+                <div className="space-y-4">
+                  <button type="button" onClick={useMyLocation} disabled={geoLoading}
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#032B5B] hover:bg-[#0a4080] text-white text-sm font-medium px-4 py-2.5 rounded-lg disabled:opacity-50">
+                    {geoLoading ? t.gpsLoading : `📍 ${t.useGps}`}
+                  </button>
+                  {form.geolocation && (
+                    <p className="text-xs text-green-700 font-mono">✓ {t.gpsCaptured}</p>
+                  )}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <FormField label={t.village} required={!form.geolocation}>
+                      <input type="text" value={form.village} onChange={(e) => set('village', e.target.value)} className={inputClass} placeholder={t.villagePh} required={!form.geolocation} />
+                    </FormField>
+                    <FormField label={t.ward} required>
+                      <input type="text" value={form.ward_block} onChange={(e) => set('ward_block', e.target.value)} className={inputClass} placeholder={t.wardPh} />
+                    </FormField>
+                    <FormField label={t.pincode} required>
+                      <input type="text" value={form.pincode} onChange={(e) => set('pincode', e.target.value)} className={inputClass} maxLength={6} />
+                    </FormField>
+                  </div>
                 </div>
-              </div>
               )}
             </Section>
 
@@ -303,6 +371,53 @@ export default function CitizenPortal() {
             </div>
           </div>
         )}
+
+        {/* Track your grievance section (shown after successful submission) */}
+        {result && (
+          <Section title={t.trackYourGrievance || 'Track your grievance'}>
+            <div className="space-y-4">
+              <FormField label={t.refId || 'Reference ID'}>
+                <input
+                  type="text"
+                  value={trackId}
+                  onChange={(e) => setTrackId(e.target.value)}
+                  className={inputClass}
+                  placeholder={t.refIdPlaceholder || 'Enter Reference ID'}
+                />
+              </FormField>
+              <button type="button" onClick={handleTrackSubmit} disabled={trackLoading}
+                className="w-full bg-[#F28C0F] hover:bg-[#e07d0a] disabled:opacity-50 text-white font-semibold py-3.5 rounded-lg shadow transition-colors">
+                {trackLoading ? t.tracking : 'Check Status'}
+              </button>
+            </div>
+          </Section>
+        )}
+
+        {/* Tracking result display */}
+        {trackResult && (
+          <div className="bg-white rounded-2xl border border-blue-200 shadow-sm overflow-hidden mt-6">
+            <div className="px-6 py-5 bg-blue-50 text-center border-b border-blue-100">
+              <div className="text-3xl mb-2">🔍</div>
+              <p className="font-bold text-blue-800">{t.trackingResult || 'Tracking Result'}</p>
+              <p className="text-sm text-blue-700 mt-2">{t.refId}: <span className="font-mono font-bold">{trackResult.reference_id}</span></p>
+            </div>
+            <div className="p-6 grid grid-cols-2 gap-3 text-sm">
+              <RF label={t.status} value={trackResult.status} />
+              <RF label={t.category} value={trackResult.category} />
+              <RF label={t.locationLabel} value={trackResult.location} />
+              <RF label={t.severityLabel} value={`${trackResult.severity_score}/5`} />
+              <div className="col-span-2 bg-slate-50 rounded-lg p-3"><RF label={t.summaryLabel} value={trackResult.details || ''} /></div>
+            </div>
+            <div className="px-6 pb-6">
+              <button onClick={() => {
+                setTrackResult(null)
+                setTrackId('')
+              }} className="w-full py-2.5 rounded-lg bg-[#032B5B] text-white text-sm font-semibold">{t.trackAnother || 'Track Another'}</button>
+            </div>
+          </div>
+        )}
+
+        {trackError && <div className="text-sm text-red-700 bg-red-50 border border-red-200 px-4 py-3 rounded-lg mb-4 mt-4">{trackError}</div>}
       </main>
 
       <Footer variant="citizen" />

@@ -7,6 +7,24 @@ export const CATEGORY_IDS = [
 
 export const CHANNEL_IDS = ['web', 'whatsapp', 'phone', 'twitter', 'meeting', 'letter']
 
+export const STATE_LANGUAGES = {
+  'Andhra Pradesh': ['English', 'Hindi', 'Telugu'],
+  'Telangana': ['English', 'Hindi', 'Telugu'],
+  'Tamil Nadu': ['English', 'Hindi', 'Tamil'],
+  'Karnataka': ['English', 'Hindi', 'Kannada'],
+  'Kerala': ['English', 'Hindi', 'Malayalam'],
+  'Maharashtra': ['English', 'Hindi', 'Marathi'],
+  'Gujarat': ['English', 'Hindi', 'Gujarati'],
+  'West Bengal': ['English', 'Hindi', 'Bengali'],
+  'Odisha': ['English', 'Hindi', 'Odia'],
+  'Punjab': ['English', 'Hindi', 'Punjabi'],
+  'Rajasthan': ['English', 'Hindi', 'Hindi'],
+  'Bihar': ['English', 'Hindi', 'Hindi'],
+  'Uttar Pradesh': ['English', 'Hindi', 'Hindi'],
+  'Delhi': ['English', 'Hindi'],
+  'Jammu and Kashmir': ['English', 'Hindi', 'Urdu'],
+}
+
 export const UI = {
   en: {
     appTitle: 'Samadhan: Constituency Development Engine',
@@ -28,7 +46,6 @@ export const UI = {
     constituencyHint: 'Required to route your grievance to the concerned MP office',
     language: 'Language of your grievance',
     languageHint: 'Available languages for selected state',
-    channel: 'How are you contacting us?',
     name: 'Full Name',
     namePh: 'As on Aadhaar / voter ID',
     phone: 'Mobile Number',
@@ -78,6 +95,7 @@ export const UI = {
     valName: 'Full name is required for verification.',
     valPhone: 'Mobile number is required for follow-up.',
     valPhoneFormat: 'Enter a valid 10-digit Indian mobile number.',
+    valPincode: 'PIN Code must be a 6‑digit number.',
     valText: 'Please describe your problem.',
     valFileSize: 'File must be under 5 MB.',
     loading: 'Loading dashboard…',
@@ -131,6 +149,12 @@ export const UI = {
     mpDemoPassword: 'Demo password',
     mpLoggedInAs: 'Logged in as',
     mpLogout: 'Sign Out',
+    trackYourGrievance: 'Track your grievance',
+    refIdPlaceholder: 'Enter Reference ID',
+    tracking: 'Checking…',
+    trackingResult: 'Tracking Result',
+    trackAnother: 'Track Another',
+    status: 'Status',
     categories: {
       roads: { label: 'Roads & Connectivity', desc: 'Potholes, broken roads, bridges, street lights' },
       water: { label: 'Water & Sanitation', desc: 'Drinking water, drainage, toilets, sewage' },
@@ -144,14 +168,6 @@ export const UI = {
       environment: { label: 'Environment & Pollution', desc: 'Air/water pollution, waste dumping' },
       transport: { label: 'Public Transport', desc: 'Bus service, railway connectivity' },
       other: { label: 'Other', desc: 'Any other constituency development issue' },
-    },
-    channels: {
-      web: 'Direct Web Portal',
-      whatsapp: 'WhatsApp',
-      phone: 'Phone / IVR',
-      twitter: 'Social Media (X)',
-      meeting: 'Public Meeting / Gram Sabha',
-      letter: 'Written Letter / Petition',
     },
     severityLevels: {
       1: 'Low',
@@ -181,7 +197,6 @@ export const UI = {
     constituencyHint: 'शिकायत को संबंधित सांसद कार्यालय तक पहुँचाने के लिए आवश्यक',
     language: 'शिकायत की भाषा',
     languageHint: 'चयनित राज्य के लिए उपलब्ध भाषाएँ',
-    channel: 'आप कैसे संपर्क कर रहे हैं?',
     name: 'पूरा नाम',
     namePh: 'आधार / मतदाता ID के अनुसार',
     phone: 'मोबाइल नंबर',
@@ -231,6 +246,7 @@ export const UI = {
     valName: 'सत्यापन के लिए पूरा नाम आवश्यक है।',
     valPhone: 'फॉलो-अप के लिए मोबाइल नंबर आवश्यक है।',
     valPhoneFormat: 'मान्य 10 अंकों का भारतीय मोबाइल नंबर दर्ज करें।',
+    valPincode: 'पिन कोड 6 अंकों की संख्या होनी चाहिए।',
     valText: 'कृपया समस्या का वर्णन करें।',
     valFileSize: 'फ़ाइल 5 MB से छोटी होनी चाहिए।',
     loading: 'डैशबोर्ड लोड हो रहा है…',
@@ -263,7 +279,7 @@ export const UI = {
     poweredBy: 'Gemini AI द्वारा संचालित',
     modalTitle: 'जिला कलेक्टर को MPLADS के तहत प्रशासनिक स्वीकृति का मसौदा',
     modalClose: 'बंद करें',
-    modalForward: 'जिला प्रशासन को अग्रेषित करें',
+    modalForward: 'जिला विधि प्रशासन को अग्रेषित करें',
     modalLoading: 'आधिकारिक प्रारूप लोड हो रहा है…',
     modalFrom: 'प्रेषक',
     modalTo: 'प्राप्तकर्ता',
@@ -283,12 +299,18 @@ export const UI = {
     mpDemoAccounts: 'डेमो MP खाते',
     mpDemoPassword: 'डेमो पासवर्ड',
     mpLoggedInAs: 'लॉग इन',
-    mpLogout: 'साइन आउट',
+    mpLogout: 'साइन आउ트',
+    trackYourGrievance: 'अपनी शिकायत की ट्रैकिंग करें',
+    refIdPlaceholder: 'संदर्भ ID दर्ज करें',
+    tracking: 'जांच हो रही है…',
+    trackingResult: 'ट्रैकिंग परिणाम',
+    trackAnother: 'दूसरी ट्रैकिंग करें',
+    status: 'स्थिति',
     categories: {
       roads: { label: 'सड़क और कनेक्टिविटी', desc: 'गड्ढे, टूटी सड़कें, पुल, स्ट्रीट लाइट' },
       water: { label: 'जल और स्वच्छता', desc: 'पेयजल, नाली, शौचालय, सीवेज' },
       health: { label: 'स्वास्थ्य और चिकित्सा', desc: 'अस्पताल, PHC, एम्बुलेंस, दवाएँ' },
-      education: { label: 'शिक्षा और स्कूल', desc: 'स्कूल, कॉलेज, छात्रवृत्ति, बस' },
+      education: { label: 'शिक्षा और स्कूल', desc: 'स्कूल, कॉलेज, छात्रवृत्ति,バス' },
       power: { label: 'बिजली और ऊर्जा', desc: 'बिजली कटौती, ट्रांसफॉर्मर, स्ट्रीट लाइट' },
       housing: { label: 'आवास और झुग्गी', desc: 'आवास योजना, पुनर्वास' },
       agri: { label: 'कृषि और सिंचाई', desc: 'नहर, फसल, MSP, किसान सहायता' },
@@ -297,14 +319,6 @@ export const UI = {
       environment: { label: 'पर्यावरण और प्रदूषण', desc: 'वायु/जल प्रदूषण, कचरा' },
       transport: { label: 'सार्वजनिक परिवहन', desc: 'बस सेवा, रेल संपर्क' },
       other: { label: 'अन्य', desc: 'कोई अन्य विकास समस्या' },
-    },
-    channels: {
-      web: 'वेब पोर्टल',
-      whatsapp: 'WhatsApp',
-      phone: 'फोन / IVR',
-      twitter: 'सोशल मीडिया (X)',
-      meeting: 'जनसभा / ग्राम सभा',
-      letter: 'लिखित पत्र / याचिका',
     },
     severityLevels: {
       1: 'कम',
@@ -316,24 +330,7 @@ export const UI = {
   },
 }
 
-export const STATE_LANGUAGES = {
-  'Andhra Pradesh': ['English', 'Hindi', 'Telugu'],
-  'Telangana': ['English', 'Hindi', 'Telugu'],
-  'Tamil Nadu': ['English', 'Hindi', 'Tamil'],
-  'Karnataka': ['English', 'Hindi', 'Kannada'],
-  'Kerala': ['English', 'Hindi', 'Malayalam'],
-  'Maharashtra': ['English', 'Hindi', 'Marathi'],
-  'Gujarat': ['English', 'Hindi', 'Gujarati'],
-  'West Bengal': ['English', 'Hindi', 'Bengali'],
-  'Odisha': ['English', 'Hindi', 'Odia'],
-  'Punjab': ['English', 'Hindi', 'Punjabi'],
-  'Rajasthan': ['English', 'Hindi', 'Rajasthani'],
-  'Bihar': ['English', 'Hindi', 'Bhojpuri'],
-  'Uttar Pradesh': ['English', 'Hindi', 'Bhojpuri'],
-  'Delhi': ['English', 'Hindi', 'Punjabi'],
-  'Jammu and Kashmir': ['English', 'Hindi', 'Urdu'],
-}
-
+/* ---------- Andhra Pradesh ---------- */
 export const AP_DISTRICTS = [
   'Anakapalli', 'Anantapur', 'Annamayya', 'Bapatla', 'Chittoor', 'East Godavari',
   'Eluru', 'Guntur', 'Kakinada', 'Konaseema', 'Krishna', 'Kurnool', 'Nandyal',
@@ -350,18 +347,105 @@ export const AP_CONSTITUENCIES = [
   'Kadapa', 'Nellore', 'Tirupati', 'Chittoor', 'Rajampet',
 ]
 
+/* ---------- Telangana ---------- */
+export const TS_DISTRICTS = ['Hyderabad', 'Rangareddy', 'Warangal', 'Karimnagar', 'Nizamabad', 'Khammam']
+export const TS_CONSTITUENCIES = ['Chevella', 'Hyderabad', 'Secunderabad', 'Malkajgiri', 'Zachariah']
+
+/* ---------- Tamil Nadu ---------- */
+export const TN_DISTRICTS = ['Chennai', 'Coimbatore', 'Madurai', 'Tiruchirappalli', 'Salem']
+export const TN_CONSTITUENCIES = ['Chennai South', 'Coimbatore', 'Madurai', 'Tiruchirappalli', 'Salem']
+
+/* ---------- Karnataka ---------- */
+export const KA_DISTRICTS = ['Bangalore Urban', 'Mysore', 'Belgaum', 'Gulbarga', 'Dharwad']
+export const KA_CONSTITUENCIES = ['Bangalore South', 'Mysore', 'Belgaum', 'Gulbarga', 'Dharwad']
+
+/* ---------- Kerala ---------- */
+export const KL_DISTRICTS = ['Thiruvananthapuram', 'Kochi', 'Kozhikode', 'Thrissur', 'Kollam']
+export const KL_CONSTITUENCIES = ['Thiruvananthapuram', 'Kochi', 'Kozhikode', 'Thrissur', 'Kollam']
+
+/* ---------- Maharashtra ---------- */
+export const MH_DISTRICTS = ['Mumbai', 'Pune', 'Nagpur', 'Nashik', 'Thane']
+export const MH_CONSTITUENCIES = ['Mumbai South', 'Pune', 'Nagpur', 'Nashik', 'Thane']
+
+/* ---------- Gujarat ---------- */
+export const GJ_DISTRICTS = ['Ahmedabad', 'Vadod', 'Surat', 'Vadodara', 'Rajkot', 'Bhavnagar']
+export const GJ_CONSTITUENCIES = ['Ahmedabad West', 'Surat', 'Vadodara', 'Rajkot', 'Bhavnagar']
+
+/* ---------- West Bengal ---------- */
+export const WB_DISTRICTS = ['Kolkata', 'North 24 Parganas', 'South 24 Parganas', 'Howrah', 'Hooghly']
+export const WB_CONSTITUENCIES = ['Kolkata North', 'Kolkata South', 'Howrah', 'Hooghly', 'Burdwan']
+
+/* ---------- Odisha ---------- */
+export const OD_DISTRICTS = ['Bhubaneswar', 'Cuttack', 'Berhampur', 'Rourkela', 'Balasore']
+export const OD_CONSTITUENCIES = ['Bhubaneswar', 'Cuttack', 'Berhampur', 'Rourkela', 'Balasore']
+
+/* ---------- Punjab ---------- */
+export const PB_DISTRICTS = ['Ludhiana', 'Amritsar', 'Jalandhar', 'Patiala', 'Bathinda']
+export const PB_CONSTITUENCIES = ['Ludhiana', 'Amritsar', 'Jalandhar', 'Patiala', 'Bathinda']
+
+/* ---------- Rajasthan ---------- */
+export const RJ_DISTRICTS = ['Jaipur', 'Jodhpur', 'Udaipur', 'Bikaner', 'Ajmer']
+export const RJ_CONSTITUENCIES = ['Jaipur', 'Jodhpur', 'Udaipur', 'Bikaner', 'Ajmer']
+
+/* ---------- Bihar ---------- */
+export const BH_DISTRICTS = ['Patna', 'Gaya', 'Bhagalpur', 'Muzaffarpur', 'Darbhanga']
+export const BH_CONSTITUENCIES = ['Patna', 'Gaya', 'Bhagalpur', 'Muzaffarpur', 'Darbhanga']
+
+/* ---------- Uttar Pradesh ---------- */
+export const UP_DISTRICTS = ['Lucknow', 'Kanpur', 'Varanasi', 'Prayagraj', 'Meerut']
+export const UP_CONSTITUENCIES = ['Lucknow', 'Kanpur', 'Varanasi', 'Prayagraj', 'Meerut']
+
+/* ---------- Delhi ---------- */
+export const DL_DISTRICTS = ['New Delhi', 'North Delhi', 'South Delhi', 'East Delhi', 'West Delhi']
+export const DL_CONSTITUENCIES = ['New Delhi', 'North Delhi', 'South Delhi', 'East Delhi', 'West Delhi']
+
+/* ---------- Jammu and Kashmir ---------- */
+export const JK_DISTRICTS = ['Srinagar', 'Jammu', 'Anantnag', 'Baramulla', 'Udhampur']
+export const JK_CONSTITUENCIES = ['Srinagar', 'Jammu', 'Anantnag', 'Baramulla', 'Udhampur']
+
+/* Helper functions */
 export function getLanguagesForState(state) {
   return STATE_LANGUAGES[state] || ['English', 'Hindi']
 }
 
 export function getDistrictsForState(state) {
-  if (state === 'Andhra Pradesh') return AP_DISTRICTS
-  if (state === 'Telangana') return ['Hyderabad', 'Rangareddy', 'Warangal', 'Karimnagar', 'Nizamabad', 'Khammam']
-  return null
+  switch (state) {
+    case 'Andhra Pradesh': return AP_DISTRICTS
+    case 'Telangana': return TS_DISTRICTS
+    case 'Tamil Nadu': return TN_DISTRICTS
+    case 'Karnataka': return KA_DISTRICTS
+    case 'Kerala': return KL_DISTRICTS
+    case 'Maharashtra': return MH_DISTRICTS
+    case 'Gujarat': return GJ_DISTRICTS
+    case 'West Bengal': return WB_DISTRICTS
+    case 'Odisha': return OD_DISTRICTS
+    case 'Punjab': return PB_DISTRICTS
+    case 'Rajasthan': return RJ_DISTRICTS
+    case 'Bihar': return BH_DISTRICTS
+    case 'Uttar Pradesh': return UP_DISTRICTS
+    case 'Delhi': return DL_DISTRICTS
+    case 'Jammu and Kashmir': return JK_DISTRICTS
+    default: return null
+  }
 }
 
 export function getConstituenciesForState(state) {
-  if (state === 'Andhra Pradesh') return AP_CONSTITUENCIES
-  if (state === 'Telangana') return ['Chevella', 'Hyderabad', 'Secunderabad', 'Malkajgiri', 'Zachariah']
-  return null
+  switch (state) {
+    case 'Andhra Pradesh': return AP_CONSTITUENCIES
+    case 'Telangana': return TS_CONSTITUENCIES
+    case 'Tamil Nadu': return TN_CONSTITUENCIES
+    case 'Karnataka': return KA_CONSTITUENCIES
+    case 'Kerala': return KL_CONSTITUENCIES
+    case 'Maharashtra': return MH_CONSTITUENCIES
+    case 'Gujarat': return GJ_CONSTITUENCIES
+    case 'West Bengal': return WB_CONSTITUENCIES
+    case 'Odisha': return OD_CONSTITUENCIES
+    case 'Punjab': return PB_CONSTITUENCIES
+    case 'Rajasthan': return RJ_CONSTITUENCIES
+    case 'Bihar': return BH_CONSTITUENCIES
+    case 'Uttar Pradesh': return UP_CONSTITUENCIES
+    case 'Delhi': return DL_CONSTITUENCIES
+    case 'Jammu and Kashmir': return JK_CONSTITUENCIES
+    default: return null
+  }
 }
