@@ -165,19 +165,46 @@ export default function CitizenPortal() {
         throw new Error(data.error || 'Failed to fetch grievance details')
       }
 
-      // Format the response to match what the UI expects
+      // Handle successful response
       if (data.success && data.result) {
         const result = data.result
-        // Map the backend response to the frontend tracking result format
+
+        // Extract fields with sensible fallbacks
+        const status = result.status ||
+                      result.processing_status ||
+                      'Submitted' // Default for newly submitted grievances
+
+        // Details could be in summary, description, or details field
+        const details = result.summary ||
+                       result.description ||
+                       result.details ||
+                       'No details available'
+
+        // Category should be directly available
+        const category = result.category || 'Unknown'
+
+        # Location - could be in location, village, or derived from components
+        let location = result.location
+        if (!location) {
+          const village = result.village || ''
+          const ward = result.ward_block || ''
+          const pincode = result.pincode || ''
+          location = [village, ward, pincode].filter(Boolean).join(', ') || 'Location not specified'
+        }
+
+        // Severity score - should be numeric 1-5
+        const severity_score = parseInt(result.severity_score) || 3
+
         setTrackResult({
-          reference_id: data.reference_id,
-          status: result.status || 'Submitted', // Default status if not provided
-          details: result.summary || result.details || 'No details available',
-          category: result.category || 'Unknown',
-          location: result.location || 'Location not specified',
-          severity_score: result.severity_score || 3
+          reference_id: data.reference_id || result.reference_id || trackId,
+          status: String(status),
+          details: String(details),
+          category: String(category),
+          location: String(location),
+          severity_score: Math.max(1, Math.min(5, severity_score)) // Clamp to 1-5
         })
       } else {
+        // Fallback if response format is unexpected
         throw new Error('Invalid response format from server')
       }
     } catch (ex) {
