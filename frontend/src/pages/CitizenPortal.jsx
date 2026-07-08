@@ -183,7 +183,7 @@ export default function CitizenPortal() {
         // Category should be directly available
         const category = result.category || 'Unknown'
 
-        # Location - could be in location, village, or derived from components
+        /* Location - could be in location, village, or derived from components */
         let location = result.location
         if (!location) {
           const village = result.village || ''
