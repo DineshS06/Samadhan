@@ -297,6 +297,13 @@ export default function CitizenPortal() {
               </div>
             </Section>
 
+            <Section title={t.grievanceTracker || 'Grievance Tracker'}>
+              <p className="text-sm text-slate-600">
+                After submitting your grievance, you will receive a unique Reference ID.
+                Use this ID to track the status of your grievance in the "Track your grievance" section below.
+              </p>
+            </Section>
+
             <Section title={t.issueCategory}>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {categoryIds.map((id) => (
@@ -385,6 +392,7 @@ export default function CitizenPortal() {
               <p className="font-bold text-green-800">{t.success}</p>
               <p className="text-sm text-green-700 mt-2">{t.refId}: <span className="font-mono font-bold">{result.reference_id}</span></p>
               <p className="text-xs text-green-600 mt-1">{t.saveRef}</p>
+              <p className="text-xs text-green-600 mt-1">{t.useRefToTrack || 'Use this Reference ID to track your grievance in the section below.'}</p>
             </div>
             <div className="p-6 grid grid-cols-2 gap-3 text-sm">
               <RF label={t.category} value={result.result.category} />
@@ -399,27 +407,7 @@ export default function CitizenPortal() {
           </div>
         )}
 
-        {/* Track your grievance section (shown after successful submission) */}
-        {result && (
-          <Section title={t.trackYourGrievance || 'Track your grievance'}>
-            <div className="space-y-4">
-              <FormField label={t.refId || 'Reference ID'}>
-                <input
-                  type="text"
-                  value={trackId}
-                  onChange={(e) => setTrackId(e.target.value)}
-                  className={inputClass}
-                  placeholder={t.refIdPlaceholder || 'Enter Reference ID'}
-                />
-              </FormField>
-              <button type="button" onClick={handleTrackSubmit} disabled={trackLoading}
-                className="w-full bg-[#F28C0F] hover:bg-[#e07d0a] disabled:opacity-50 text-white font-semibold py-3.5 rounded-lg shadow transition-colors">
-                {trackLoading ? t.tracking : 'Check Status'}
-              </button>
-            </div>
-          </Section>
-        )}
-
+        
         {/* Tracking result display */}
         {trackResult && (
           <div className="bg-white rounded-2xl border border-blue-200 shadow-sm overflow-hidden mt-6">
