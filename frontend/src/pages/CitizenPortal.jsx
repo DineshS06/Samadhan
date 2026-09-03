@@ -3,6 +3,7 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import { FormField, inputClass } from '../components/citizen/FormField'
 import { submitGrievance } from '../lib/api'
+import { reverseGeocode } from '../lib/geocode'
 import { useLanguage } from '../i18n/LanguageContext'
 import {
   getLanguagesForState,
@@ -56,13 +57,7 @@ export default function CitizenPortal() {
   const constituencies = getConstituenciesForState(form.state)
   const locationReady = Boolean(form.state && form.district.trim() && form.constituency.trim())
 
-  // Auto-fetch location on mount if not yet set
-  useEffect(() => {
-    if (!form.geolocation && navigator.geolocation) {
-      useMyLocation()
-    }
-  }, [])
-
+  
   useEffect(() => {
     if (form.language && !availableLanguages.includes(form.language)) set('language', '')
   }, [form.state])
@@ -72,8 +67,22 @@ export default function CitizenPortal() {
     setGeoLoading(true)
     setError(null)
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        set('geolocation', { latitude: pos.coords.latitude, longitude: pos.coords.longitude, accuracy: pos.coords.accuracy })
+      async (pos) => {
+        const coords = { latitude: pos.coords.latitude, longitude: pos.coords.longitude, accuracy: pos.coords.accuracy }
+        set('geolocation', coords)
+        // Reverse-geocode so village/ward/pincode autofill (citizen can override).
+        const address = await reverseGeocode(coords)
+        if (address) {
+          setForm((f) => ({
+            ...f,
+            geolocation: coords,
+            village: f.village || address.village || '',
+            ward_block: f.ward_block || address.ward || '',
+            pincode: f.pincode || address.pincode || '',
+            district: f.district || address.district || '',
+            state: f.state || address.state || '',
+          }))
+        }
         setGeoLoading(false)
       },
       () => { setError(t.gpsFail); setGeoLoading(false) },
@@ -166,20 +175,16 @@ export default function CitizenPortal() {
       }
 
       // Format the response to match what the UI expects
-      if (data.success && data.result) {
-        const result = data.result
-        // Map the backend response to the frontend tracking result format
-        setTrackResult({
-          reference_id: data.reference_id,
-          status: result.status || 'Submitted', // Default status if not provided
-          details: result.summary || result.details || 'No details available',
-          category: result.category || 'Unknown',
-          location: result.location || 'Location not specified',
-          severity_score: result.severity_score || 3
-        })
-      } else {
-        throw new Error('Invalid response format from server')
-      }
+      // Backend returns structured result directly; handle both formats gracefully
+      const result = data.result || data
+      setTrackResult({
+        reference_id: data.reference_id || trackId,
+        status: result.status || 'Submitted', // Default status if not provided
+        details: result.summary || result.details || 'No details available',
+        category: result.category || 'Unknown',
+        location: result.location || 'Location not specified',
+        severity_score: result.severity_score || 3
+      })
     } catch (ex) {
       setTrackError(ex.message)
     } finally {
@@ -322,6 +327,7 @@ export default function CitizenPortal() {
                   <div className="flex gap-2">
                     {[1, 2, 3, 4, 5].map((v) => (
                       <button key={v} type="button" onClick={() => set('self_reported_severity', v)}
+                        aria-pressed={form.self_reported_severity === v}
                         className={`flex-1 py-2 rounded-lg border text-center transition-colors ${
                           form.self_reported_severity === v ? 'border-[#F28C0F] bg-orange-50 font-bold text-[#032B5B]' : 'border-slate-200 text-slate-500'
                         }`}>

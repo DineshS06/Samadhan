@@ -1,5 +1,27 @@
 [
   {
+    "id": 7,
+    "submitted_at": "2026-09-03T10:05:09.867767+05:30",
+    "reference_id": "SAM-0007",
+    "has_attachment": false,
+    "attachment_file": null,
+    "category": "Water & Sanitation",
+    "summary": "The provided grievance text is unintelligible, therefore no specific problem could be identified.",
+    "severity_score": 1,
+    "target_demographic": "General Public",
+    "location_keyword": "fghjklkjhbvvbhjk",
+    "detected_language": "Unintelligible",
+    "location": "fghjklkjhbvvbhjk, ghjm,, Visakhapatnam, Visakhapatnam, Andhra Pradesh",
+    "infrastructure_gap_score": 40.0,
+    "public_demand_index": 45,
+    "geolocation": null,
+    "language": "Telugu",
+    "citizen_category": "Water & Sanitation",
+    "channel": "web",
+    "constituency": "Visakhapatnam",
+    "district": "Visakhapatnam"
+  },
+  {
     "id": 6,
     "submitted_at": "2026-07-08T20:32:33.645970+05:30",
     "reference_id": "SAM-0006",

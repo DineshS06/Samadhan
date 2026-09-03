@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { useLanguage } from '../i18n/LanguageContext'
@@ -17,11 +17,12 @@ function pinIcon(severity) {
   })
 }
 
-export default function ConstituencyMap({ points = [], mapConfig, mpOffice }) {
+export default function ConstituencyMap({ points = [], mapConfig, mpOffice, focusPointId, onMarkerClick }) {
   const { t } = useLanguage()
   const containerRef = useRef(null)
   const mapRef = useRef(null)
-  const markersRef = useRef([])
+  const markersRef = useRef(new Map()) // keyed by reference_id or label
+  const boundaryLayerRef = useRef(null)
 
   const constituency = mpOffice?.constituency || mapConfig?.constituency || 'Visakhapatnam'
   const centerLat = mapConfig?.center?.[0] ?? DEFAULT_CENTER[0]
@@ -29,54 +30,77 @@ export default function ConstituencyMap({ points = [], mapConfig, mpOffice }) {
   const zoom = mapConfig?.zoom ?? DEFAULT_ZOOM
   const boundaryUrl = mapConfig?.boundary_url || '/api/geo/constituency/by-name/Visakhapatnam?state=Andhra%20Pradesh'
 
-  const mapKey = useMemo(
-    () => `${constituency}-${centerLat}-${centerLng}-${boundaryUrl}`,
-    [constituency, centerLat, centerLng, boundaryUrl],
-  )
-
+  // Initialise map once. Subsequent prop changes (points, boundaryUrl) are handled
+  // by separate effects that mutate the existing map — no full rebuild.
   useEffect(() => {
-    if (!containerRef.current) return
-
-    if (mapRef.current) {
-      mapRef.current.remove()
-      mapRef.current = null
-    }
-
+    if (!containerRef.current || mapRef.current) return
     const map = L.map(containerRef.current, { scrollWheelZoom: true }).setView([centerLat, centerLng], zoom)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap',
       maxZoom: 18,
     }).addTo(map)
     mapRef.current = map
+    return () => {
+      map.remove()
+      mapRef.current = null
+      markersRef.current.clear()
+      boundaryLayerRef.current = null
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-    fetch(boundaryUrl)
+  // React to centre/zoom prop changes after mount.
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map) return
+    map.setView([centerLat, centerLng], zoom)
+  }, [centerLat, centerLng, zoom])
+
+  // Boundary layer — only refetch when the boundary URL actually changes; abort stale fetches.
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map) return
+    const ctrl = new AbortController()
+
+    if (boundaryLayerRef.current) {
+      map.removeLayer(boundaryLayerRef.current)
+      boundaryLayerRef.current = null
+    }
+
+    fetch(boundaryUrl, { signal: ctrl.signal })
       .then((r) => r.json())
       .then((geojson) => {
         if (!mapRef.current) return
         const layer = L.geoJSON(geojson, {
           style: { color: '#032B5B', weight: 2.5, fillColor: '#032B5B', fillOpacity: 0.08 },
         }).addTo(map)
+        boundaryLayerRef.current = layer
         try {
           map.fitBounds(layer.getBounds(), { padding: [24, 24] })
         } catch { /* keep default view */ }
       })
-      .catch(() => {})
+      .catch((err) => {
+        if (err?.name !== 'AbortError') { /* swallow network errors */ }
+      })
 
-    return () => {
-      map.remove()
-      mapRef.current = null
-    }
-  }, [mapKey, centerLat, centerLng, zoom, boundaryUrl])
+    return () => ctrl.abort()
+  }, [boundaryUrl])
 
+  // Marker layer — diff by reference_id, only add/remove what changed.
   useEffect(() => {
     const map = mapRef.current
     if (!map) return
-
-    markersRef.current.forEach((m) => map.removeLayer(m))
-    markersRef.current = []
+    const nextKeys = new Set()
 
     points.forEach((point) => {
       if (point.lat == null || point.lng == null) return
+      const key = point.reference_id || point.label
+      nextKeys.add(key)
+      const existing = markersRef.current.get(key)
+      if (existing) {
+        existing.setLatLng([point.lat, point.lng])
+        return
+      }
       const marker = L.marker([point.lat, point.lng], { icon: pinIcon(point.severity) })
       const gpsLabel = point.source === 'citizen_gps' ? t.mapGpsPin : t.mapLocalityPin
       marker.bindPopup(`
@@ -87,10 +111,29 @@ export default function ConstituencyMap({ points = [], mapConfig, mpOffice }) {
           <span style="color:${SEVERITY_COLORS[point.severity] || '#F28C0F'}">${t.severityLabel}: ${point.severity_score || '—'}/5</span><br/>
           <span style="font-size:10px;color:#94a3b8">${gpsLabel}</span>
         </div>`)
+      if (onMarkerClick) marker.on('click', () => onMarkerClick(point))
       marker.addTo(map)
-      markersRef.current.push(marker)
+      markersRef.current.set(key, marker)
     })
-  }, [points, t.mapGpsPin, t.mapLocalityPin, t.severityLabel])
+
+    // Remove markers no longer in the points list.
+    for (const [key, marker] of markersRef.current) {
+      if (!nextKeys.has(key)) {
+        map.removeLayer(marker)
+        markersRef.current.delete(key)
+      }
+    }
+  }, [points, t.mapGpsPin, t.mapLocalityPin, t.severityLabel, onMarkerClick])
+
+  // Pan/zoom to the focused point when focusPointId changes externally.
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map || !focusPointId) return
+    const marker = markersRef.current.get(focusPointId)
+    if (!marker) return
+    map.setView(marker.getLatLng(), Math.max(map.getZoom(), 13), { animate: true })
+    marker.openPopup()
+  }, [focusPointId])
 
   const gpsCount = points.filter((p) => p.source === 'citizen_gps').length
   const localityCount = points.length - gpsCount

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
 import { useLanguage } from '../i18n/LanguageContext'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
@@ -6,6 +7,7 @@ import { mpLogin } from '../lib/mpAuth'
 
 export default function MPLogin() {
   const { t } = useLanguage()
+  const navigate = useNavigate()
   const [username, setUsername] = useState('mp.visakhapatnam')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
@@ -17,7 +19,7 @@ export default function MPLogin() {
     setError(null)
     try {
       await mpLogin(username.trim(), password)
-      window.location.href = '/mp'
+      navigate('/mp', { replace: true })
     } catch (ex) {
       setError(ex.message)
     } finally {
@@ -78,7 +80,7 @@ export default function MPLogin() {
           </div>
 
           <p className="text-center mt-6">
-            <a href="/" className="text-sm text-[#032B5B] hover:text-[#F28C0F]">{t.backToCitizen}</a>
+            <Link to="/" className="text-sm text-[#032B5B] hover:text-[#F28C0F]">{t.backToCitizen}</Link>
           </p>
         </div>
       </main>

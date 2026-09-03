@@ -4,6 +4,7 @@ import json
 import logging
 import os
 import sys
+from collections import OrderedDict
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
@@ -53,7 +54,11 @@ GEO_PATH = ROOT_DIR / "shared" / "geo"
 FRONTEND_DIST = ROOT_DIR / "frontend" / "dist"
 
 PII_KEYS = ("citizen_name", "name", "phone", "phone_number", "attachment")
-_sanction_cache: dict[int, dict] = {}
+
+# Bounded LRU cache for /api/sanction responses — prevents unbounded memory growth
+# when many distinct project_ids are requested over the process lifetime.
+_SANCTION_CACHE_MAX = 256
+_sanction_cache: "OrderedDict[int, dict]" = OrderedDict()
 
 
 def _require_mp_session():
@@ -436,6 +441,25 @@ def list_grievances():
     return jsonify(items)
 
 
+@app.route("/api/grievance/<reference_id>", methods=["GET"])
+def get_grievance_by_reference(reference_id: str):
+    """Public tracking endpoint — citizens poll this by reference ID.
+    Returns the redacted record so the citizen can verify status without auth.
+    """
+    ref = (reference_id or "").strip().upper()
+    if not ref:
+        return jsonify({"error": "Missing reference_id"}), 400
+
+    for g in _load_grievances():
+        if (g.get("reference_id") or "").upper() == ref:
+            return jsonify({
+                "success": True,
+                "reference_id": g.get("reference_id"),
+                "result": _redact_entry(g),
+            })
+    return jsonify({"error": "Reference ID not found"}), 404
+
+
 @app.route("/geo/<path:filename>")
 def serve_geo(filename):
     if not GEO_PATH.exists():
@@ -469,7 +493,9 @@ def get_sanction(project_id: int):
         return err
 
     if project_id in _sanction_cache:
-        return jsonify(_sanction_cache[project_id])
+        payload = _sanction_cache[project_id]
+        _sanction_cache.move_to_end(project_id)
+        return jsonify(payload)
 
     project = _find_project(project_id, session["constituency"], session["state"])
     if not project and FEED_PATH.exists():
@@ -483,6 +509,9 @@ def get_sanction(project_id: int):
     use_ai = request.args.get("ai") == "1"
     payload = _format_sanction(project, use_ai=use_ai)
     _sanction_cache[project_id] = payload
+    _sanction_cache.move_to_end(project_id)
+    while len(_sanction_cache) > _SANCTION_CACHE_MAX:
+        _sanction_cache.popitem(last=False)
     return jsonify(payload)
 
 
@@ -519,6 +548,17 @@ def serve_dashboard_feed():
 def serve_favicon():
     if FRONTEND_DIST.exists():
         return send_from_directory(FRONTEND_DIST, "favicon.svg")
+    abort(404)
+
+
+# Domain-verification files (Google Search Console, Bing, etc.). Look in
+# frontend/dist/ first, then the repo root — Vite copies public/ into dist/ on build.
+@app.route("/googlea34e147e07ede164.html")
+def serve_google_verification():
+    for base in (FRONTEND_DIST, ROOT_DIR):
+        candidate = base / "googlea34e147e07ede164.html"
+        if candidate.exists() and candidate.is_file():
+            return send_from_directory(base, "googlea34e147e07ede164.html")
     abort(404)
 
 

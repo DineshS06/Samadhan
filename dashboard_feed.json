@@ -1,0 +1,63 @@
+{
+  "metrics": {
+    "total_grievances": 124,
+    "ai_prioritized_projects": 45,
+    "active_mplads_fund_crores": 12.5,
+    "allocated_funds_crores": 9.8
+  },
+  "projects": [
+    {
+      "id": "GRV-20240501-A1B2C3",
+      "project_name": "Road Repair at Main Street",
+      "location": "Main Street, Visakhapatnam",
+      "category": "Infrastructure",
+      "summary": "Potholes and cracks on Main Street causing inconvenience to commuters.",
+      "severity_score": 4,
+      "infrastructure_gap_score": 3,
+      "sanction_note_draft": null
+    },
+    {
+      "id": "GRV-20240502-D4E5F6",
+      "project_name": "Clean Drinking Water Supply",
+      "location": "Sector 5, Vishakhapatnam",
+      "category": "Water Supply",
+      "summary": "Residents report contaminated water supply causing health issues.",
+      "severity_score": 5,
+      "infrastructure_gap_score": 4,
+      "sanction_note_draft": null
+    }
+  ],
+  "heatmap_points": [
+    {
+      "lat": 17.6868,
+      "lng": 83.2185,
+      "severity": "high",
+      "severity_score": 4,
+      "label": "Road Repair at Main Street",
+      "reference_id": "GRV-20240501-A1B2C3",
+      "category": "Infrastructure",
+      "location": "Main Street, Visakhapatnam",
+      "source": "citizen_portal"
+    },
+    {
+      "lat": 17.7215,
+      "lng": 83.3012,
+      "severity": "high",
+      "severity_score": 5,
+      "label": "Clean Drinking Water Supply",
+      "reference_id": "GRV-20240502-D4E5F6",
+      "category": "Water Supply",
+      "location": "Sector 5, Vishakhapatnam",
+      "source": "citizen_portal"
+    }
+  ],
+  "last_updated": "2024-05-15T10:30:00Z",
+  "map": {
+    "data_source": "Sample GIS data from municipal records"
+  },
+  "mp_office": {
+    "name": "Demo MP",
+    "constituency": "Visakhapatnam",
+    "state": "Andhra Pradesh"
+  }
+}

@@ -21,7 +21,8 @@ LOCALITY_COORDS = {
 
 
 def severity_label(score: int | float) -> str:
-    score = int(score or 3)
+    from app import _safe_int
+    score = _safe_int(score, 3)
     if score >= 5:
         return "high"
     if score >= 3:

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { useLanguage } from '../i18n/LanguageContext'
 
 export default function Footer({ variant = 'citizen' }) {
@@ -8,13 +9,13 @@ export default function Footer({ variant = 'citizen' }) {
       <div className="max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
         <p>{t.footerTagline}</p>
         {variant === 'citizen' ? (
-          <a href="/mp/login" className="text-[#032B5B] hover:text-[#F28C0F] font-medium transition-colors">
+          <Link to="/mp/login" className="text-[#032B5B] hover:text-[#F28C0F] font-medium transition-colors">
             {t.staffLogin} →
-          </a>
+          </Link>
         ) : (
-          <a href="/" className="text-[#032B5B] hover:text-[#F28C0F] font-medium transition-colors">
+          <Link to="/" className="text-[#032B5B] hover:text-[#F28C0F] font-medium transition-colors">
             {t.backToCitizen}
-          </a>
+          </Link>
         )}
       </div>
     </footer>

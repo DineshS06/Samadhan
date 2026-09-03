@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import MetricRibbon from '../components/MetricRibbon'
@@ -32,6 +33,7 @@ function buildInstantSanction(project) {
 
 export default function MPDashboard() {
   const { t } = useLanguage()
+  const navigate = useNavigate()
   const [feed, setFeed] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -43,20 +45,20 @@ export default function MPDashboard() {
 
   useEffect(() => {
     if (!getMpToken()) {
-      window.location.href = '/mp/login'
+      navigate('/mp/login', { replace: true })
       return
     }
     fetchMpDashboard()
       .then(setFeed)
       .catch((ex) => {
         if (ex.message === 'SESSION_EXPIRED') {
-          window.location.href = '/mp/login'
+          navigate('/mp/login', { replace: true })
           return
         }
         setError(ex.message)
       })
       .finally(() => setLoading(false))
-  }, [])
+  }, [navigate])
 
   const handleReview = (project) => {
     setSelectedProject(project)
@@ -74,7 +76,7 @@ export default function MPDashboard() {
 
   const handleLogout = async () => {
     await mpLogout()
-    window.location.href = '/mp/login'
+    navigate('/mp/login', { replace: true })
   }
 
   const handleForward = () => {
@@ -97,7 +99,7 @@ export default function MPDashboard() {
       <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC] px-4">
         <div className="text-center">
           <p className="text-red-600 mb-4">{error || t.loadFail}</p>
-          <a href="/mp/login" className="text-[#032B5B] underline">{t.mpLoginBtn}</a>
+          <Link to="/mp/login" className="text-[#032B5B] underline">{t.mpLoginBtn}</Link>
         </div>
       </div>
     )

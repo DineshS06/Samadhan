@@ -18,9 +18,29 @@ def _gemini_is_ready() -> bool:
     return get_gemini_status()["ready"]
 
 
+def _safe_int(value, default=3) -> int:
+    """Safely convert value to integer, returning default on failure.
+    Treats 0 as invalid and returns default.
+    """
+    try:
+        val = int(value)
+        if val == 0:
+            return default
+        return val
+    except (ValueError, TypeError):
+        return default
+
+
+# Cache for public data to avoid repeated disk reads
+_public_data_cache: dict | None = None
+
+
 def _load_public_data() -> dict:
-    with open(PUBLIC_DATA_PATH, encoding="utf-8") as f:
-        return json.load(f)
+    global _public_data_cache
+    if _public_data_cache is None:
+        with open(PUBLIC_DATA_PATH, encoding="utf-8") as f:
+            _public_data_cache = json.load(f)
+    return _public_data_cache
 
 
 def lookup_location_data(location_keyword: str, district: str = "", state: str = "") -> dict:
@@ -117,7 +137,7 @@ def parse_citizen_grievance(raw_input_data: str, metadata: dict | None = None) -
             parsed = _extract_json(text)
             if parsed.get("category") not in CATEGORIES:
                 parsed["category"] = _normalize_category(parsed.get("category", ""))
-            parsed["severity_score"] = min(5, max(1, int(parsed.get("severity_score", 3))))
+            parsed["severity_score"] = min(5, max(1, _safe_int(parsed.get("severity_score"), 3)))
             return parsed
         except Exception as exc:
             logger.debug("Gemini parse attempt (json_mode=%s) failed: %s", json_mode, exc)
@@ -174,7 +194,7 @@ def _mock_parse(raw_input_data: str, metadata: dict | None = None) -> dict:
     else:
         cat = "Other"
 
-    severity = int(meta.get("self_reported_severity") or 3)
+    severity = _safe_int(meta.get("self_reported_severity") or 3)
 
     return {
         "category": cat,
