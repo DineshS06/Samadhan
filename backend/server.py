@@ -481,6 +481,34 @@ def parse_only():
     return jsonify({"ai_data": ai_data, "db_data": db_data, "priority_score": score})
 
 
+@app.route("/api/grievance/<reference_id>", methods=["GET"])
+def get_grievance_by_reference(reference_id: str):
+    """Get a grievance by its reference ID (e.g., SAM-0001) - citizen-accessible."""
+    # Validate reference_id format (SAM-XXXX where X is digit)
+    import re
+    if not re.match(r'^SAM-\d{4}$', reference_id):
+        return jsonify({"error": "Invalid reference ID format"}), 400
+
+    # Load all grievances
+    grievances = _load_grievances()
+
+    # Find the grievance with matching reference_id
+    matching_grievances = [g for g in grievances if g.get("reference_id") == reference_id]
+
+    if not matching_grievances:
+        return jsonify({"error": "Grievance not found"}), 404
+
+    # Return the redacted version (same as what's shown to citizens upon submission)
+    grievance = matching_grievances[0]  # Take the first match (should be only one)
+    redacted_grievance = _redact_entry(grievance)
+
+    return jsonify({
+        "success": True,
+        "reference_id": reference_id,
+        "result": redacted_grievance
+    })
+
+
 def _find_project(project_id: int, constituency: str | None = None, state: str | None = None) -> dict | None:
     feed = _build_dashboard_feed(constituency, state)
     return next((p for p in feed.get("projects", []) if p.get("id") == project_id), None)

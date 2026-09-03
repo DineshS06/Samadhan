@@ -9,6 +9,24 @@ import SanctionModal from '../components/SanctionModal'
 import { useLanguage } from '../i18n/LanguageContext'
 import { fetchMpDashboard, getMpToken, mpLogout, getMpProfile, mpAuthHeaders } from '../lib/mpAuth'
 
+const STORAGE_KEY = 'submitted_grievances';
+
+function getStoredSubmissions() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    console.warn('Failed to read submitted grievances from localStorage', e);
+    return [];
+  }
+}
+
+function severityScoreToLabel(score) {
+  if (score >= 4) return 'high';
+  if (score >= 3) return 'medium';
+  return 'low';
+}
+
 function buildInstantSanction(project) {
   if (!project) return null
   return {
@@ -49,6 +67,41 @@ export default function MPDashboard() {
       return
     }
     fetchMpDashboard()
+      .then(rawFeed => {
+        // Enhance with stored submissions
+        const stored = getStoredSubmissions()
+        const mapPoints = stored
+          .filter(sub => sub.lat !== null && sub.lng !== null) // only those with coordinates
+          .map(sub => ({
+            lat: sub.lat,
+            lng: sub.lng,
+            severity: severityScoreToLabel(sub.severity_score),
+            severity_score: sub.severity_score,
+            label: sub.summary || 'Grievance',
+            reference_id: sub.reference_id,
+            category: sub.category,
+            location: sub.location,
+            source: sub.source,
+          }))
+        // Combine existing heatmap_points with new points (avoid duplicates by reference_id)
+        const existingPoints = rawFeed.heatmap_points || []
+        const existingIds = new Set(
+          existingPoints
+            .map(p => p.reference_id)
+            .filter(id => id !== undefined && id !== null)
+        )
+        const uniqueNewPoints = mapPoints.filter(p => !existingIds.has(p.reference_id))
+        const enhancedFeed = {
+          ...rawFeed,
+          heatmap_points: [...existingPoints, ...uniqueNewPoints],
+          // Update total_grievances metric to include stored submissions
+          metrics: {
+            ...rawFeed.metrics,
+            total_grievances: (rawFeed.metrics.total_grievances || 0) + stored.length,
+          }
+        }
+        return enhancedFeed
+      })
       .then(setFeed)
       .catch((ex) => {
         if (ex.message === 'SESSION_EXPIRED') {
@@ -80,7 +133,7 @@ export default function MPDashboard() {
   }
 
   const handleForward = () => {
-    setSelectedProject(null)
+    setSelectedPoint(null)
     setSanctionDoc(null)
     setToast(t.toastForward)
     setTimeout(() => setToast(null), 4000)
