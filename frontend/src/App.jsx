@@ -4,10 +4,12 @@ import MPDashboard from './pages/MPDashboard'
 import MPLogin from './pages/MPLogin'
 import NotFound from './pages/NotFound'
 import ErrorBoundary from './components/ErrorBoundary'
+import GA4 from './components/GA4'
 
 export default function App() {
   return (
     <ErrorBoundary>
+      <GA4 />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<CitizenPortal />} />

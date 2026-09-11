@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import SEO from '../components/SEO'
 import { useLanguage } from '../i18n/LanguageContext'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
@@ -29,6 +30,7 @@ export default function MPLogin() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
+      <SEO title="MP / Staff Login" />
       <Header subtitle={t.mpLoginSubtitle} />
 
       <main className="flex-1 flex items-center justify-center px-4 py-10">

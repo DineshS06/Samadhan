@@ -1,0 +1,150 @@
+# ======================================================================
+# Samadhan - Optimized robots.txt for GEO & SEO v2.0
+# Purpose: Maximum AI crawler efficiency + Traditional SEO balance
+# ======================================================================
+
+# ------------------------------------------------------------------
+# AI CRAWLER DIRECTIVES (Generative Engine Optimization)
+# ------------------------------------------------------------------
+# These directives control AI system crawlers (GPT, Claude, Perplexity, Gemini)
+# Format: User-agent: [name] followed by Allow/Disallow/Clean-Param/Crawl-delay
+
+# OpenAI GPTBot - Primary AI trainer/citation system
+User-agent: GPTBot
+Allow: /
+Clean-Param: utm_source,utm_medium,utm_campaign
+Crawl-delay: 1
+
+# Anthropic ClaudeBot - AI assistant citation system
+User-agent: ClaudeBot
+Allow: /
+Clean-Param: utm_source,utm_medium
+Crawl-delay: 1
+
+# PerplexityBot - Perplexity AI search crawler
+User-agent: PerplexityBot
+Allow: /
+Clean-Param: utm_source,utm_medium
+Crawl-delay: 1
+
+# Google Google-Extended - Google AI Overviews training
+User-agent: Google-Extended
+Allow: /
+Crawl-delay: 1
+
+# ------------------------------------------------------------------
+# TRADITIONAL SEARCH ENGINE CRAWLERS
+# ------------------------------------------------------------------
+# Standard crawler directives for Google, Bing, Yahoo, etc.
+
+User-agent: Googlebot
+Allow: /
+Disallow: /mp/login/
+Disallow: /mp/register/
+Disallow: /api/
+Clean-Param: "utm_source,utm_medium,utm_campaign,gclid,campaignid"
+Crawl-delay: 10
+
+User-agent: Bingbot
+Allow: /
+Disallow: /mp/login/
+Disallow: /api/
+Clean-Param: "utm_source,utm_medium,campaign"
+Crawl-delay: 10
+
+User-agent: Yahoo Slurp
+Allow: /
+Disallow: /mp/login/
+Disallow: /api/
+Crawl-delay: 10
+
+# Default human crawler - allow most, disallow admin/private
+User-agent: *
+Allow: /
+Disallow: /mp/login
+Disallow: /mp/register
+Disallow: /api/
+Disallow: /*?*  # Disallow URL parameters (except allowed above)
+Sitemap: https://samadhan-chi.vercel.app/sitemap.xml
+
+# ------------------------------------------------------------------
+# PERFORMANCE OPTIMIZATIONS
+# ------------------------------------------------------------------
+# Crawl-delay helps prevent server overload and ensures consistent AI access
+
+# Time between requests from same agent (seconds)
+# Lower = more frequent but lighter loads
+# Higher = less frequent but heavier loads per visit
+
+# GPTBot: 1 second (balanced for AI training)
+# ClaudeBot: 1 second (balanced for AI assistant)
+# PerplexityBot: 1 second (balanced for search)
+# Google-Extended: 1 second (for AI Overviews training)
+# Googlebot: 10 seconds (traditional SEO, lighter load)
+# Bingbot: 10 seconds (traditional SEO, lighter load)
+# Yahoo Slurp: 10 seconds (traditional SEO, lighter load)
+
+# ------------------------------------------------------------------
+# LEGACY / FALLBACK DIRECTIVES
+# ------------------------------------------------------------------
+# These ensure basic crawler behavior even if specific agents aren't recognized
+
+# Conservative default for unrecognized bots
+# Only allow what's explicitly needed
+User-agent: mediapartners-google
+Allow: /
+
+User-agent: adsbot-google
+Allow: /
+
+# Block malicious or unwanted bots (if needed)
+# User-agent: BadBot
+# Disallow: /
+
+# ------------------------------------------------------------------
+# SITEMAP & METADATA
+# ------------------------------------------------------------------
+
+# Primary sitemap - MUST be accurate and up-to-date
+Sitemap: https://samadhan-chi.vercel.app/sitemap.xml
+
+# Secondary sitemap (if needed for large sites)
+# Sitemap: https://samadhan-chi.vercel.app/sitemap-news.xml
+
+# Human-friendly crawl rate request
+# This is a request, not a directive
+Crawl-delay: 1
+
+# ------------------------------------------------------------------
+# ROBOTS.TXT PROCESSING INSTRUCTIONS
+# ------------------------------------------------------------------
+# 1. Process top-down - first match wins
+# 2. Specific user-agents before generic *
+# 3. Disallow rules apply to full paths after domain
+# 4. Allow rules can override disallow (even for disallowed paths)
+# 5. Wildcards: * matches zero or more characters
+# 6. $ matches end of line URL
+# 7. Sitemap URL must be absolute (http/https)
+# 8. Comments start with # (recommended for readability)
+
+# ------------------------------------------------------------------
+# OPTIMIZATION NOTES
+# ------------------------------------------------------------------
+# 1. Clean-Param: Tell crawlers which URL parameters to ignore/consolidate
+#    This prevents duplicate content issues and improves crawl efficiency
+# 2. Crawl-delay: Polite waiting between requests - prevents server strain
+# 3. Allow/Disallow order matters - first matching rule wins
+# 4. * in User-agent matches all bots not specifically listed above
+# 5. Test with Google's robots.txt tester before major changes
+# 6. Update sitemap whenever page structure changes
+# 7. Monitor Google Search Console for crawl errors after changes
+# 7. Review quarterly for relevance and effectiveness
+
+# ======================================================================
+# END OF robots.txt
+# ======================================================================
+# Generated: 2026-09-11
+# Version: 2.0 - GEO & SEO Optimized
+# Test with: https://www.google.com/search/robots-test
+# Submit to: Google Search Console, Bing Webmaster Tools
+# ======================================================================

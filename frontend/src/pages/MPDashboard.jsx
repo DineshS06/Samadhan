@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import SEO from '../components/SEO'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import MetricRibbon from '../components/MetricRibbon'
@@ -160,6 +161,7 @@ export default function MPDashboard() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
+      <SEO title="MP Executive Dashboard" />
       <Header subtitle={`${t.mpSubtitle} — ${feed.mp_office?.constituency || mpProfile?.constituency || ''}`} />
 
       <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-2 flex items-center justify-between text-xs text-slate-600">
