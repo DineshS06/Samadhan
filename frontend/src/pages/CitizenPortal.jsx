@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
-import SEO from '../components/SEO'
 import { FormField, inputClass } from '../components/citizen/FormField'
 import { submitGrievance } from '../lib/api'
 import { reverseGeocode } from '../lib/geocode'
@@ -195,12 +194,11 @@ export default function CitizenPortal() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
-      <SEO title="Report Constituency Issues" />
       <Header subtitle={t.citizenSubtitle} />
 
       <main className="flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-6 w-full">
         <div className="text-center mb-6">
-          <h2 className="text-xl font-bold text-[#032B5B]">{t.reportIssue}</h2>
+          <h1 className="text-2xl font-bold text-[#032B5B]">{t.reportIssue}</h1>
           <p className="text-slate-500 text-sm mt-1">{t.reportDesc}</p>
         </div>
 

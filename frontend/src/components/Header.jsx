@@ -1,41 +1,64 @@
-import { useLanguage } from '../i18n/LanguageContext'
-import logo from "../assets/logo.png";
+import { useState } from 'react';
+import { Link, NavLink } from 'react-router-dom';
+import { useLanguage } from '../i18n/LanguageContext';
+import Icon from './Icon';
+import logo from '../assets/logo.png';
 
-export default function Header({ subtitle, showLangToggle = true }) {
-  const { lang, switchLang, t } = useLanguage()
+const nav = [
+  ['/', 'Home'],
+  ['/how-it-works', 'How it works'],
+  ['/methodology', 'Methodology'],
+  ['/faq', 'FAQs'],
+  ['/about', 'About'],
+];
+
+export default function Header({ showLangToggle = true }) {
+  const { lang, switchLang } = useLanguage();
+  const [open, setOpen] = useState(false);
 
   return (
-    <header className="bg-[#032B5B] text-white px-4 sm:px-6 py-4 flex items-center gap-3 shadow-md">
-      <div className="flex items-center gap-3 flex-1 min-w-0">
-        <img src={logo} alt="Samadhan logo" className="h-10 w-auto" />
-        <div className="min-w-0">
-          <h1 className="text-base sm:text-lg font-bold tracking-tight truncate">{t.appTitle}</h1>
-          <p className="text-xs text-blue-200 mt-0.5 truncate">{subtitle || t.citizenSubtitle}</p>
+    <header className='site-header'>
+      <div className='site-header__inner'>
+        <Link to='/' className='brand' aria-label='Samadhan home'>
+          <img src={logo} alt='' width='54' height='42' />
+          <span>
+            <strong>Samadhan</strong>
+            <small>Constituency intelligence</small>
+          </span>
+        </Link>
+        <button className='nav-toggle' type='button' aria-expanded={open} onClick={() => setOpen(!open)}>
+          <span className='sr-only'>Menu</span>
+          <Icon name={open ? 'close' : 'menu'} />
+        </button>
+        <nav className={'site-nav ' + (open ? 'is-open' : '')} aria-label='Primary navigation'>
+          {nav.map(([to, label]) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={to === '/'}
+              className={({ isActive }) => 'site-nav__link ' + (isActive ? 'is-active' : '')}
+              onClick={() => setOpen(false)}
+            >
+              {label}
+            </NavLink>
+          ))}
+        </nav>
+        <div className='header-actions'>
+          {showLangToggle && (
+            <div className='language-switch'>
+              <button onClick={() => switchLang('en')} aria-pressed={lang === 'en'}>
+                EN
+              </button>
+              <button onClick={() => switchLang('hi')} aria-pressed={lang === 'hi'}>
+                हिं
+              </button>
+            </div>
+          )}
+          <Link to='/report-issue' className='button button--small button--primary'>
+            Report issue
+          </Link>
         </div>
       </div>
-
-      {showLangToggle && (
-        <div className="flex items-center gap-1 shrink-0 bg-white/10 rounded-lg p-0.5">
-          <button
-            type="button"
-            onClick={() => switchLang('en')}
-            className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors ${
-              lang === 'en' ? 'bg-white text-[#032B5B]' : 'text-blue-100 hover:text-white'
-            }`}
-          >
-            English
-          </button>
-          <button
-            type="button"
-            onClick={() => switchLang('hi')}
-            className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors ${
-              lang === 'hi' ? 'bg-white text-[#032B5B]' : 'text-blue-100 hover:text-white'
-            }`}
-          >
-            हिंदी
-          </button>
-        </div>
-      )}
     </header>
-  )
+  );
 }

@@ -1,0 +1,15 @@
+{
+  "name": "Samadhan Constituency Intelligence",
+  "short_name": "Samadhan",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F7F8FA",
+  "theme_color": "#0B2A52",
+  "icons": [
+    {
+      "src": "/Samadhan.png",
+      "sizes": "1448x1086",
+      "type": "image/png"
+    }
+  ]
+}
