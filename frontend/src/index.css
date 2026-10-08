@@ -1,2 +1,294 @@
-@import "tailwindcss";:root{--ink:#10233F;--muted:#52637A;--canvas:#F7F8FA;--blue:#155EEF;--navy:#0B2A52;--soft:#EAF3FF;--orange:#E87917;--border:#DDE3EA}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--canvas);color:var(--ink)}.container{width:min(1120px,calc(100% - 48px));margin:auto}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}:focus-visible{outline:3px solid #F6A54F;outline-offset:3px}.site-header{position:sticky;top:0;z-index:50;background:#fffc;border-bottom:1px solid var(--border);backdrop-filter:blur(16px)}.site-header__inner{width:min(1200px,calc(100% - 40px));min-height:76px;margin:auto;display:flex;align-items:center;gap:22px}.brand{display:flex;align-items:center;gap:10px;text-decoration:none}.brand img{width:44px;height:40px;object-fit:contain}.brand span{display:flex;flex-direction:column}.brand strong{letter-spacing:.08em;text-transform:uppercase}.brand small{font-size:11px;color:var(--muted)}.site-nav{display:flex;margin-left:auto}.site-nav__link{padding:12px;border-radius:9px;text-decoration:none;color:#3E5068;font-size:14px;font-weight:700}.site-nav__link.is-active,.site-nav__link:hover{background:var(--soft)}.header-actions,.language-switch{display:flex;align-items:center;gap:8px}.language-switch{padding:3px;border:1px solid var(--border);border-radius:10px}.language-switch button{min-width:38px;min-height:36px;border:0;border-radius:7px;background:#fff}.language-switch button[aria-pressed=true]{background:var(--navy);color:#fff}.nav-toggle{display:none;min-width:44px;min-height:44px;border:1px solid var(--border);border-radius:10px;background:#fff}.button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:12px 20px;border:1px solid transparent;border-radius:11px;text-decoration:none;font-weight:800}.button--small{min-height:42px;padding:9px 15px;font-size:13px}.button--primary{background:var(--orange);color:#142944}.button--ghost{border-color:#ffffff66;color:#fff}.button--light{background:#fff;color:var(--navy)}.hero{background:linear-gradient(135deg,#081E3B,#0B2A52 60%,#103967);color:#fff}.hero__grid{display:grid;grid-template-columns:1.08fr .92fr;gap:64px;align-items:center;min-height:670px;padding-block:72px}.eyebrow{margin:0;color:var(--blue);font-size:12px;font-weight:850;letter-spacing:.14em;text-transform:uppercase}.eyebrow--light{color:#AFCDF8}.hero h1{margin:18px 0 0;font-size:clamp(42px,5vw,66px);line-height:1.04;letter-spacing:-.045em}.hero__lead{color:#D8E7F8;font-size:18px;line-height:1.65}.hero__actions,.hero__trust{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}.hero__trust{color:#BFD3EA;font-size:13px}.hero__trust span{display:flex;gap:6px}.decision-card{padding:22px;border:1px solid #ffffff2b;border-radius:20px;background:#ffffff12}.decision-card__head{display:flex;justify-content:space-between;margin-bottom:14px;font-size:12px}.signal-card,.recommendation-card{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:16px;border-radius:14px;background:#fff;color:var(--ink)}.signal-card small,.recommendation-card small{display:block;color:var(--muted);font-size:10px}.signal-card strong,.recommendation-card strong{display:block}.signal-card p{margin:4px 0;color:var(--muted);font-size:12px}.evidence-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}.evidence-grid div{padding:12px;border-radius:12px;background:#061A33}.evidence-grid small,.evidence-grid span{display:block;color:#AFC5DE;font-size:10px}.recommendation-card{grid-template-columns:1fr auto}.icon-tile{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:11px;background:#EEF4FA;color:var(--navy)}.icon-tile--blue{background:var(--soft);color:var(--blue)}.icon-tile--orange{background:#FFF1E5;color:var(--orange)}.audience-strip{background:#fff;border-bottom:1px solid var(--border)}.audience-strip__grid{display:grid;grid-template-columns:repeat(3,1fr);padding-block:22px}.audience-strip article{display:grid;grid-template-columns:44px 1fr;gap:12px;padding:8px 24px;border-right:1px solid var(--border)}.audience-strip h2{margin:0;font-size:15px}.audience-strip p{margin:4px 0;color:var(--muted);font-size:12px}.section{padding-block:88px}.section--soft{background:#EEF3F8}.section--navy{background:var(--navy);color:#fff}.section-heading{max-width:720px}.section-heading--center{text-align:center;margin:auto}.section-title{margin:10px 0 0;font-size:clamp(32px,4vw,44px);line-height:1.12;letter-spacing:-.035em}.section-copy{color:var(--muted);font-size:17px;line-height:1.7}.split-layout,.score-section,.dashboard-section,.story-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}.problem-stack,.weight-list{display:grid;gap:12px}.problem-card,.weight-list article{display:flex;gap:14px;align-items:center;padding:20px;border:1px solid var(--border);border-radius:14px;background:#fff}.problem-card span{color:var(--blue);font-weight:850}.problem-card h3{margin:0}.pipeline-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:44px;padding:0;list-style:none}.pipeline-step{position:relative;padding:22px;border:1px solid var(--border);border-radius:16px;background:#fff}.pipeline-step small{float:right;color:var(--muted)}.pipeline-step h3{margin-top:22px}.pipeline-step p{color:var(--muted);font-size:14px;line-height:1.6}.formula{max-width:100%;margin-top:24px;padding:18px;border:1px solid #C9D9EF;border-radius:12px;background:var(--soft);overflow:auto}.formula code{white-space:nowrap}.weight-list article{display:block}.weight-list__head{display:flex;justify-content:space-between}.weight-list__head strong{color:var(--blue)}.weight-list p{color:var(--muted);font-size:13px}.dashboard-section h2,.cta-card h2{font-size:clamp(34px,4vw,46px);line-height:1.1}.dashboard-section p{color:#C4D5E8;line-height:1.7}.dashboard-preview{padding:18px;border-radius:18px;background:#F7F9FC;color:var(--ink)}.preview-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.preview-metrics div{padding:12px;border:1px solid var(--border);border-radius:10px;background:#fff}.preview-metrics small{display:block}.map-mock{min-height:220px;margin-top:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:12px;background:#E5F0E8}.story-quote{margin:0;padding:32px;border:1px solid #F1D1B2;border-radius:18px;background:#FFF1E5;font:25px/1.5 Georgia,serif}.story-quote small{display:block;margin-top:18px;font:12px Inter,sans-serif}.faq-list{margin-top:34px;border-top:1px solid var(--border)}.faq-list details{border-bottom:1px solid var(--border)}.faq-list summary{display:flex;justify-content:space-between;padding:22px 4px;cursor:pointer;font-weight:800}.faq-list p{padding:0 4px 20px;color:var(--muted)}.center-action{text-align:center;margin-top:28px}.text-link{color:var(--blue);font-weight:800;text-decoration:none}.cta-section{padding-top:0}.cta-card{display:flex;align-items:center;justify-content:space-between;gap:30px;padding:48px;border-radius:20px;background:linear-gradient(135deg,#0B2A52,#13477C);color:#fff}.page-hero{background:linear-gradient(135deg,#EAF3FF,#F7F8FA);border-bottom:1px solid var(--border)}.page-hero__inner{max-width:860px;padding-block:80px}.page-hero h1{font-size:clamp(38px,5vw,56px);line-height:1.08;letter-spacing:-.04em}.page-hero p:last-child{color:var(--muted);font-size:18px;line-height:1.7}.reading-column{max-width:760px}.reading-column section,.reading-column h2{margin-top:36px}.reading-column p{color:var(--muted);font-size:16px;line-height:1.75}.site-footer{padding-top:56px;background:#081E3B;color:#D4E1EF}.site-footer__grid{display:grid;grid-template-columns:1.5fr .7fr .7fr;gap:60px;padding-bottom:44px}.footer-brand p{color:#AFC3D9}.footer-brand span{font-size:12px;color:#8199B3}.site-footer nav{display:flex;flex-direction:column;gap:10px}.site-footer nav h2{font-size:12px;text-transform:uppercase}.site-footer nav a{color:#AFC3D9;text-decoration:none;font-size:13px}.site-footer__bottom{display:flex;justify-content:space-between;padding-block:20px;border-top:1px solid #ffffff1a;color:#7F98B2;font-size:11px}.score-section>*,.split-layout>*,.dashboard-section>*,.story-grid>*{min-width:0}@media(max-width:980px){.site-nav{position:absolute;top:68px;left:20px;right:20px;display:none;flex-direction:column;padding:12px;background:#fff;border:1px solid var(--border);border-radius:14px}.site-nav.is-open{display:flex}.nav-toggle{display:inline-flex;align-items:center;justify-content:center;margin-left:auto}.language-switch{display:none}.hero__grid,.split-layout,.score-section,.dashboard-section,.story-grid{grid-template-columns:1fr}.pipeline-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:720px){.container{width:calc(100% - 32px)}.site-header__inner{width:calc(100% - 24px)}.brand small,.header-actions .button{display:none}.hero__grid{min-height:auto;padding-block:52px}.hero h1{font-size:42px}.hero__actions{flex-direction:column}.pipeline-grid,.audience-strip__grid,.site-footer__grid{grid-template-columns:1fr}.audience-strip article{border-right:0;border-bottom:1px solid var(--border);padding:16px 0}.section{padding-block:64px}.cta-card{flex-direction:column;align-items:flex-start;padding:32px 24px}.site-footer__bottom{flex-direction:column;gap:12px}.evidence-grid{grid-template-columns:1fr}.page-hero__inner{padding-block:58px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+﻿@import "tailwindcss";:root{--ink:#10233F;--muted:#52637A;--canvas:#F7F8FA;--blue:#155EEF;--navy:#0B2A52;--soft:#EAF3FF;--orange:#E87917;--border:#DDE3EA}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--canvas);color:var(--ink)}.container{width:min(1120px,calc(100% - 48px));margin:auto}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}:focus-visible{outline:3px solid #9A3412;outline-offset:2px;box-shadow:0 0 0 6px rgba(253,186,116,.9)}.site-header{position:sticky;top:0;z-index:50;background:#fffc;border-bottom:1px solid var(--border);backdrop-filter:blur(16px)}.site-header__inner{width:min(1200px,calc(100% - 40px));min-height:76px;margin:auto;display:flex;align-items:center;gap:22px}.brand{display:flex;align-items:center;gap:10px;text-decoration:none}.brand img{width:44px;height:40px;object-fit:contain}.brand span{display:flex;flex-direction:column}.brand strong{letter-spacing:.08em;text-transform:uppercase}.brand small{font-size:11px;color:var(--muted)}.site-nav{display:flex;margin-left:auto}.site-nav__link{padding:12px;border-radius:9px;text-decoration:none;color:#3E5068;font-size:14px;font-weight:700}.site-nav__link.is-active,.site-nav__link:hover{background:var(--soft)}.header-actions,.language-switch{display:flex;align-items:center;gap:8px}.language-switch{padding:3px;border:1px solid var(--border);border-radius:10px}.language-switch button{min-width:38px;min-height:36px;border:0;border-radius:7px;background:#fff}.language-switch button[aria-pressed=true]{background:var(--navy);color:#fff}.nav-toggle{display:none;min-width:44px;min-height:44px;border:1px solid var(--border);border-radius:10px;background:#fff}.button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:12px 20px;border:1px solid transparent;border-radius:11px;text-decoration:none;font-weight:800}.button--small{min-height:42px;padding:9px 15px;font-size:13px}.button--primary{background:var(--orange);color:#142944}.button--ghost{border-color:#ffffff66;color:#fff}.button--light{background:#fff;color:var(--navy)}.hero{background:linear-gradient(135deg,#081E3B,#0B2A52 60%,#103967);color:#fff}.hero__grid{display:grid;grid-template-columns:1.08fr .92fr;gap:64px;align-items:center;min-height:670px;padding-block:72px}.eyebrow{margin:0;color:var(--blue);font-size:12px;font-weight:850;letter-spacing:.14em;text-transform:uppercase}.eyebrow--light{color:#AFCDF8}.hero h1{margin:18px 0 0;font-size:clamp(42px,5vw,66px);line-height:1.04;letter-spacing:-.045em}.hero__lead{color:#D8E7F8;font-size:18px;line-height:1.65}.hero__actions,.hero__trust{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}.hero__trust{color:#BFD3EA;font-size:13px}.hero__trust span{display:flex;gap:6px}.decision-card{padding:22px;border:1px solid #ffffff2b;border-radius:20px;background:#ffffff12}.decision-card__head{display:flex;justify-content:space-between;margin-bottom:14px;font-size:12px}.signal-card,.recommendation-card{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:16px;border-radius:14px;background:#fff;color:var(--ink)}.signal-card small,.recommendation-card small{display:block;color:var(--muted);font-size:10px}.signal-card strong,.recommendation-card strong{display:block}.signal-card p{margin:4px 0;color:var(--muted);font-size:12px}.evidence-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}.evidence-grid div{padding:12px;border-radius:12px;background:#061A33}.evidence-grid small,.evidence-grid span{display:block;color:#AFC5DE;font-size:10px}.recommendation-card{grid-template-columns:1fr auto}.icon-tile{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:11px;background:#EEF4FA;color:var(--navy)}.icon-tile--blue{background:var(--soft);color:var(--blue)}.icon-tile--orange{background:#FFF1E5;color:var(--orange)}.audience-strip{background:#fff;border-bottom:1px solid var(--border)}.audience-strip__grid{display:grid;grid-template-columns:repeat(3,1fr);padding-block:22px}.audience-strip article{display:grid;grid-template-columns:44px 1fr;gap:12px;padding:8px 24px;border-right:1px solid var(--border)}.audience-strip h2{margin:0;font-size:15px}.audience-strip p{margin:4px 0;color:var(--muted);font-size:12px}.section{padding-block:64px}.section--soft{background:#EEF3F8}.section--navy{background:var(--navy);color:#fff}.section-heading{max-width:720px}.section-heading--center{text-align:center;margin:auto}.section-title{margin:10px 0 0;font-size:clamp(32px,4vw,44px);line-height:1.12;letter-spacing:-.035em}.section-copy{color:var(--muted);font-size:17px;line-height:1.7}.split-layout,.score-section,.dashboard-section,.story-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}.problem-stack,.weight-list{display:grid;gap:12px}.problem-card,.weight-list article{display:flex;gap:14px;align-items:center;padding:20px;border:1px solid var(--border);border-radius:14px;background:#fff}.problem-card span{color:var(--blue);font-weight:850}.problem-card h3{margin:0}.pipeline-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:44px;padding:0;list-style:none}.pipeline-step{position:relative;padding:22px;border:1px solid var(--border);border-radius:16px;background:#fff}.pipeline-step h3{margin-top:0}.pipeline-step p{color:var(--muted);font-size:14px;line-height:1.6}.formula{max-width:100%;margin-top:24px;padding:18px;border:1px solid #C9D9EF;border-radius:12px;background:var(--soft);overflow:auto}.formula code{white-space:nowrap}.weight-list article{display:block}.weight-list__head{display:flex;justify-content:space-between}.weight-list__head strong{color:var(--blue)}.weight-list p{color:var(--muted);font-size:13px}.dashboard-section h2,.cta-card h2{font-size:clamp(34px,4vw,46px);line-height:1.1}.dashboard-section p{color:#C4D5E8;line-height:1.7}.dashboard-preview{padding:18px;border-radius:18px;background:#F7F9FC;color:var(--ink)}.preview-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.preview-metrics div{padding:12px;border:1px solid var(--border);border-radius:10px;background:#fff}.preview-metrics small{display:block}.map-mock{min-height:220px;margin-top:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:12px;background:#E5F0E8}.story-quote{margin:0;padding:32px;border:1px solid #F1D1B2;border-radius:18px;background:#FFF1E5;font:25px/1.5 Georgia,serif}.story-quote small{display:block;margin-top:18px;font:12px Inter,sans-serif}.faq-list{margin-top:34px;border-top:1px solid var(--border)}.faq-list details{border-bottom:1px solid var(--border)}.faq-list summary{display:flex;justify-content:space-between;padding:22px 4px;cursor:pointer;font-weight:800}.faq-list p{padding:0 4px 20px;color:var(--muted)}.center-action{text-align:center;margin-top:28px}.text-link{color:var(--blue);font-weight:800;text-decoration:none}.cta-section{padding-top:0}.cta-card{display:flex;align-items:center;justify-content:space-between;gap:30px;padding:48px;border-radius:20px;background:linear-gradient(135deg,#0B2A52,#13477C);color:#fff}.page-hero{background:linear-gradient(135deg,#EAF3FF,#F7F8FA);border-bottom:1px solid var(--border)}.page-hero__inner{max-width:860px;padding-block:72px 32px}.page-hero h1{font-size:clamp(38px,5vw,56px);line-height:1.08;letter-spacing:-.04em}.page-hero p:last-child{color:var(--muted);font-size:18px;line-height:1.7}.reading-column{max-width:760px}.reading-column section,.reading-column h2{margin-top:36px}.reading-column p{color:var(--muted);font-size:16px;line-height:1.75}.site-footer{padding-top:56px;background:#081E3B;color:#D4E1EF}.site-footer__grid{display:grid;grid-template-columns:1.5fr .7fr .7fr;gap:60px;padding-bottom:44px}.footer-brand p{color:#AFC3D9}.footer-brand span{font-size:12px;color:#8199B3}.site-footer nav{display:flex;flex-direction:column;gap:10px}.site-footer nav h2{font-size:12px;text-transform:uppercase}.site-footer nav a{color:#AFC3D9;text-decoration:none;font-size:13px}.site-footer__bottom{display:flex;justify-content:space-between;padding-block:20px;border-top:1px solid #ffffff1a;color:#7F98B2;font-size:11px}.score-section>*,.split-layout>*,.dashboard-section>*,.story-grid>*{min-width:0}@media(max-width:980px){.site-nav{position:absolute;top:68px;left:20px;right:20px;display:none;flex-direction:column;padding:12px;background:#fff;border:1px solid var(--border);border-radius:14px}.site-nav.is-open{display:flex}.nav-toggle{display:inline-flex;align-items:center;justify-content:center;margin-left:auto}.language-switch{display:none}.hero__grid,.split-layout,.score-section,.dashboard-section,.story-grid{grid-template-columns:1fr}.pipeline-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:720px){.container{width:calc(100% - 32px)}.site-header__inner{width:calc(100% - 24px)}.brand small,.header-actions .button{display:none}.hero__grid{min-height:auto;padding-block:52px}.hero h1{font-size:42px}.hero__actions{flex-direction:column}.pipeline-grid,.audience-strip__grid,.site-footer__grid{grid-template-columns:1fr}.audience-strip article{border-right:0;border-bottom:1px solid var(--border);padding:16px 0}.section{padding-block:64px}.cta-card{flex-direction:column;align-items:flex-start;padding:32px 24px}.site-footer__bottom{flex-direction:column;gap:12px}.evidence-grid{grid-template-columns:1fr}.page-hero__inner{padding-block:58px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
 .methodology-summary{display:grid;gap:32px}.methodology-points{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.methodology-points article{padding:24px;border:1px solid var(--border);border-radius:16px;background:#fff}.methodology-points h3{margin:18px 0 0}.methodology-points p{margin:8px 0 0;color:var(--muted);font-size:14px;line-height:1.6}@media(max-width:720px){.methodology-points{grid-template-columns:1fr}}
+
+.breadcrumb{font-size:12px;padding:8px 0;color:var(--muted)}.breadcrumb__list{display:flex;flex-wrap:wrap;gap:12px}.breadcrumb__item{display:flex;align-items:center}.breadcrumb__link{color:var(--blue);text-decoration:none}.breadcrumb__current{color:var(--muted)}.breadcrumb__separator{margin:0 4px;color:var(--muted)}
+
+/* Six-step workflow grid (HowItWorks). The base .pipeline-grid is a 4-column
+   strip used on the homepage; the six steps need a fluid 2/3-column grid.
+   min() keeps the track from overflowing viewports narrower than 300px,
+   which an inline minmax(300px,1fr) override would have caused. */
+.pipeline-grid--steps{  /* min() keeps the track from exceeding the container on narrow viewports. */  grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));  /* The heading and the grid now share one section, so the gap that used to     come from two stacked .section paddings has to be set explicitly. */  margin-top:36px;  align-items:stretch;}.pipeline-grid--steps .pipeline-step{display:flex;flex-direction:column;gap:0}.pipeline-grid--steps .pipeline-step__num{align-self:flex-start}.pipeline-grid--steps .pipeline-step h3{margin:0 0 8px}.pipeline-grid--steps .pipeline-step p{margin:0 0 12px;font-size:14px;line-height:1.65}.pipeline-grid--steps .pipeline-step p:last-child{margin-bottom:0}.pipeline-grid--steps .pipeline-step__lede{  margin:0 0 14px!important;  padding-bottom:14px;  border-bottom:1px solid var(--border);  color:var(--ink)!important;  font-weight:700;  font-size:15px!important;  line-height:1.55!important;}
+
+.pipeline-step h3{margin-top:0}
+
+
+/* ----------------------------------------------------------------------
+   FAQ accordion affordance
+   .faq-list summary used justify-content:space-between with a single child,
+   so it rendered identically whether the item was open or closed. There was
+   no visual cue that a question was clickable at all. A rotating rule plus a
+   hover/focus tint gives the affordance without adding markup to every item.
+   ---------------------------------------------------------------------- */
+.faq-list summary{cursor:pointer;list-style:none;align-items:flex-start;gap:16px;transition:color .15s ease}
+.faq-list summary::-webkit-details-marker{display:none}
+/* Firefox draws its own disclosure triangle unless the marker is cleared.
+   Hiding only the WebKit one left two symbols there. */
+.faq-list summary::marker{content:""}
+.faq-list summary:hover{color:#0a4080}
+.faq-list summary:focus-visible{outline:2px solid #F28C0F;outline-offset:3px;border-radius:4px}
+.faq-list summary::after{content:"+";flex:0 0 auto;width:26px;height:26px;margin-top:-4px;
+  display:inline-flex;align-items:center;justify-content:center;
+  border:1px solid var(--border);border-radius:999px;
+  font-size:17px;line-height:1;font-weight:700;color:var(--muted);
+  transition:transform .18s ease,background-color .18s ease,color .18s ease}
+.faq-list summary:hover::after{background:#F28C0F;border-color:#F28C0F;color:#fff}
+.faq-list details[open] > summary::after{content:"\2212";background:#032B5B;border-color:#032B5B;color:#fff}
+.faq-list details[open] > summary{color:#032B5B}
+.faq-list details > p{animation:faq-fade .18s ease}
+@keyframes faq-fade{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
+/* ----------------------------------------------------------------------
+   Focus indicator
+   The rule used to be a 3px #F6A54F outline at a 3px offset. Measured, that is
+   2.02:1 against white and 1.90:1 against the page canvas. WCAG 2.2 SC 2.4.11
+   asks 3:1 for a focus indicator against the adjacent background, so the ring
+   failed on every light surface on the site — while the accessibility page
+   claimed keyboard position was "never invisible".
+
+   One colour cannot serve both light and dark surfaces, so the ring is two-tone:
+   a dark outline that clears 3:1 on white, the canvas and the soft blue, plus a
+   light halo outside it that clears 3:1 on the navy hero and header. On a light
+   surface the outline carries it; on a dark surface the halo does.
+
+     #9A3412  7.31:1 on white, 6.88:1 on canvas, 6.53:1 on --soft
+     #FDBA74  8.49:1 on navy, 9.89:1 on the hero gradient
+   ---------------------------------------------------------------------- */
+:focus-visible{outline:3px solid #9A3412;outline-offset:2px;box-shadow:0 0 0 6px rgba(253,186,116,.9)}
+
+@media (prefers-reduced-motion: reduce){.faq-list details > p{animation:none}}
+
+/* ----------------------------------------------------------------------
+   Workflow step number
+   The number used to be a float:right span with margin-top:22px on the h3 to
+   clear it. A floated badge in a tall card reads as stray text and is easy to
+   miss, and the float interfered with paragraph wrapping. It is now a normal
+   block badge at the top-left, before the title.
+   ---------------------------------------------------------------------- */
+.pipeline-step__num{display:inline-flex;align-items:center;justify-content:center;
+  min-width:34px;height:26px;padding:0 8px;margin:0 0 10px;border-radius:8px;
+  background:#032B5B;color:#fff;font-size:12px;font-weight:800;letter-spacing:.08em;
+  font-variant-numeric:tabular-nums}
+.pipeline-grid--steps .pipeline-step h3{margin-top:0}
+.pipeline-grid--steps .pipeline-step p{margin:0 0 10px;line-height:1.65}
+
+
+/* ----------------------------------------------------------------------
+   OpenStreetMap attribution
+   Leaflet hides its own attribution control unless it has room, so make sure
+   the required credit stays visible at small map heights.
+   ---------------------------------------------------------------------- */
+.leaflet-control-attribution{margin:0!important;font-size:10px!important;background:rgba(255,255,255,.9)!important}
+.leaflet-bottom.leaflet-right{margin:0!important}
+
+/* ----------------------------------------------------------------------
+   Scored input cards (Methodology)
+   Each component is a fixed four-part answer: what it is, how it is read,
+   what it cannot tell you, and which sources back it. The weight is drawn as
+   a share of the 100-point total so 40% and 20% are visually distinct.
+   ---------------------------------------------------------------------- */
+.input-stack{display:grid;gap:20px;margin:30px 0 0}
+.input-card{padding:26px;border:1px solid var(--border);border-radius:16px;background:#fff}
+.input-card__head{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;
+  justify-content:space-between;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.input-card__name{margin:0;font-size:22px;letter-spacing:-.02em}
+.input-card__headline{margin:6px 0 0;color:var(--muted);font-size:15px;max-width:52ch}
+.input-card__weight{display:flex;flex-direction:column;align-items:flex-end;gap:6px;min-width:132px}
+.input-card__weight-value{font-size:26px;font-weight:850;color:var(--navy);font-variant-numeric:tabular-nums;line-height:1}
+.input-card__weight-track{display:block;width:132px;height:8px;border-radius:999px;background:#E3E9F1;overflow:hidden}
+.input-card__weight-fill{display:block;height:100%;border-radius:999px;background:var(--orange)}
+.input-card__body{padding-top:18px}
+.input-card__detail + .input-card__detail{margin-top:16px}
+.input-card__detail-label{display:block;margin-bottom:5px;color:var(--blue);
+  font-size:11px;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
+.input-card__body p{margin:0 0 10px;font-size:15px;line-height:1.7;color:var(--muted)}
+.input-card__note{margin:18px 0 0;padding:14px 16px;border-left:3px solid var(--orange);
+  border-radius:0 10px 10px 0;background:#FFF7EF;font-size:14px!important;line-height:1.65!important;color:var(--ink)!important}
+.input-card__sources{margin-top:20px;padding-top:16px;border-top:1px dashed var(--border)}
+.input-card__sources h4{margin:0 0 8px;font-size:12px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted)}
+.input-card__sources ul{margin:0;padding-left:18px}
+.input-card__sources li{margin-bottom:6px;font-size:14px;line-height:1.6;color:var(--muted)}
+.input-card__sources a{color:var(--blue);text-decoration:underline}
+.input-card__caveat{margin:20px 0 0;padding:16px 18px;border-radius:12px;
+  background:#FFF1F5;border:1px solid #F6D3DD;font-size:14px;line-height:1.7;color:var(--ink)}
+.input-card__caveat-label{display:block;margin-bottom:5px;color:#9B1B3F;
+  font-size:11px;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
+@media(max-width:560px){.input-card{padding:20px}
+  .input-card__weight{align-items:flex-start}
+  .input-card__weight-track{width:100%}}
+
+/* ----------------------------------------------------------------------
+   Human checkpoints (HowItWorks)
+   This lists all six steps, not only the ones with a checkpoint. Showing 2,
+   3, 5 and 6 alone made steps 1 and 4 look accidentally omitted, and the
+   sequence appeared to begin at step 2. Each row now states its position,
+   whether a judgement is involved, and what that judgement is.
+   ---------------------------------------------------------------------- */
+.handoff-list{display:grid;gap:12px;margin:28px 0 0;padding:0;list-style:none}
+.handoff{display:grid;grid-template-columns:52px 1fr;gap:16px;align-items:start;
+  padding:18px 20px;border:1px solid var(--border);border-left:3px solid #F28C0F;
+  border-radius:0 14px 14px 0;background:#fff}
+.handoff__step{display:inline-flex;align-items:center;justify-content:center;
+  width:40px;height:28px;border-radius:8px;background:#032B5B;color:#fff;
+  font-size:12px;font-weight:800;letter-spacing:.06em;font-variant-numeric:tabular-nums}
+.handoff__body h3{display:flex;flex-wrap:wrap;align-items:center;gap:10px;
+  margin:2px 0 6px;font-size:17px;line-height:1.35}
+.handoff__badge{padding:3px 9px;border-radius:999px;background:#FFF1E5;color:#9A5B0B;
+  font-size:10px;font-weight:850;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.handoff__body p{margin:0;font-size:15px;line-height:1.7;color:var(--muted)}
+/* Steps 1 and 4 involve no judgement. They used to be greyed out — muted badge,
+   grey left rule, near-white card — which made them read as disabled rows that
+   had failed to render rather than as steps in the sequence. All six rows now
+   carry identical weight; only the badge colour distinguishes the two kinds,
+   and it distinguishes them by being a second colour rather than by being
+   absent. */
+.handoff__badge--auto{background:var(--soft);color:var(--navy)}
+@media(max-width:560px){.handoff{grid-template-columns:1fr;gap:10px;padding:16px}
+  .handoff__step{justify-self:start}}
+
+/* ----------------------------------------------------------------------
+   Guardrails and limits (Methodology)
+   The six controls were six <h2> paragraphs. Each <h2> looked like a
+   top-level section equal in rank to the heading above it, which broke the
+   H2/H3 hierarchy the accessibility page promises. They are now h3 inside a
+   card that answers "what would go wrong without this" and "what happens when
+   it fires" - the two questions a reader actually has about a control.
+   ---------------------------------------------------------------------- */
+.guard-list{display:grid;gap:14px;margin:28px 0 0}
+.guard{padding:20px 22px;border:1px solid var(--border);border-radius:14px;background:#fff}
+.guard__name{margin:0 0 12px;font-size:18px;letter-spacing:-.015em}
+.guard p{margin:0;font-size:15px;line-height:1.7}
+.guard__prevents{position:relative;padding:12px 14px 12px 16px;margin:0 0 12px!important;
+  border-radius:0 10px 10px 0;background:#FFF1F5;border-left:3px solid #C2185B;color:#5C1230}
+.guard__prevents span{display:block;margin-bottom:3px;font-size:10px;font-weight:850;
+  letter-spacing:.12em;text-transform:uppercase;color:#9B1B3F}
+.guard__effect{color:var(--muted)}
+
+.limit-list{margin:26px 0 0;padding:0;list-style:none;display:grid;gap:12px}
+.limit-list li{padding:18px 20px;border:1px solid var(--border);border-radius:12px;
+  background:#fff;font-size:15px;line-height:1.7;color:var(--muted)}
+.limit-list strong{display:block;margin-bottom:5px;color:var(--navy);font-size:16px}
+
+/* ----------------------------------------------------------------------
+   Call-to-action card
+   .hero__actions carries margin-top:28px for its hero context. Inside
+   .cta-card, which is align-items:center, that margin pushed the buttons
+   down out of line with the heading beside them on About, Accessibility,
+   FAQ, HowItWorks, Methodology and Privacy.
+
+   The two buttons are stacked rather than set side by side. .hero__actions is a
+   wrapping row for the hero, where a reader scans left to right; in the closing
+   card the two actions are alternatives rather than a sequence, and a full-width
+   hero row left the shorter label ("Read the FAQs") as a stub beside the longer
+   one. A column keeps both buttons the width of the longer label, so the block
+   reads as one control with two choices. .cta-card stays a row on desktop, so
+   the buttons sit on the right of the heading; below 900px the card becomes a
+   column and the buttons sit under it.
+   ---------------------------------------------------------------------- */
+.cta-card .hero__actions{margin-top:0;flex:0 0 auto;flex-direction:column;
+  align-items:stretch;justify-content:flex-start}
+.cta-card > div:first-child{flex:1 1 auto;min-width:0}
+/* A .button placed directly in the card is a flex item with flex-shrink:1 and no
+   width of its own. Left to shrink it wrapped its label to one word per line —
+   "Report a / constituency / issue" — which is what happened on Home before the
+   button was wrapped in .hero__actions like every other page. nowrap plus
+   flex:0 0 auto means a bare button keeps its label on one line; below 900px the
+   card becomes a column and the button has the full card width anyway. */
+.cta-card > .button{flex:0 0 auto;white-space:nowrap}
+.button{white-space:nowrap}
+@media(max-width:900px){
+  .cta-card{flex-direction:column;align-items:flex-start}
+  .cta-card .hero__actions{justify-content:flex-start;width:100%}
+}
+
+/* ----------------------------------------------------------------------
+   Workflow card title row
+   The six cards hold different title lengths, so a one-line and a two-line
+   title put their ledes at different heights and the row looked ragged.
+   Reserving title height aligns every lede and every body paragraph across a
+   row.
+
+   The value was 2.7em, written when the step titles were long enough to wrap.
+   They are now one word each — Ingest, Understand, Enrich, Score, Review, Act
+   — so 2.7em reserved roughly 27px of empty space under every title on the
+   page. min-height still grows the box if a title does wrap on a narrow
+   viewport, so the protection is intact; it just no longer reserves space for
+   wrapping that never happens.
+   ---------------------------------------------------------------------- */
+.pipeline-grid--steps .pipeline-step h3{min-height:1.35em}
+
+/* ----------------------------------------------------------------------
+   About page structures
+   The problem section asserted a mismatch between two inventories of five
+   items each. As prose the reader had to hold both lists to see the point,
+   which was the only point. Now they sit side by side.
+   ---------------------------------------------------------------------- */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:28px 0 0}
+.compare__col{padding:22px;border:1px solid var(--border);border-radius:14px;background:#fff}
+.compare__col--alt{background:#F7FAFD}
+.compare__title{margin:0 0 14px;font-size:16px}
+.compare__col ul{margin:0;padding-left:18px}
+.compare__col li{margin-bottom:9px;font-size:14px;line-height:1.6;color:var(--muted)}
+.compare__col li:last-child{margin-bottom:0}
+
+.tier-list{display:grid;gap:14px;margin:28px 0 0}
+/* ----------------------------------------------------------------------
+   The closing section
+   On every public page the CTA card is immediately followed by the Related
+   block. Between them sat .section's 64px bottom padding plus the block's own
+   40px top margin: 104px of empty canvas, the largest gap on any page, and
+   widest on HowItWorks where the card is a full-width band.
+
+   This gives the section a short bottom instead, so the space between the two
+   blocks is a deliberate 24px + 24px = 48px rather than a void.
+   ---------------------------------------------------------------------- */
+.section--closing{padding-bottom:24px}
+
+.tier{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;
+  padding:20px 22px;border:1px solid var(--border);border-radius:14px;background:#fff}
+.tier__badge{display:inline-flex;align-items:center;justify-content:center;
+  height:28px;padding:0 12px;border-radius:999px;background:#032B5B;color:#fff;
+  font-size:10px;font-weight:850;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+.tier__who{margin:2px 0 8px;font-size:18px}
+.tier__why{margin:0 0 10px;font-size:15px;line-height:1.7;color:var(--muted)}
+.tier__get{margin:0;font-size:14px;line-height:1.65;color:var(--muted)}
+.tier__get strong{color:var(--ink)}
+
+.limit-list--numbered{counter-reset:step;list-style:none;padding:0}
+.limit-list--numbered li{counter-increment:step;position:relative;padding-left:44px}
+.limit-list--numbered li::before{content:counter(step,decimal-leading-zero);top:16.75px;position:absolute;left:0;
+  display:inline-flex;align-items:center;justify-content:center;
+  width:28px;height:28px;border-radius:8px;background:#F28C0F;color:#142944;
+  font-size:12px;font-weight:850;font-variant-numeric:tabular-nums}
+.limit-list--numbered strong{margin-bottom:0;display:inline}
+
+@media(max-width:760px){.compare{grid-template-columns:1fr}}
+@media(max-width:560px){.tier{grid-template-columns:1fr;gap:10px}
+  .tier__badge{justify-self:start}}
+
+/* ----------------------------------------------------------------------
+   Internal link hub
+   Generated from src/data/topics.js rather than hand-placed per page, so the
+   link graph is one editable object and no page can be orphaned silently.
+
+   The list is an inline flow, not a one-link-per-row grid. As a grid each link
+   was stretched to the full measure of its column, so three short labels
+   rendered as three full-width bars stacked on top of one another, which reads
+   as a layout mistake rather than as navigation. The block also carries a
+   bottom margin: it is the last element in <main> on every page that uses it,
+   and with margin-bottom:0 it sat flush against the footer.
+   ---------------------------------------------------------------------- */
+.related{margin:24px 0 56px;padding:24px 26px;border:1px solid var(--border);
+  border-radius:16px;background:#F7FAFD}
+.related__heading{margin:0 0 6px;font-size:13px;font-weight:850;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--blue)}
+.related__cluster+.related__cluster{margin-top:12px}
+.related__cluster-title{margin:0 0 4px;font-size:16px;line-height:1.3}
+.related__blurb{margin:0 0 14px;font-size:15px;line-height:1.65;color:var(--muted)}
+.related__list{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.related__item{display:inline-flex}
+.related__link{display:inline-block;padding:9px 14px;border:1px solid var(--border);
+  border-radius:10px;background:#fff;font-size:14px;font-weight:700;color:var(--blue);
+  text-decoration:none;transition:border-color .15s ease,background-color .15s ease}
+.related__link:hover{border-color:var(--blue);background:var(--soft)}
+.related__link--hub{background:var(--navy);border-color:var(--navy);color:#fff}
+.related__link--hub:hover{background:#0a4080;border-color:#0a4080}

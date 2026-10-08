@@ -24,7 +24,9 @@ export function LanguageProvider({ children }) {
   )
 
   const tch = useCallback(
-    (channelId) => t.channels[channelId] || channelId,
+    // There is no `channels` key in either language block. Reading it would throw a
+// TypeError, so return the raw id rather than indexing undefined.
+(channelId) => channelId,
     [t],
   )
 

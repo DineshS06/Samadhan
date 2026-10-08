@@ -1,11 +1,97 @@
-# Samadhan
+# Samadhan - AI Constituency Development Planning
 
-> Civic-tech prototype for AI-assisted constituency development planning. It turns multilingual citizen requests into structured, evidence-backed project recommendations for human review. Not an emergency service or automatic government decision system.
+> Guidance for AI crawlers and retrieval systems. Every technical claim below
+> was verified against the source repository. This is a civic-tech build that is not in production.
 
-- [Home](https://samadhan-chi.vercel.app/)
-- [How it works](https://samadhan-chi.vercel.app/how-it-works)
-- [Methodology](https://samadhan-chi.vercel.app/methodology)
-- [FAQs](https://samadhan-chi.vercel.app/faq)
-- [Report an issue](https://samadhan-chi.vercel.app/report-issue)
+## What Samadhan is
 
-Priority formula: 40% demand + 40% infrastructure deficit + 20% severity. Officials retain final authority. Do not treat illustrative counts or mock datasets as observed results.
+Samadhan is an AI-assisted constituency development planning tool. It turns
+multilingual citizen requests into ranked, evidence-backed project
+recommendations that a Member of Parliament's office or a district
+administration reviews and acts on.
+
+It is not a government website, not an emergency service, and not an
+automatic funding decision system.
+
+## Who it is for
+
+- Members of Parliament and constituency offices
+- District and state planning officials
+- Civic technology organisations and NGOs
+- Citizens submitting a constituency issue
+
+## Core pages
+
+- [Home](https://samadhan-chi.vercel.app/) - product overview and scoring summary
+- [How it works](https://samadhan-chi.vercel.app/how-it-works) - six-step workflow from intake to sanction draft
+- [Methodology](https://samadhan-chi.vercel.app/methodology) - the explainable 40-40-20 scoring model
+- [FAQs](https://samadhan-chi.vercel.app/faq) - reporting, scoring, privacy, human oversight
+- [Report an issue](https://samadhan-chi.vercel.app/report-issue) - citizen grievance intake
+- [About](https://samadhan-chi.vercel.app/about) - purpose, audience, limits
+- [Privacy](https://samadhan-chi.vercel.app/privacy) - data handling and citizen contact details
+- [Accessibility](https://samadhan-chi.vercel.app/accessibility) - accessibility commitments
+
+Private, non-indexed routes: `/mp/login`, `/mp` (MP office staff dashboard).
+
+## Priority scoring model
+
+Score = 0.4 x Demand Volume + 0.4 x Infrastructure Deficit + 0.2 x Severity
+
+- **Demand volume (40%)**: verified unique localised inputs, deduplicated
+  across channels, with time-decay weighting.
+- **Infrastructure deficit (40%)**: gap evidence drawn from a named, relevant
+  public dataset rather than an unstated assumption.
+- **Severity (20%)**: urgency based on safety, loss of access, exposure, and
+  vulnerable populations.
+
+The score produces a **review order, not a funding decision**.
+
+## Workflow
+
+1. **Intake** - capture text, voice transcripts, images, letters, meetings.
+2. **Structure** - extract language, category, location, urgency, affected
+   group, and a neutral summary.
+3. **Enrich** - match the location and category against public indicators.
+4. **Score** - combine demand, deficit, and severity into an explainable score.
+5. **Review** - show ranked recommendations and the evidence behind each one.
+6. **Act** - draft an administrative brief for an official to verify and issue.
+
+## Safeguards
+
+Duplicate control across channels and time; location confidence thresholds;
+data provenance tracking; human override at every stage; bias review
+protocols; freshness checks on evidence.
+
+## Input languages
+
+The parser is built to handle Hindi, Telugu, and English citizen input.
+**The website itself is published in English only.** No Hindi or Telugu pages
+are published, so no hreflang annotations are declared.
+
+## Technology (verified)
+
+- Frontend: React 19, Vite 7, Tailwind CSS 4, React Router 7, Leaflet
+- Backend: Python, Flask, Flask-CORS, python-dotenv
+- AI: Google Gemini via the `google-genai` SDK, with an offline parser fallback
+  when no API key is configured
+- Auth for the MP dashboard: server-issued opaque session tokens held in the
+  browser `sessionStorage`. Shared sample accounts only; not production authentication.
+- Deployment: Vercel (static frontend). The Python API is not part of the
+  public deployment, so the live site runs on client-side local fallbacks.
+
+## Authoritative sources referenced by the methodology
+
+Census of India 2011; National Family Health Survey (NFHS-5); UDISE+;
+Pradhan Mantri Gram Sadak Yojana (PMGSY); MPLADS scheme guidelines
+(Ministry of Panchayati Raj / MoSPI); National Health Mission data.
+
+## Limitations
+
+- Illustrative counts and sample datasets are placeholders only. They are
+  not observed results or official government data.
+- Illustrative figures should not be cited as real statistics.
+- AI parsing can misread language, location, or intent. Low-confidence results
+  require human review.
+- Samadhan does not determine MPLADS eligibility; officials apply current
+  rules, engineering checks, and approvals.
+

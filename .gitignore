@@ -23,3 +23,21 @@ Thumbs.db
 backend/.env
 frontend/node_modules/
 frontend/dist/
+
+# Scratch output from the render/UI test harnesses. These clean up after
+# themselves, but an interrupted run must not leave a tree of compiled src.
+frontend/.rendertmp/
+frontend/.uitmp/
+
+# Working documents and generated audit output. Kept on disk, deliberately not
+# versioned: the audit regenerates frontend/audit/ on every run, and these
+# planning notes are scratch rather than source.
+/frontend/audit/
+KEYWORD_MAP.md
+KEYWORD_RESEARCH_METHODOLOGY.md
+KEYWORD_STRATEGY.md
+LINK_BUILDING_PLAN.md
+SEO_300_ANSWERS.md
+SEO_CHECKLIST_REPORT.md
+160+ SEO Checklist*.csv
+/image.png

@@ -36,7 +36,10 @@ export default function ConstituencyMap({ points = [], mapConfig, mpOffice, focu
     if (!containerRef.current || mapRef.current) return
     const map = L.map(containerRef.current, { scrollWheelZoom: true }).setView([centerLat, centerLng], zoom)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap',
+      // Leaflet injects this string as HTML, but '&copy;' in a JS string literal is
+// not an HTML entity to the browser: the map credit rendered literally as
+// "&copy; OpenStreetMap". Use the character itself.
+      attribution: '\u00A9 OpenStreetMap contributors',
       maxZoom: 18,
     }).addTo(map)
     mapRef.current = map

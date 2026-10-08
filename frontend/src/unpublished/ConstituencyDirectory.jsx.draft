@@ -1,0 +1,218 @@
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import Breadcrumb from '../components/Breadcrumb';
+import { Link } from 'react-router-dom';
+import { trackCTAClick } from '../components/GA4';
+
+const CONSTITUENCIES = [
+  { 
+    name: 'Visakhapatnam', 
+    state: 'Andhra Pradesh', 
+    slug: 'visakhapatnam', 
+    district: 'Visakhapatnam',
+    mp: 'M. V. V. Satyanarayana',
+    population: '20,35,922',
+    area: '11,161 km²',
+    keyIssues: ['Rural road connectivity', 'Drinking water access', 'Healthcare infrastructure', 'Cyclone resilience'],
+    deployment: 'Active'
+  },
+  { 
+    name: 'Hyderabad', 
+    state: 'Telangana', 
+    slug: 'hyderabad', 
+    district: 'Hyderabad',
+    mp: 'Asaduddin Owaisi',
+    population: '39,43,323',
+    area: '217 km²',
+    keyIssues: ['Urban water supply', 'Traffic congestion', 'Slum redevelopment', 'Air quality'],
+    deployment: 'Active'
+  },
+  { 
+    name: 'Delhi (New Delhi)', 
+    state: 'Delhi', 
+    slug: 'delhi', 
+    district: 'New Delhi',
+    mp: 'Meenakshi Lekhi',
+    population: '1,42,004',
+    area: '42.7 km²',
+    keyIssues: ['Heritage conservation', 'Public transport', 'Air pollution', 'Civic amenities'],
+    deployment: 'Active'
+  },
+  { 
+    name: 'Lucknow', 
+    state: 'Uttar Pradesh', 
+    slug: 'lucknow', 
+    district: 'Lucknow',
+    mp: 'Rajnath Singh',
+    population: '28,17,105',
+    area: '2,528 km²',
+    keyIssues: ['Urban infrastructure', 'Waste management', 'Metro connectivity', 'Heritage preservation'],
+    deployment: 'Active'
+  },
+  { 
+    name: 'Mumbai North', 
+    state: 'Maharashtra', 
+    slug: 'mumbai-north', 
+    district: 'Mumbai Suburban',
+    mp: 'Piyush Goyal',
+    population: '21,00,000',
+    area: '150 km²',
+    keyIssues: ['Flood resilience', 'Slum rehabilitation', 'Suburban rail', 'Coastal protection'],
+    deployment: 'Active'
+  },
+  { 
+    name: 'Bangalore South', 
+    state: 'Karnataka', 
+    slug: 'bangalore-south', 
+    district: 'Bangalore Urban',
+    mp: 'Tejasvi Surya',
+    population: '25,00,000',
+    area: '200 km²',
+    keyIssues: ['Water scarcity', 'Traffic management', 'Lake restoration', 'Tech corridor infrastructure'],
+    deployment: 'Active'
+  },
+  { 
+    name: 'Chennai Central', 
+    state: 'Tamil Nadu', 
+    slug: 'chennai-central', 
+    district: 'Chennai',
+    mp: 'Dayanidhi Maran',
+    population: '18,00,000',
+    area: '180 km²',
+    keyIssues: ['Water management', 'Metro expansion', 'Coastal erosion', 'Industrial pollution'],
+    deployment: 'Active'
+  },
+  { 
+    name: 'Kolkata Uttar', 
+    state: 'West Bengal', 
+    slug: 'kolkata-uttar', 
+    district: 'Kolkata',
+    mp: 'Sudip Bandyopadhyay',
+    population: '22,00,000',
+    area: '185 km²',
+    keyIssues: ['Drainage & flooding', 'Heritage conservation', 'Public health', 'Urban renewal'],
+    deployment: 'Active'
+  },
+];
+
+const DEPLOYMENT_STATES = {
+  'Active': { color: 'green', label: 'Live — citizens can report, MP dashboard active' },
+  'Pilot': { color: 'amber', label: 'Pilot phase — limited features' },
+  'Planned': { color: 'blue', label: 'Scheduled for deployment' },
+};
+
+export default function ConstituencyDirectory() {
+  const handleCTAClick = (ctaName) => {
+    trackCTAClick(ctaName, 'constituency-directory');
+  };
+
+  return (
+    <div className='page-shell'>
+      <Header />
+      <main>
+        <Breadcrumb className='container' />
+        <section className='page-hero'>
+          <div className='container page-hero__inner'>
+            <p className='eyebrow'>Constituency Dashboard Directory</p>
+            <h1>Parliamentary Constituency Dashboards</h1>
+            <p>Browse {CONSTITUENCIES.length} parliamentary constituencies with active citizen reporting, AI-assisted project prioritization, and infrastructure gap analysis. Each dashboard provides real-time heatmaps, category-wise breakdowns, and evidence-backed project rankings.</p>
+          </div>
+        </section>
+
+        <section className='section'>
+          <div className='container'>
+            <div className='constituency-grid'>
+              {CONSTITUENCIES.map((constituency) => (
+                <article key={constituency.slug} className='constituency-card'>
+                  <div className='card-header'>
+                    <h3>{constituency.name} Parliamentary Constituency</h3>
+                    <span className={`badge badge--${DEPLOYMENT_STATES[constituency.deployment]?.color || 'blue'}`}>
+                      {DEPLOYMENT_STATES[constituency.deployment]?.label || constituency.deployment}
+                    </span>
+                  </div>
+                  <div className='card-meta'>
+                    <p><strong>District:</strong> {constituency.district} District, {constituency.state}</p>
+                    <p><strong>MP:</strong> {constituency.mp}</p>
+                    <p><strong>Population:</strong> {constituency.population} | <strong>Area:</strong> {constituency.area}</p>
+                  </div>
+                  <div className='card-issues'>
+                    <strong>Key Issues:</strong>
+                    <ul>
+                      {constituency.keyIssues.map((issue, i) => (
+                        <li key={i}>{issue}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <Link
+                    to={`/constituency/${constituency.slug}`}
+                    className='button button--primary button--small'
+                    onClick={() => handleCTAClick(`view_${constituency.slug}_dashboard`)}
+                  >
+                    View {constituency.name} Dashboard
+                  </Link>
+                </article>
+              ))}
+            </div>
+            
+            <p className='text-center text-slate-500 mt-8'>
+              India has 543 parliamentary constituencies. 
+              <Link to='/contact' className='text-link' onClick={() => handleCTAClick('request_constituency')}>
+                Contact us
+              </Link>{' '}
+              to request Samadhan deployment for your constituency.
+            </p>
+          </div>
+        </section>
+
+        <section className='section section--soft'>
+          <div className='container reading-column'>
+            <h2>How Constituency Dashboards Work</h2>
+            <p>Each constituency page provides a localized view of citizen reports, AI-assisted project recommendations, and infrastructure gaps specific to that parliamentary constituency.</p>
+            
+            <h3>Features Included in Every Constituency Dashboard:</h3>
+            <ul>
+              <li><strong>Real-time Grievance Heatmap:</strong> Visualize citizen report density by village/ward with category filters and time-range slider.</li>
+              <li><strong>Category-wise Issue Breakdown:</strong> Roads, water, health, education, power, housing, agriculture, employment, safety, environment, transport — with counts and trends.</li>
+              <li><strong>Infrastructure Deficit Scores:</strong> Evidence from Census 2011, NFHS-5, UDISE+, PMGSY, Jal Jeevan Mission, Saubhagya, PMAY-G matched to village/ward boundaries.</li>
+              <li><strong>Priority-Ranked Project Recommendations:</strong> 40-40-20 scoring model with full reasoning trace for each project (demand, deficit, severity breakdown).</li>
+              <li><strong>MP Office Dashboard Access:</strong> Secure portal for elected representatives and staff to review, verify, override with justification, and prepare sanction notes.</li>
+              <li><strong>Scheme Alignment Tags:</strong> Each recommendation tagged with applicable schemes (MPLADS, MLALADS, NHM, PMAY, JJM, PMGSY, SSA, state schemes, CSR, DMF).</li>
+            </ul>
+            
+            <h3>Data Sources Per Constituency:</h3>
+            <ul>
+              <li>Citizen grievances submitted via Samadhan intake channels (web, WhatsApp, voice, letter, meeting)</li>
+              <li>Public datasets matched to constituency/village boundaries (Census, NFHS, UDISE, PMGSY, JJM, Saubhagya, PMAY-G)</li>
+              <li>MPLADS/MLALADS project tracking (where available via open APIs)</li>
+              <li>Scheme implementation status from government MIS portals</li>
+            </ul>
+
+            <h3>Request Your Constituency</h3>
+            <p>Don't see your constituency? Samadhan can be deployed for any of India's 543 parliamentary constituencies. The platform supports multilingual intake, local dataset integration, and customizable prioritization models.</p>
+            <Link to='/contact' className='button button--primary' onClick={() => handleCTAClick('request_constituency_deployment')}>
+              Request Constituency Deployment
+            </Link>
+          </div>
+        </section>
+
+        <section className='section section--navy' aria-labelledby='cta-heading'>
+          <div className='container cta-card'>
+            <div>
+              <h2 id='cta-heading'>Deploy Samadhan for Your Constituency</h2>
+              <p>Bring evidence-based project prioritization to your parliamentary constituency. Configuration, training, and data integration support provided.</p>
+            </div>
+            <div className='hero__actions'>
+              <Link to='/contact' className='button button--light' onClick={() => handleCTAClick('contact_deployment')}>
+                Deployment Inquiry
+              </Link>
+              <Link to='/report-issue' className='button button--ghost' onClick={() => handleCTAClick('try_reporting')}>
+                Test Reporting
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
+  );
+}

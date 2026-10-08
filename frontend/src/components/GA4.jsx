@@ -1,42 +1,94 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 
-const ID = import.meta.env.VITE_GA4_MEASUREMENT_ID;
+/**
+ * Analytics for a single-page application, on top of Google Tag Manager.
+ *
+ * ── Where the loader lives, and why ────────────────────────────────────────
+ * The GTM container snippet sits in the <head> of index.html, which is the
+ * placement Google's own setup guide specifies. It is NOT a page and NOT
+ * per-page metadata: an SPA has exactly one HTML document, so one snippet in
+ * that document covers every route. There is nothing to add per page.
+ *
+ * gtag.js is deliberately NOT loaded. When tags are configured in GTM, adding
+ * gtag.js as well sends two copies of every event and corrupts every metric.
+ * GA4 itself is added later, inside the GTM container.
+ *
+ * ── SPA page views ─────────────────────────────────────────────────────────
+ * Google documents two mutually exclusive ways to count page views in an SPA:
+ *
+ *   1. GTM's built-in History Change trigger, configured in the GTM UI
+ *   2. Custom `page_view` events pushed to the dataLayer from the router
+ *
+ * and states that enabling both "can lead to double-counting page views".
+ *
+ * THIS COMPONENT IS OPTION 2. Do not add a History Change trigger to the
+ * container while this is in place, or every navigation will count twice.
+ *
+ * Option 2 is used because the History Change trigger fires when the URL
+ * changes, which in React Router is before the new route has rendered. Pushing
+ * after render also lets this component send the correct page_title, because
+ * <SEO /> has already set document.title by then.
+ *
+ * Parameters use GA4's names: `page_location` and `page_referrer`, not the
+ * legacy `page_path`. `page_referrer` carries the previous route, which is what
+ * lets GA4 build navigation paths without a custom GTM variable.
+ */
+
+export const GTM_ID = 'GTM-NQ6GK9QG';
+
+/** Push a custom event to the dataLayer. No-ops outside a browser. */
+export function trackEvent(name, params = {}) {
+  if (typeof window === 'undefined') return;
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ event: name, ...params });
+}
+
+/**
+ * Fire a CTA click.
+ *
+ * Callers should pass only non-identifying values. This deliberately has no
+ * access to the form or its values.
+ */
+export function trackCTAClick(ctaName, page = 'unknown') {
+  trackEvent('cta_click', { cta_name: ctaName, page_location: page });
+}
+
+/**
+ * Report a form submission attempt.
+ * `method` is 'report_issue' or 'track_reference'.
+ *
+ * `delivered` distinguishes a grievance the backend actually recorded from one
+ * that fell back to a local mock, so an abandonment rate can be read without
+ * inferring it from error counts.
+ */
+export function trackFormSubmit(method, extra = {}) {
+  trackEvent('form_submit', { method, ...extra });
+}
 
 export default function GA4() {
-  const l = useLocation();
+  const location = useLocation();
+  const previousPath = useRef(null);
 
   useEffect(() => {
-    if (!ID || document.querySelector('script[data-ga4]')) return;
+    // Defer past the SEO component's effect so document.title is the title the
+    // visitor actually saw, not the previous route's.
+    const id = window.setTimeout(() => {
+      const pageLocation = window.location.href;
+      const payload = {
+        event: 'page_view',
+        page_location: pageLocation,
+        // GA4's own parameter name. page_path is the legacy convention.
+        page_title: document.title,
+        // Carry the previous route so GA4 can build navigation paths.
+        ...(previousPath.current ? { page_referrer: previousPath.current } : {}),
+      };
+      trackEvent('page_view', payload);
+      previousPath.current = pageLocation;
+    }, 0);
 
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = window.gtag || function () {
-      window.dataLayer.push(arguments);
-    };
-
-    window.gtag('js', new Date());
-    window.gtag('config', ID, {
-      send_page_view: false,
-      anonymize_ip: true,
-    });
-
-    const s = document.createElement('script');
-    s.async = true;
-    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(ID);
-    s.dataset.ga4 = ID;
-    document.head.appendChild(s);
-  }, []);
-
-  useEffect(() => {
-    if (!ID) return;
-
-    const t = setTimeout(() => window.gtag && window.gtag('event', 'page_view', {
-      page_path: l.pathname + l.search,
-      page_title: document.title,
-    }), 0);
-
-    return () => clearTimeout(t);
-  }, [l]);
+    return () => window.clearTimeout(id);
+  }, [location.pathname, location.search, location.hash]);
 
   return null;
 }

@@ -12,7 +12,7 @@ const nav = [
   ['/about', 'About'],
 ];
 
-export default function Header({ showLangToggle = true }) {
+export default function Header({ showLangToggle = true, subtitle = '' }) {
   const { lang, switchLang } = useLanguage();
   const [open, setOpen] = useState(false);
 
@@ -20,10 +20,20 @@ export default function Header({ showLangToggle = true }) {
     <header className='site-header'>
       <div className='site-header__inner'>
         <Link to='/' className='brand' aria-label='Samadhan home'>
-          <img src={logo} alt='' width='54' height='42' />
+          {/* Above-the-fold and the LCP element: eager, high priority, and sized to
+                reserve layout space so the header does not shift on load. */}
+          <img
+            src={logo}
+            alt='Samadhan logo - constituency intelligence platform'
+            width='54'
+            height='42'
+            loading='eager'
+            fetchPriority='high'
+            decoding='sync'
+          />
           <span>
             <strong>Samadhan</strong>
-            <small>Constituency intelligence</small>
+            <small>{subtitle || 'Constituency intelligence'}</small>
           </span>
         </Link>
         <button className='nav-toggle' type='button' aria-expanded={open} onClick={() => setOpen(!open)}>
@@ -55,7 +65,7 @@ export default function Header({ showLangToggle = true }) {
             </div>
           )}
           <Link to='/report-issue' className='button button--small button--primary'>
-            Report issue
+            Report a constituency issue
           </Link>
         </div>
       </div>

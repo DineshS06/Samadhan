@@ -1,0 +1,368 @@
+import { useParams } from 'react-router-dom';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import Breadcrumb from '../components/Breadcrumb';
+import SEO from '../components/SEO';
+import { Link } from 'react-router-dom';
+import { trackCTAClick } from '../components/GA4';
+
+const CONSTITUENCY_DATA = {
+  'visakhapatnam': {
+    name: 'Visakhapatnam',
+    state: 'Andhra Pradesh',
+    mpName: 'M. V. V. Satyanarayana',
+    population: '20,35,922',
+    area: '11,161 km²',
+    districts: ['Visakhapatnam', 'Anakapalli'],
+    coordinates: { lat: 17.6868, lng: 83.2185 },
+    keyIssues: ['Rural road connectivity', 'Drinking water access', 'Healthcare infrastructure', 'Cyclone resilience'],
+    metrics: {
+      totalReports: 347,
+      activeProjects: 12,
+      completedProjects: 8,
+      avgScore: 73,
+      topCategories: ['Roads', 'Water', 'Health', 'Education'],
+    },
+    recentProjects: [
+      { name: 'New PHC Ward 12', category: 'Health', score: 87, status: 'Sanctioned' },
+      { name: 'Road: Anandapuram → Sabbavaram', category: 'Roads', score: 82, status: 'Under Review' },
+      { name: 'JJM Pipeline: 15 villages', category: 'Water', score: 79, status: 'Recommended' },
+    ]
+  },
+  'hyderabad': {
+    name: 'Hyderabad',
+    state: 'Telangana',
+    mpName: 'Asaduddin Owaisi',
+    population: '39,43,323',
+    area: '217 km²',
+    districts: ['Hyderabad'],
+    coordinates: { lat: 17.3850, lng: 78.4867 },
+    keyIssues: ['Urban water supply', 'Traffic congestion', 'Slum redevelopment', 'Air quality'],
+    metrics: {
+      totalReports: 521,
+      activeProjects: 18,
+      completedProjects: 11,
+      avgScore: 68,
+      topCategories: ['Water', 'Transport', 'Housing', 'Environment'],
+    },
+    recentProjects: [
+      { name: 'JJM: Old City tap connections', category: 'Water', score: 85, status: 'Sanctioned' },
+      { name: 'Metro feeder: Falaknuma corridor', category: 'Transport', score: 78, status: 'Recommended' },
+      { name: 'Slum redevelopment: Bandlaguda', category: 'Housing', score: 74, status: 'Under Review' },
+    ]
+  },
+  'delhi': {
+    name: 'New Delhi',
+    state: 'Delhi',
+    mpName: 'Meenakshi Lekhi',
+    population: '1,42,004',
+    area: '42.7 km²',
+    districts: ['New Delhi'],
+    coordinates: { lat: 28.6139, lng: 77.2090 },
+    keyIssues: ['Heritage conservation', 'Public transport', 'Air pollution', 'Civic amenities'],
+    metrics: {
+      totalReports: 189,
+      activeProjects: 9,
+      completedProjects: 5,
+      avgScore: 71,
+      topCategories: ['Transport', 'Environment', 'Safety', 'Education'],
+    },
+    recentProjects: [
+      { name: 'Heritage walk: Connaught Place', category: 'Other', score: 76, status: 'Recommended' },
+      { name: 'Bus lane: Parliament Street', category: 'Transport', score: 72, status: 'Sanctioned' },
+      { name: 'Air quality monitors: 20 locations', category: 'Environment', score: 69, status: 'Under Review' },
+    ]
+  },
+  'lucknow': {
+    name: 'Lucknow',
+    state: 'Uttar Pradesh',
+    mpName: 'Rajnath Singh',
+    population: '28,17,105',
+    area: '2,528 km²',
+    districts: ['Lucknow'],
+    coordinates: { lat: 26.8467, lng: 80.9462 },
+    keyIssues: ['Urban infrastructure', 'Waste management', 'Metro connectivity', 'Heritage preservation'],
+    metrics: {
+      totalReports: 278,
+      activeProjects: 14,
+      completedProjects: 7,
+      avgScore: 65,
+      topCategories: ['Roads', 'Environment', 'Transport', 'Housing'],
+    },
+    recentProjects: [
+      { name: 'Metro East-West corridor extension', category: 'Transport', score: 81, status: 'Sanctioned' },
+      { name: 'Solid waste plant: Shivri', category: 'Environment', score: 77, status: 'Under Review' },
+      { name: 'Heritage conservation: Rumi Darwaza', category: 'Other', score: 63, status: 'Recommended' },
+    ]
+  },
+  'mumbai-north': {
+    name: 'Mumbai North',
+    state: 'Maharashtra',
+    mpName: 'Piyush Goyal',
+    population: '21,00,000',
+    area: '150 km²',
+    districts: ['Mumbai Suburban'],
+    coordinates: { lat: 19.2183, lng: 72.8333 },
+    keyIssues: ['Flood resilience', 'Slum rehabilitation', 'Suburban rail', 'Coastal protection'],
+    metrics: {
+      totalReports: 312,
+      activeProjects: 15,
+      completedProjects: 6,
+      avgScore: 70,
+      topCategories: ['Housing', 'Environment', 'Transport', 'Roads'],
+    },
+    recentProjects: [
+      { name: 'Slum rehab: Dahisar East', category: 'Housing', score: 84, status: 'Sanctioned' },
+      { name: 'Storm drain: Gorai Creek', category: 'Environment', score: 78, status: 'Under Review' },
+      { name: 'Suburban rail: Borivali-Virar', category: 'Transport', score: 75, status: 'Recommended' },
+    ]
+  },
+  'bangalore-south': {
+    name: 'Bangalore South',
+    state: 'Karnataka',
+    mpName: 'Tejasvi Surya',
+    population: '25,00,000',
+    area: '200 km²',
+    districts: ['Bangalore Urban'],
+    coordinates: { lat: 12.9141, lng: 77.5946 },
+    keyIssues: ['Water scarcity', 'Traffic management', 'Lake restoration', 'Tech corridor infrastructure'],
+    metrics: {
+      totalReports: 403,
+      activeProjects: 16,
+      completedProjects: 9,
+      avgScore: 72,
+      topCategories: ['Water', 'Transport', 'Environment', 'Roads'],
+    },
+    recentProjects: [
+      { name: 'Cauvery Stage V: South zone', category: 'Water', score: 88, status: 'Sanctioned' },
+      { name: 'Lake revival: Bellandur-Agara', category: 'Environment', score: 80, status: 'Under Review' },
+      { name: 'Signal-free corridor: Electronic City', category: 'Transport', score: 77, status: 'Recommended' },
+    ]
+  },
+  'chennai-central': {
+    name: 'Chennai Central',
+    state: 'Tamil Nadu',
+    mpName: 'Dayanidhi Maran',
+    population: '18,00,000',
+    area: '180 km²',
+    districts: ['Chennai'],
+    coordinates: { lat: 13.0827, lng: 80.2707 },
+    keyIssues: ['Water management', 'Metro expansion', 'Coastal erosion', 'Industrial pollution'],
+    metrics: {
+      totalReports: 267,
+      activeProjects: 11,
+      completedProjects: 5,
+      avgScore: 69,
+      topCategories: ['Water', 'Transport', 'Environment', 'Health'],
+    },
+    recentProjects: [
+      { name: 'Desalination: Nemmeli Phase II', category: 'Water', score: 83, status: 'Sanctioned' },
+      { name: 'Metro Phase II: Airport corridor', category: 'Transport', score: 79, status: 'Recommended' },
+      { name: 'Coastal wall: Marina-Kasimedu', category: 'Environment', score: 71, status: 'Under Review' },
+    ]
+  },
+  'kolkata-uttar': {
+    name: 'Kolkata Uttar',
+    state: 'West Bengal',
+    mpName: 'Sudip Bandyopadhyay',
+    population: '22,00,000',
+    area: '185 km²',
+    districts: ['Kolkata'],
+    coordinates: { lat: 22.5726, lng: 88.3639 },
+    keyIssues: ['Drainage & flooding', 'Heritage conservation', 'Public health', 'Urban renewal'],
+    metrics: {
+      totalReports: 234,
+      activeProjects: 10,
+      completedProjects: 4,
+      avgScore: 66,
+      topCategories: ['Environment', 'Health', 'Roads', 'Other'],
+    },
+    recentProjects: [
+      { name: 'Drainage: New Town-Rajarhat', category: 'Environment', score: 82, status: 'Sanctioned' },
+      { name: 'Heritage: College Street precinct', category: 'Other', score: 75, status: 'Recommended' },
+      { name: 'PHC upgrade: 5 locations', category: 'Health', score: 68, status: 'Under Review' },
+    ]
+  }
+};
+
+const CATEGORY_ICONS = {
+  roads: '🛣️', water: '💧', health: '🏥', education: '📚', power: '⚡', housing: '🏠',
+  agri: '🌾', employment: '💼', safety: '🛡️', environment: '🌿', transport: '🚌', other: '📋',
+};
+
+export default function ConstituencyDetail() {
+  const { slug } = useParams();
+  const constituency = CONSTITUENCY_DATA[slug] || CONSTITUENCY_DATA['visakhapatnam'];
+  const SITE_URL = 'https://samadhan-chi.vercel.app';
+
+  const breadcrumbs = [
+    { name: 'Home', url: SITE_URL },
+    { name: 'Constituencies', url: SITE_URL + '/constituencies' },
+    { name: constituency.name, url: SITE_URL + `/constituency/${slug}` },
+  ];
+
+  return (
+    <>
+      <SEO
+        title={`${constituency.name} Constituency Dashboard | Samadhan`}
+        description={`Constituency dashboard for ${constituency.name}, ${constituency.state}: ${constituency.metrics.totalReports} citizen reports, ${constituency.metrics.activeProjects} active projects, ${constituency.metrics.completedProjects} completed. Real-time heatmaps, AI-assisted prioritization, evidence-backed recommendations.`}
+        path={`/constituency/${slug}`}
+        pageType="constituencyDetail"
+      />
+      <div className='page-shell'>
+        <Header />
+        <main>
+          <Breadcrumb className='container' breadcrumbs={breadcrumbs} />
+          
+          {/* Hero */}
+          <section className='page-hero'>
+            <div className='container page-hero__inner'>
+              <p className='eyebrow'>Parliamentary Constituency Dashboard</p>
+              <h1>{constituency.name}, {constituency.state}</h1>
+              <p className='hero__lead'>
+                <strong>MP: {constituency.mpName}</strong> | 
+                Population: {constituency.population} | 
+                Area: {constituency.area} | 
+                Districts: {constituency.districts.join(', ')}
+              </p>
+            </div>
+          </section>
+
+          {/* Key Metrics */}
+          <section className='section section--soft'>
+            <div className='container metrics-grid'>
+              <div className='metric-card'>
+                <span className='metric-value'>{constituency.metrics.totalReports}</span>
+                <span className='metric-label'>Citizen Reports (All Time)</span>
+              </div>
+              <div className='metric-card'>
+                <span className='metric-value'>{constituency.metrics.activeProjects}</span>
+                <span className='metric-label'>Active Projects in Pipeline</span>
+              </div>
+              <div className='metric-card'>
+                <span className='metric-value'>{constituency.metrics.completedProjects}</span>
+                <span className='metric-label'>Projects Completed</span>
+              </div>
+              <div className='metric-card'>
+                <span className='metric-value'>{constituency.metrics.avgScore}</span>
+                <span className='metric-label'>Avg Priority Score</span>
+              </div>
+            </div>
+          </section>
+
+          {/* Heatmap + Category Breakdown */}
+          <section className='section'>
+            <div className='container'>
+              <div className='dashboard-grid'>
+                <div className='dashboard-main'>
+                  <h2>Grievance Heatmap</h2>
+                  <div className='heatmap-placeholder' style={{ aspectRatio: '16/9', background: '#f1f5f9', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }}>
+                    Interactive Mapbox/Leaflet heatmap — village/ward density with category filter & time slider
+                  </div>
+                  <div className='heatmap-controls'>
+                    <label>Category: 
+                      <select className='input-select'>
+                        <option>All Categories</option>
+                        {Object.keys(CATEGORY_ICONS).map(c => <option key={c} value={c}>{c}</option>)}
+                      </select>
+                    </label>
+                    <label>Time Range: 
+                      <select className='input-select'>
+                        <option>Last 30 days</option>
+                        <option>Last 90 days</option>
+                        <option>Last 180 days</option>
+                        <option>All time</option>
+                      </select>
+                    </label>
+                  </div>
+                </div>
+
+                <div className='dashboard-sidebar'>
+                  <div className='sidebar-card'>
+                    <h3>Category Breakdown</h3>
+                    <ul className='category-list'>
+                      {constituency.metrics.topCategories.map((cat, i) => (
+                        <li key={cat} className='category-item'>
+                          <span className='category-icon'>{CATEGORY_ICONS[cat.toLowerCase()] || '📋'}</span>
+                          <span className='category-name'>{cat}</span>
+                          <span className='category-count'>{(constituency.metrics.totalReports * (0.4 - i * 0.08)).toFixed(0)} reports</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className='sidebar-card'>
+                    <h3>Top Priority Projects</h3>
+                    <ul className='project-list'>
+                      {constituency.recentProjects.map((project, i) => (
+                        <li key={i} className='project-item'>
+                          <div className='project-info'>
+                            <strong>{project.name}</strong>
+                            <span className='project-category'>{project.category}</span>
+                          </div>
+                          <div className='project-score'>
+                            <span className='score-badge'>{project.score}/100</span>
+                            <span className={`status-badge status-${project.status.toLowerCase().replace(' ', '-')}`}>{project.status}</span>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Key Issues */}
+          <section className='section section--alt'>
+            <div className='container reading-column'>
+              <h2>Key Infrastructure Challenges</h2>
+              <p>Based on citizen reports, public dataset gaps, and MP office priorities for {constituency.name}:</p>
+              <ul className='issues-grid'>
+                {constituency.keyIssues.map((issue, i) => (
+                  <li key={i} className='issue-card'>
+                    <span className='issue-number'>{i + 1}</span>
+                    <p>{issue}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+
+          {/* How It Works Locally */}
+          <section className='section'>
+            <div className='container reading-column'>
+              <h2>How {constituency.name} Dashboard Works</h2>
+              <p>Every constituency dashboard runs the same transparent 40-40-20 scoring pipeline with local data:</p>
+              <ol>
+                <li><strong>Local Intake:</strong> Citizens in {constituency.name} report via web, WhatsApp, voice, or meetings in English, Hindi, and {constituency.state === 'Andhra Pradesh' || constituency.state === 'Telangana' ? 'Telugu' : constituency.state === 'Tamil Nadu' ? 'Tamil' : constituency.state === 'Karnataka' ? 'Kannada' : constituency.state === 'Maharashtra' ? 'Marathi' : constituency.state === 'West Bengal' ? 'Bengali' : 'the local language'}.</li>
+                <li><strong>Local Evidence:</strong> Grievances matched to datasets at village/ward level within {constituency.districts.join(', ')} districts — Census 2011 amenities, NFHS-5 health readiness, UDISE+ school infra, PMGSY roads, JJM water, Saubhagya power, PMAY-G housing.</li>
+                <li><strong>Local Scoring:</strong> 40-40-20 model produces constituency-specific rankings. Demand normalized against {constituency.name}'s own category maximums. Deficit from local dataset values.</li>
+                <li><strong>Local Review:</strong> {constituency.mpName}'s office accesses secure dashboard to verify evidence, override scores with justification, and generate sanction notes aligned with MPLADS/state schemes.</li>
+              </ol>
+            </div>
+          </section>
+
+          {/* CTA */}
+          <section className='section section--navy' aria-labelledby='cta-heading'>
+            <div className='container cta-card'>
+              <div>
+                <h2 id='cta-heading'>MP Office: Access {constituency.name} Dashboard</h2>
+                <p>Secure login for {constituency.mpName}'s office to review ranked projects, verify evidence, and prepare sanction notes.</p>
+              </div>
+              <div className='hero__actions'>
+                <Link to='/mp/login' className='button button--light' onClick={() => trackCTAClick('mp_login_constituency')}>
+                  MP Office Login
+                </Link>
+                <Link to='/contact' className='button button--ghost' onClick={() => trackCTAClick('contact_constituency')}>
+                  Deployment Inquiry
+                </Link>
+              </div>
+            </div>
+          </section>
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}

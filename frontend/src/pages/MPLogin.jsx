@@ -33,28 +33,30 @@ export default function MPLogin() {
 
       <main className="flex-1 flex items-center justify-center px-4 py-10">
         <div className="w-full max-w-md bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
-          <h2 className="text-xl font-bold text-[#032B5B]">{t.mpLoginTitle}</h2>
+          <h1 className="text-xl font-bold text-[#032B5B]">{t.mpLoginTitle}</h1>
           <p className="text-sm text-slate-500 mt-2">{t.mpLoginDesc}</p>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-[#032B5B] mb-1.5">{t.mpUsername}</label>
+              <label htmlFor="mp-username" className="block text-sm font-semibold text-[#032B5B] mb-1.5">{t.mpUsername}</label>
               <input
+                id="mp-username"
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#F28C0F]/40"
+                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:border-[#F28C0F]"
                 required
                 autoComplete="username"
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-[#032B5B] mb-1.5">{t.mpPassword}</label>
+              <label htmlFor="mp-password" className="block text-sm font-semibold text-[#032B5B] mb-1.5">{t.mpPassword}</label>
               <input
+                id="mp-password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#F28C0F]/40"
+                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:border-[#F28C0F]"
                 required
                 autoComplete="current-password"
               />

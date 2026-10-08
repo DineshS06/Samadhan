@@ -7,7 +7,27 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "audit:seo": "node scripts/seo-audit.mjs"
+    "audit:syntax": "node scripts/check-syntax.mjs",
+    "audit:analytics": "node scripts/check-analytics.mjs",
+    "audit:i18n": "node scripts/check-i18n.mjs",
+    "audit:markup": "node scripts/check-markup.mjs",
+    "audit:head": "node scripts/check-head.mjs",
+    "audit:deploy": "node scripts/check-deploy-config.mjs",
+    "audit:intents": "node scripts/check-intents.mjs",
+    "audit:seo-unit": "node scripts/audit/seo.test.mjs",
+    "check:bundles": "node scripts/check-bundles.mjs",
+    "audit:legacy": "node scripts/seo-audit.mjs",
+    "audit:legacy:comprehensive": "node scripts/comprehensive-seo-audit.mjs",
+    "audit:schema": "node scripts/validate-schema.mjs",
+    "audit:seo": "node scripts/audit/run.mjs",
+    "audit:offline": "node scripts/audit/run.mjs --no-live",
+    "audit:test": "node scripts/audit/completion.test.mjs",
+    "audit:guards": "node scripts/audit/guard-selftest.mjs",
+    "audit:render": "node scripts/audit/render.test.mjs",
+    "audit:ui": "node scripts/audit/ui.test.mjs",
+    "audit": "npm run audit:test && npm run audit:seo-unit && npm run audit:render && npm run audit:ui && npm run audit:guards && npm run audit:syntax && npm run audit:analytics && npm run audit:i18n && npm run audit:markup && npm run audit:head && npm run audit:deploy && npm run audit:intents && npm run audit:seo",
+    "verify": "npm run audit && npm run build && npm run audit:schema && npm run check:bundles",
+    "audit:all": "npm run verify"
   },
   "dependencies": {
     "leaflet": "^1.9.4",
@@ -16,6 +36,7 @@
     "react-router-dom": "^7.18.1"
   },
   "devDependencies": {
+    "@babel/parser": "^7.29.7",
     "@tailwindcss/vite": "^4.3.2",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",

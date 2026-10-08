@@ -71,6 +71,19 @@ export async function mpLogout() {
   }
 }
 
+/**
+ * Fetch the MP dashboard feed.
+ *
+ * Returns `{ ...feed, _dataSource }` so the UI can say where the numbers came
+ * from. Previously the fallback was silent: on the deployed site /api/* is a
+ * dead path, so every visit showed demo counts rendered exactly like live ones.
+ * That reads as real data about a real constituency, which it is not.
+ *
+ * _dataSource is one of:
+ *   'live'      - the Flask backend answered
+ *   'static'    - fell back to the committed dashboard_feed.json fixture
+ *   'empty'     - nothing could be loaded; zeroed structure
+ */
 export async function fetchMpDashboard() {
   try {
     const res = await fetch('/api/dashboard', { headers: mpAuthHeaders() })
@@ -86,14 +99,15 @@ export async function fetchMpDashboard() {
       throw new Error('SESSION_EXPIRED')
     }
     if (!res.ok) throw new Error(data.error || 'Failed to load dashboard')
-    return data
+    return { ...data, _dataSource: 'live' }
   } catch (err) {
     // Fallback to static JSON file
     console.warn('fetchMpDashboard falling back to static data:', err.message)
     try {
       const resp = await fetch('/dashboard_feed.json')
       if (!resp.ok) throw new Error(`Failed to load static dashboard: ${resp.status}`)
-      return await resp.json()
+      const data = await resp.json()
+      return { ...data, _dataSource: 'static' }
     } catch (e) {
       console.error('Failed to load fallback dashboard data:', e)
       // Return a minimal structure to avoid breaking UI
@@ -109,6 +123,7 @@ export async function fetchMpDashboard() {
         last_updated: new Date().toISOString(),
         map: {},
         mp_office: getMpProfile() || { name: 'Demo MP', constituency: 'Visakhapatnam', state: 'Andhra Pradesh' },
+        _dataSource: 'empty',
       }
     }
   }

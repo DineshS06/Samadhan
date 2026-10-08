@@ -133,7 +133,7 @@ export default function MPDashboard() {
   }
 
   const handleForward = () => {
-    setSelectedPoint(null)
+    setSelectedProject(null)
     setSanctionDoc(null)
     setToast(t.toastForward)
     setTimeout(() => setToast(null), 4000)
@@ -163,9 +163,19 @@ export default function MPDashboard() {
       <Header subtitle={`${t.mpSubtitle} — ${feed.mp_office?.constituency || mpProfile?.constituency || ''}`} />
 
       <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-2 flex items-center justify-between text-xs text-slate-600">
+      {/* The dashboard had no h1 anywhere, so it had no top-level heading for
+          assistive tech or heading navigation. Visually hidden so the bar
+          stays compact. */}
+      <h1 className="sr-only">
+        {t.mpSubtitle}
+        {feed.mp_office?.constituency || mpProfile?.constituency
+          ? ` — ${feed.mp_office?.constituency || mpProfile?.constituency}`
+          : ''}
+      </h1>
         <span>
           {t.mpLoggedInAs}: <strong className="text-[#032B5B]">{feed.mp_office?.name || mpProfile?.name}</strong>
-          {' · '}{feed.mp_office?.constituency}, {feed.mp_office?.state}
+          {feed.mp_office?.constituency || mpProfile?.constituency || ''}
+              {feed.mp_office?.state || mpProfile?.state ? `, ${feed.mp_office?.state || mpProfile?.state}` : ''}
         </span>
         <button type="button" onClick={handleLogout} className="text-[#032B5B] hover:text-[#F28C0F] font-medium">
           {t.mpLogout}
@@ -188,6 +198,20 @@ export default function MPDashboard() {
           {t.lastUpdated}: {new Date(feed.last_updated).toLocaleString('en-IN')}
           {feed.map?.data_source && ` · ${feed.map.data_source}`}
         </p>
+        {/* The /api fallback was silent, so demo counts rendered exactly like
+            live ones. On the deployed site /api/* is a dead path, meaning every
+            visit showed fixture numbers as if they were this office's real
+            figures. Say where the data came from. */}
+        {feed._dataSource && feed._dataSource !== 'live' && (
+          <div
+            role='status'
+            className='mx-auto mt-3 max-w-2xl rounded-lg border border-amber-300 bg-amber-50 px-4 py-2 text-xs text-amber-900'
+          >
+            {feed._dataSource === 'static'
+              ? 'Sample data: the API is unreachable, so these are the committed placeholder figures, not live figures for this office.'
+              : 'No data available: the API and the committed dataset both failed to load. All counts are zero.'}
+          </div>
+        )}
       </main>
 
       <Footer variant="mp" />
@@ -195,7 +219,7 @@ export default function MPDashboard() {
       {selectedProject && (
         <SanctionModal
           project={selectedProject}
-          document={sanctionDoc}
+          doc={sanctionDoc}
           loading={sanctionLoading}
           onClose={() => { setSelectedProject(null); setSanctionDoc(null) }}
           onForward={handleForward}

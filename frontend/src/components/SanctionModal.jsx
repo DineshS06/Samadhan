@@ -4,7 +4,12 @@ import { useLanguage } from '../i18n/LanguageContext'
 const FOCUSABLE =
   'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
 
-export default function SanctionModal({ project, document, loading, onClose, onForward }) {
+// The prop was previously named `document`, which shadowed the global DOM
+// `document` inside this component. `document.body.style.overflow` then read
+// from the sanction payload object and threw, so the scroll lock and its
+// restore never ran. Renamed to `doc`; the prop name is internal to this
+// component and its only caller is updated accordingly.
+export default function SanctionModal({ project, doc: sanctionDoc, loading, onClose, onForward }) {
   const { t } = useLanguage()
   const dialogRef = useRef(null)
   const closeBtnRef = useRef(null)
@@ -48,7 +53,7 @@ export default function SanctionModal({ project, document, loading, onClose, onF
 
   if (!project) return null
 
-  const doc = document || {}
+  const doc = sanctionDoc || {}
 
   return (
     <div

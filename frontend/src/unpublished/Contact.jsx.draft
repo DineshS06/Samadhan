@@ -1,0 +1,214 @@
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import Breadcrumb from '../components/Breadcrumb';
+import { Link } from 'react-router-dom';
+import { trackCTAClick } from '../components/GA4';
+
+export default function Contact() {
+  const handleCTAClick = (ctaName) => {
+    trackCTAClick(ctaName, 'contact');
+  };
+
+  return (
+    <div className='page-shell'>
+      <Header />
+      <main>
+        <Breadcrumb className='container' />
+        <section className='page-hero'>
+          <div className='container page-hero__inner'>
+            <p className='eyebrow'>Contact Samadhan Civic Tech</p>
+            <h1>Contact Us: Partnerships, Press & Technical Inquiries</h1>
+            <p>Get in touch for government partnerships, academic research collaboration, technical integration support, or press inquiries about AI-assisted constituency planning.</p>
+          </div>
+        </section>
+
+        <section className='section'>
+          <div className='container contact-grid'>
+            <div className='contact-info'>
+              <h2>Contact Information</h2>
+              
+              <div className='contact-item'>
+                <h3>General & Support</h3>
+                <p><a href='mailto:hello@samadhan.example'>hello@samadhan.example</a></p>
+                <p><a href='mailto:support@samadhan.example'>support@samadhan.example</a></p>
+                <p>Response time: 1-2 business days</p>
+              </div>
+              
+              <div className='contact-item'>
+                <h3>Government Partnerships</h3>
+                <p><a href='mailto:partnerships@samadhan.example'>partnerships@samadhan.example</a></p>
+                <p>MP office deployment, state-level rollout, CPGRAMS integration, scheme alignment</p>
+              </div>
+              
+              <div className='contact-item'>
+                <h3>Press & Media</h3>
+                <p><a href='mailto:press@samadhan.example'>press@samadhan.example</a></p>
+                <p>Media kits, spokesperson availability, impact data, deployment case studies</p>
+              </div>
+              
+              <div className='contact-item'>
+                <h3>Research & Academia</h3>
+                <p><a href='mailto:research@samadhan.example'>research@samadhan.example</a></p>
+                <p>Methodology review, bias audits, impact evaluation, civic tech collaboration</p>
+              </div>
+
+              <div className='contact-item'>
+                <h3>Phone</h3>
+                <p><a href='tel:+91XXXXXXXXXX'>+91 XXXXXXXXXX</a> (Mon-Fri, 9 AM - 6 PM IST)</p>
+              </div>
+
+              <div className='contact-item'>
+                <h3>Office Address</h3>
+                <address>
+                  Samadhan Civic Tech<br />
+                  MP Office Complex<br />
+                  Visakhapatnam, Andhra Pradesh 530001<br />
+                  India
+                </address>
+                <div className='map-embed' style={{marginTop: '1rem'}}>
+                  <iframe
+                    title="Samadhan Civic Tech Office Location"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3806.5!2d83.22!3d17.69!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a3903c7e4f%3A0x123456789!2sVisakhapatnam%2C%20Andhra%20Pradesh!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+                    width="100%"
+                    height="200"
+                    style={{border: 0, borderRadius: '8px'}}
+                    allowFullScreen=""
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                </div>
+              </div>
+
+              <div className='contact-item'>
+                <h3>Office Hours</h3>
+                <p>Monday - Friday: 9:00 AM - 6:00 PM IST</p>
+                <p>Closed on Government Holidays</p>
+              </div>
+            </div>
+
+            <div className='contact-form-wrapper'>
+              <h2>Send Us a Message</h2>
+              <form className='contact-form' action='https://formspree.io/f/your-form-id' method='POST'>
+                <div className='form-group'>
+                  <label htmlFor='name'>Full Name *</label>
+                  <input type='text' id='name' name='name' required placeholder='Your name' />
+                </div>
+                <div className='form-group'>
+                  <label htmlFor='email'>Email Address *</label>
+                  <input type='email' id='email' name='email' required placeholder='your@email.com' />
+                </div>
+                <div className='form-group'>
+                  <label htmlFor='organization'>Organization / Affiliation</label>
+                  <input type='text' id='organization' name='organization' placeholder='MP Office, NGO, University, Government Dept, etc.' />
+                </div>
+                <div className='form-group'>
+                  <label htmlFor='subject'>Inquiry Type *</label>
+                  <select id='subject' name='subject' required>
+                    <option value=''>Select a topic</option>
+                    <option value='general'>General Inquiry</option>
+                    <option value='partnership'>Government / Civic Partnership</option>
+                    <option value='deployment'>Constituency Deployment Request</option>
+                    <option value='press'>Press / Media Inquiry</option>
+                    <option value='research'>Research / Academic Collaboration</option>
+                    <option value='technical'>Technical Integration / API</option>
+                    <option value='accessibility'>Accessibility Feedback</option>
+                    <option value='privacy'>Privacy / Data Rights</option>
+                    <option value='other'>Other</option>
+                  </select>
+                </div>
+                <div className='form-group'>
+                  <label htmlFor='constituency'>Target Constituency (if applicable)</label>
+                  <input type='text' id='constituency' name='constituency' placeholder='e.g., Visakhapatnam, Hyderabad, etc.' />
+                </div>
+                <div className='form-group'>
+                  <label htmlFor='message'>Message *</label>
+                  <textarea id='message' name='message' rows={6} required placeholder='Describe your inquiry, requirements, or feedback...'></textarea>
+                </div>
+                <button type='submit' className='button button--primary button--full'>Send Message</button>
+                <p className='form-note'>By submitting, you agree to our <a href='/privacy'>Privacy Notice</a>. We never share your data with third parties for marketing.</p>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <section className='section section--soft'>
+          <div className='container'>
+            <h2>Quick Answers</h2>
+            <details className='faq-detail'>
+              <summary>What is the response time for inquiries?</summary>
+              <p>We typically respond within 1-2 business days. Government partnership inquiries may take longer due to review processes.</p>
+            </details>
+            <details className='faq-detail'>
+              <summary>Can Samadhan be deployed for any parliamentary constituency?</summary>
+              <p>Yes, Samadhan supports all 543 parliamentary constituencies in India. Deployment includes local language configuration, dataset integration, and MP office training.</p>
+            </details>
+            <details className='faq-detail'>
+              <summary>Is citizen data shared with third parties?</summary>
+              <p>No. Personally identifiable information is never shared publicly or with third parties. Only aggregated, anonymized statistics feed public dashboards.</p>
+            </details>
+            <details className='faq-detail'>
+              <summary>How do I exercise my data rights under DPDP Act / GDPR?</summary>
+              <p>Email privacy@samadhan.example with your Reference ID, or contact the MP office that processed your grievance. Rights include access, rectification, erasure, portability, and objection.</p>
+            </details>
+          </div>
+        </section>
+
+        <section className='section section--soft'>
+          <div className='container reading-column'>
+            <h2>Common Inquiries & Quick Links</h2>
+            <div className='quick-links-grid'>
+              <article className='quick-link-card'>
+                <h3>Deploy in Your Constituency</h3>
+                <p>Request a demo, discuss partnership terms, or get technical specifications for MP office integration.</p>
+                <Link to='/contact' className='text-link' onClick={() => handleCTAClick('deployment_inquiry')}>Request Deployment →</Link>
+              </article>
+              <article className='quick-link-card'>
+                <h3>Report a Constituency Issue</h3>
+                <p>Test the citizen portal — submit a grievance and track it with a Reference ID. No account needed.</p>
+                <Link to='/report-issue' className='text-link' onClick={() => handleCTAClick('try_reporting')}>Try Reporting →</Link>
+              </article>
+              <article className='quick-link-card'>
+                <h3>Read the Methodology</h3>
+                <p>Full 40-40-20 scoring formulas, dataset mappings, severity rubric, and safeguards.</p>
+                <Link to='/methodology' className='text-link' onClick={() => handleCTAClick('view_methodology')}>View Methodology →</Link>
+              </article>
+              <article className='quick-link-card'>
+                <h3>API & Technical Docs</h3>
+                <p>REST endpoints, webhook formats, authentication, rate limits, and integration guides.</p>
+                <Link to='/contact' className='text-link' onClick={() => handleCTAClick('technical_docs')}>Request API Access →</Link>
+              </article>
+              <article className='quick-link-card'>
+                <h3>Data Rights & Privacy</h3>
+                <p>Exercise your rights under DPDP Act 2023 / GDPR: access, rectification, erasure, portability.</p>
+                <Link to='/privacy' className='text-link' onClick={() => handleCTAClick('privacy_rights')}>View Privacy Notice →</Link>
+              </article>
+              <article className='quick-link-card'>
+                <h3>Accessibility Feedback</h3>
+                <p>Report barriers, suggest improvements, or participate in user testing with assistive technology.</p>
+                <Link to='/accessibility' className='text-link' onClick={() => handleCTAClick('accessibility_feedback')}>View Statement →</Link>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section className='section section--navy' aria-labelledby='cta-heading'>
+          <div className='container cta-card'>
+            <div>
+              <h2 id='cta-heading'>Ready to Deploy Evidence-Based Prioritization?</h2>
+              <p>Join MP offices using transparent, data-backed planning for faster, fairer development decisions.</p>
+            </div>
+            <div className='hero__actions'>
+              <Link to='/contact' className='button button--light' onClick={() => handleCTAClick('deployment_inquiry')}>
+                Start Deployment Conversation
+              </Link>
+              <Link to='/report-issue' className='button button--ghost' onClick={() => handleCTAClick('try_platform')}>
+                Test the Platform
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
+  );
+}

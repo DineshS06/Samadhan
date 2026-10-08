@@ -1,17 +1,115 @@
+# Samadhan - AI Constituency Development Planning
+# Robots.txt for search engine crawlers
+
+# General crawlers
 User-agent: *
 Allow: /
-Disallow: /mp
+Disallow: /mp/
+Disallow: /api/
+Disallow: /grievance/
+Disallow: /mp/login
+Disallow: /404
+Crawl-delay: 2
+
+# Google
+User-agent: Googlebot
+Allow: /
+Disallow: /mp/
+Disallow: /api/
+Disallow: /grievance/
+Disallow: /mp/login
+Disallow: /404
+
+User-agent: Googlebot-Image
+Allow: /
+Disallow: /mp/
+Disallow: /api/
+
+User-agent: Googlebot-News
+Allow: /
+Disallow: /mp/
+Disallow: /api/
+
+User-agent: Googlebot-Video
+Allow: /
+Disallow: /mp/
+Disallow: /api/
+
+# Bing
+User-agent: Bingbot
+Allow: /
+Disallow: /mp/
+Disallow: /api/
+Disallow: /grievance/
+Disallow: /mp/login
+Disallow: /404
+Crawl-delay: 10
+
+# AI Search Bots
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /mp/
 Disallow: /api/
 Disallow: /grievance/
 
-User-agent: OAI-SearchBot
-Allow: /
-Disallow: /mp
-Disallow: /api/
-
 User-agent: PerplexityBot
 Allow: /
-Disallow: /mp
+Disallow: /mp/
 Disallow: /api/
+Disallow: /grievance/
 
+User-agent: ClaudeBot
+Allow: /
+Disallow: /mp/
+Disallow: /api/
+Disallow: /grievance/
+
+User-agent: GPTBot
+Allow: /
+Disallow: /mp/
+Disallow: /api/
+Disallow: /grievance/
+
+User-agent: CCBot
+Allow: /
+Disallow: /mp/
+Disallow: /api/
+Disallow: /grievance/
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /mp/
+Disallow: /api/
+Disallow: /grievance/
+
+User-agent: Applebot
+Allow: /
+Disallow: /mp/
+Disallow: /api/
+Disallow: /grievance/
+
+User-agent: DuckDuckBot
+Allow: /
+Disallow: /mp/
+Disallow: /api/
+Disallow: /grievance/
+
+User-agent: YandexBot
+Allow: /
+Disallow: /mp/
+Disallow: /api/
+Disallow: /grievance/
+Crawl-delay: 10
+
+User-agent: Baiduspider
+Allow: /
+Disallow: /mp/
+Disallow: /api/
+Disallow: /grievance/
+Crawl-delay: 10
+
+# Sitemap
 Sitemap: https://samadhan-chi.vercel.app/sitemap.xml
+
+# Host
+Host: https://samadhan-chi.vercel.app

@@ -444,7 +444,15 @@ def list_grievances():
 @app.route("/api/grievance/<reference_id>", methods=["GET"])
 def get_grievance_by_reference(reference_id: str):
     """Public tracking endpoint — citizens poll this by reference ID.
+
     Returns the redacted record so the citizen can verify status without auth.
+
+    There is a second definition of this route further down this file with the
+    same endpoint name. Flask refuses to start when two rules map one endpoint
+    name to different functions ("View function mapping is overwriting an
+    existing endpoint function"), so the duplicate made the entire API
+    unstartable, not just this route. This copy is the one kept: it matches
+    case-insensitively and documents that the payload is redacted.
     """
     ref = (reference_id or "").strip().upper()
     if not ref:
@@ -455,6 +463,14 @@ def get_grievance_by_reference(reference_id: str):
             return jsonify({
                 "success": True,
                 "reference_id": g.get("reference_id"),
+                # Nothing in this build writes a status and nothing advances
+                # one, so "recorded" is the only status that is true of the
+                # data. The client used to default a missing status to
+                # "Submitted", which displayed a lifecycle the system does not
+                # have. status_workflow tells it not to invent one.
+                "status": "recorded",
+                "status_workflow": False,
+                "submitted_at": g.get("submitted_at"),
                 "result": _redact_entry(g),
             })
     return jsonify({"error": "Reference ID not found"}), 404
@@ -479,34 +495,6 @@ def parse_only():
     score = calculate_priority_score(ai_data, db_data)
 
     return jsonify({"ai_data": ai_data, "db_data": db_data, "priority_score": score})
-
-
-@app.route("/api/grievance/<reference_id>", methods=["GET"])
-def get_grievance_by_reference(reference_id: str):
-    """Get a grievance by its reference ID (e.g., SAM-0001) - citizen-accessible."""
-    # Validate reference_id format (SAM-XXXX where X is digit)
-    import re
-    if not re.match(r'^SAM-\d{4}$', reference_id):
-        return jsonify({"error": "Invalid reference ID format"}), 400
-
-    # Load all grievances
-    grievances = _load_grievances()
-
-    # Find the grievance with matching reference_id
-    matching_grievances = [g for g in grievances if g.get("reference_id") == reference_id]
-
-    if not matching_grievances:
-        return jsonify({"error": "Grievance not found"}), 404
-
-    # Return the redacted version (same as what's shown to citizens upon submission)
-    grievance = matching_grievances[0]  # Take the first match (should be only one)
-    redacted_grievance = _redact_entry(grievance)
-
-    return jsonify({
-        "success": True,
-        "reference_id": reference_id,
-        "result": redacted_grievance
-    })
 
 
 def _find_project(project_id: int, constituency: str | None = None, state: str | None = None) -> dict | None:
@@ -576,17 +564,6 @@ def serve_dashboard_feed():
 def serve_favicon():
     if FRONTEND_DIST.exists():
         return send_from_directory(FRONTEND_DIST, "favicon.svg")
-    abort(404)
-
-
-# Domain-verification files (Google Search Console, Bing, etc.). Look in
-# frontend/dist/ first, then the repo root — Vite copies public/ into dist/ on build.
-@app.route("/googlea34e147e07ede164.html")
-def serve_google_verification():
-    for base in (FRONTEND_DIST, ROOT_DIR):
-        candidate = base / "googlea34e147e07ede164.html"
-        if candidate.exists() and candidate.is_file():
-            return send_from_directory(base, "googlea34e147e07ede164.html")
     abort(404)
 
 

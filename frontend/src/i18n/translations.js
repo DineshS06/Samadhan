@@ -79,6 +79,30 @@ export const UI = {
     useRefToTrack: 'Use this Reference ID to track your grievance in the section below.',
     submitAnother: 'Submit Another Grievance',
     staffLogin: 'Staff / MP Access',
+  notFound: 'Page not found',
+  notRecordedTitle: 'Your grievance was not recorded',
+  notRecordedLost:
+    'The submission service is unavailable, so nothing was saved and no reference ID was issued. Nothing you typed has been lost: it is still in the form below.',
+  notRecordedNext:
+    'Please copy your grievance text and send it to your MP office or the relevant department directly until this service is working.',
+  notRecordedError: 'Reported error:',
+  notRecordedRetry: 'Try submitting again',
+  trackUnavailable:
+    'This reference ID could not be checked because the tracking service is unavailable. Nothing is retrievable at the moment.',
+  trackUnreadable: 'The tracking service returned an unexpected response and could not be read.',
+    trackNotFound:
+      'No grievance matches that reference ID. Check it against the receipt you saved — the format is SAM-0000.',
+    checkStatus: 'Check status',
+    enterRefId: 'Enter the reference ID from your receipt.',
+    trackIntro:
+      'Have a reference ID from an earlier submission? Enter it here to see what was recorded. You do not need to submit a new grievance.',
+    trackHint: 'For example SAM-0001. It is not case sensitive.',
+    trackRefExample: 'SAM-0001',
+    statusRecorded: 'Recorded',
+    submittedOn: 'Submitted on',
+    notProvided: 'Not provided',
+    trackNoWorkflow:
+      'This build records grievances but has no status workflow: nothing moves a grievance from submitted to resolved, so there is no progress to report. What you see is what was captured at submission.',
     backToCitizen: '← Citizen Portal',
     footerTagline: 'Government of India — Civic Grievance Redressal',
     category: 'Category',
@@ -96,6 +120,7 @@ export const UI = {
     valName: 'Full name is required for verification.',
     valPhone: 'Mobile number is required for follow-up.',
     valPhoneFormat: 'Enter a valid 10-digit Indian mobile number.',
+  valWard: 'Please enter the ward or block number.',
     valPincode: 'PIN Code must be a 6‑digit number.',
     valText: 'Please describe your problem.',
     valFileSize: 'File must be under 5 MB.',
@@ -146,13 +171,16 @@ export const UI = {
     mpPassword: 'Password',
     mpLoginBtn: 'Sign In to Dashboard',
     mpLoginLoading: 'Signing in…',
-    mpDemoAccounts: 'Demo MP accounts',
-    mpDemoPassword: 'Demo password',
+    mpDemoAccounts: 'Shared MP accounts',
+    mpDemoPassword: 'Shared password',
     mpLoggedInAs: 'Logged in as',
     mpLogout: 'Sign Out',
     trackYourGrievance: 'Track your grievance',
     trackYourGrievanceSubtitle: 'Enter your Grievance ID to check the current status of your complaint.',
-    refIdPlaceholder: 'Enter Grievance ID (e.g. SAM-2026-000123)',
+    // The backend issues f"SAM-{id:04d}" - four digits, no year segment. This used
+    // to read "SAM-2026-000123", a format the server can never produce, so it
+    // taught citizens to enter a value that would always fail to resolve.
+    refIdPlaceholder: 'Enter Grievance ID (e.g. SAM-0001)',
     tracking: 'Checking…',
     trackingResult: 'Tracking Result',
     trackAnother: 'Track Another',
@@ -222,7 +250,7 @@ export const UI = {
     describePhTe: 'Ma oorlo pani problem undi…',
     severity: 'समस्या की गंभीरता',
     attachments: 'फोटो, वीडियो या दस्तावेज़ संलग्न करें (वैकल्पिक)',
-    attachmentsHint: 'स्वीकृत: JPG, PNG, PDF, MP4 — अधिकतम 5 MB',
+    attachmentsHint: 'स्वीकृत: JPG, PNG, PDF, MP4 — अधिकतम 5 MB। सड़कों, पानी की समस्याओं या अन्य मुद्दों की तस्वीरें संलग्न करें।',
     attachmentSelected: 'फ़ाइल संलग्न',
     submit: 'शिकायत दर्ज करें',
     submitting: 'जमा हो रहा है…',
@@ -232,6 +260,30 @@ export const UI = {
     useRefToTrack: 'इस संदर्भ आईडी का उपयोग अपने शिकायत की स्थिति को नीचे दिए गए अनुभाग में ट्रैक करने के लिए करें।',
     submitAnother: 'एक और शिकायत दर्ज करें',
     staffLogin: 'कर्मचारी / MP प्रवेश',
+  notFound: 'पृष्ठ नहीं मिला।',
+  notRecordedTitle: 'आपकी शिकायत दर्ज नहीं हुई',
+  notRecordedLost:
+    'सेवा उपलब्ध नहीं है, इसलिए कुछ भी सहेजा नहीं गया और कोई रेफ़रेंस आईडी जारी नहीं की गई। आपने जो लिखा है वह कहीं नहीं गया: वह नीचे दिए गए फ़ॉर्म में अभी भी मौजूद है।',
+  notRecordedNext:
+    'कृपया अपनी शिकायत की प्रतिलिपि बनाकर, सेवा ठीक होने तक, सीधे अपने सांसद कार्यालय या संबंधित विभाग को भेजें।',
+  notRecordedError: 'दर्ज की गई त्रुटि:',
+  notRecordedRetry: 'फिर से भेजने का प्रयास करें',
+  trackUnavailable:
+    'ट्रैकिंग सेवा उपलब्ध नहीं होने के कारण यह रेफ़रेंस आईडी जाँची नहीं जा सकी। इस समय कोई जानकारी प्राप्त नहीं की जा सकती।',
+  trackUnreadable: 'ट्रैकिंग सेवा से अप्रत्याशित उत्तर मिला, जिसे पढ़ा नहीं जा सका।',
+    trackNotFound:
+      'इस संदर्भ आईडी से कोई शिकायत मेल नहीं खाती। अपनी रसीद से इसे दोबारा जाँचें — स्वरूप SAM-0000 है।',
+    checkStatus: 'स्थिति देखें',
+    enterRefId: 'अपनी रसीद से संदर्भ आईडी दर्ज करें।',
+    trackIntro:
+      'पहले की किसी शिकायत की संदर्भ आईडी है? यहाँ दर्ज करें और देखें कि क्या दर्ज हुआ था। नई शिकायत दर्ज करने की आवश्यकता नहीं है।',
+    trackHint: 'उदाहरण SAM-0001। अक्षरों के बड़े-छोटे अंतर का कोई महत्व नहीं है।',
+    trackRefExample: 'SAM-0001',
+    statusRecorded: 'दर्ज किया गया',
+    submittedOn: 'दर्ज करने की तारीख',
+    notProvided: 'प्रदान नहीं किया गया',
+    trackNoWorkflow:
+      'इस संस्करण में शिकायतें दर्ज होती हैं, परंतु कोई स्थिति प्रवाह नहीं है: कोई भी शिकायत को "दर्ज" से "समाधान" तक नहीं ले जाता, इसलिए दिखाने के लिए कोई प्रगति नहीं है। यहाँ जो दिख रहा है, वही दर्ज के समय दर्ज किया गया था।',
     backToCitizen: '← नागरिक पोर्टल',
     footerTagline: 'भारत सरकार — नागरिक शिकायत निवारण',
     category: 'श्रेणी',
@@ -249,6 +301,7 @@ export const UI = {
     valName: 'सत्यापन के लिए पूरा नाम आवश्यक है।',
     valPhone: 'फॉलो-अप के लिए मोबाइल नंबर आवश्यक है।',
     valPhoneFormat: 'मान्य 10 अंकों का भारतीय मोबाइल नंबर दर्ज करें।',
+  valWard: 'कृपया वार्ड या ब्लॉक नंबर दर्ज करें।',
     valPincode: 'पिन कोड 6 अंकों की संख्या होनी चाहिए।',
     valText: 'कृपया समस्या का वर्णन करें।',
     valFileSize: 'फ़ाइल 5 MB से छोटी होनी चाहिए।',
@@ -314,7 +367,7 @@ export const UI = {
       roads: { label: 'सड़क और कनेक्टिविटी', desc: 'गड्ढे, टूटी सड़कें, पुल, स्ट्रीट लाइट' },
       water: { label: 'जल और स्वच्छता', desc: 'पेयजल, नाली, शौचालय, सीवेज' },
       health: { label: 'स्वास्थ्य और चिकित्सा', desc: 'अस्पताल, PHC, एम्बुलेंस, दवाएँ' },
-      education: { label: 'शिक्षा और स्कूल', desc: 'स्कूल, कॉलेज, छात्रवृत्ति,バス' },
+      education: { label: 'शिक्षा और स्कूल', desc: 'स्कूल, कॉलेज, छात्रवृत्ति,बस' },
       power: { label: 'बिजली और ऊर्जा', desc: 'बिजली कटौती, ट्रांसफॉर्मर, स्ट्रीट लाइट' },
       housing: { label: 'आवास और झुग्गी', desc: 'आवास योजना, पुनर्वास' },
       agri: { label: 'कृषि और सिंचाई', desc: 'नहर, फसल, MSP, किसान सहायता' },
@@ -353,7 +406,7 @@ export const AP_CONSTITUENCIES = [
 
 /* ---------- Telangana ---------- */
 export const TS_DISTRICTS = ['Hyderabad', 'Rangareddy', 'Warangal', 'Karimnagar', 'Nizamabad', 'Khammam']
-export const TS_CONSTITUENCIES = ['Chevella', 'Hyderabad', 'Secunderabad', 'Malkajgiri', 'Zachariah']
+export const TS_CONSTITUENCIES = ['Chevella', 'Hyderabad', 'Secunderabad', 'Malkajgiri']
 
 /* ---------- Tamil Nadu ---------- */
 export const TN_DISTRICTS = ['Chennai', 'Coimbatore', 'Madurai', 'Tiruchirappalli', 'Salem']
@@ -372,7 +425,7 @@ export const MH_DISTRICTS = ['Mumbai', 'Pune', 'Nagpur', 'Nashik', 'Thane']
 export const MH_CONSTITUENCIES = ['Mumbai South', 'Pune', 'Nagpur', 'Nashik', 'Thane']
 
 /* ---------- Gujarat ---------- */
-export const GJ_DISTRICTS = ['Ahmedabad', 'Vadod', 'Surat', 'Vadodara', 'Rajkot', 'Bhavnagar']
+export const GJ_DISTRICTS = ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Bhavnagar']
 export const GJ_CONSTITUENCIES = ['Ahmedabad West', 'Surat', 'Vadodara', 'Rajkot', 'Bhavnagar']
 
 /* ---------- West Bengal ---------- */

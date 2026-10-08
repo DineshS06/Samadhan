@@ -1,10 +1,68 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": false,
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
   "rewrites": [
     {
-      "source": "/((?!api/).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/home",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/report",
+      "destination": "/report-issue",
+      "permanent": true
+    },
+    {
+      "source": "/report/",
+      "destination": "/report-issue",
+      "permanent": true
+    },
+    {
+      "source": "/how-it-works/",
+      "destination": "/how-it-works",
+      "permanent": true
+    },
+    {
+      "source": "/methodology/",
+      "destination": "/methodology",
+      "permanent": true
+    },
+    {
+      "source": "/faq/",
+      "destination": "/faq",
+      "permanent": true
+    },
+    {
+      "source": "/about/",
+      "destination": "/about",
+      "permanent": true
+    },
+    {
+      "source": "/privacy/",
+      "destination": "/privacy",
+      "permanent": true
+    },
+    {
+      "source": "/accessibility/",
+      "destination": "/accessibility",
+      "permanent": true
+    },
+    {
+      "source": "/mp/login/",
+      "destination": "/mp/login",
+      "permanent": true
+    },
+    {
+      "source": "/mp/",
+      "destination": "/mp",
+      "permanent": true
     }
   ],
   "headers": [
@@ -14,15 +72,6 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    },
-    {
-      "source": "/mp/(.*)",
-      "headers": [
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
         }
       ]
     },
@@ -46,6 +95,34 @@
           "value": "camera=(), microphone=(self), geolocation=(self)"
         }
       ]
+    },
+    {
+      "source": "/mp/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        }
+      ]
     }
-  ]
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false
 }
