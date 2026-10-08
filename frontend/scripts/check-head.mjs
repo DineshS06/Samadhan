@@ -88,17 +88,26 @@ const byProperty = (p) => metas.filter((m) => m.property === p);
         'It only ever affected Internet Explorer.');
 }
 
-// --- HEAD-06: analytics loader appears once ------------------------------
+// --- HEAD-06: each analytics library appears exactly once ----------------
+// GA4 is loaded directly (gtag.js in index.html) and Tag Manager is installed
+// alongside it for non-GA4 tags. That is a valid configuration. What is not
+// valid is either library being declared twice in one document, which fetches
+// it twice and would double-count. The real double-count risk from pairing
+// them is a GA4 Configuration tag inside the GTM container, which is a GTM UI
+// setting and cannot be read from here — so it is called out in the message
+// rather than asserted as clean.
 {
   const gtmScripts = [...html.matchAll(/googletagmanager\.com\/gtm\.js/g)].length;
   const gtagScripts = [...html.matchAll(/googletagmanager\.com\/gtag\/js/g)].length;
   const noscript = [...html.matchAll(/googletagmanager\.com\/ns\.html/g)].length;
-  gtmScripts === 1 && gtagScripts === 0 && noscript === 1
-    ? pass('HEAD-06', 'Single analytics loader',
-        `1 GTM snippet, 0 direct gtag.js, 1 noscript iframe`)
-    : fail('HEAD-06', 'Single analytics loader',
-        `gtm.js=${gtmScripts}, gtag/js=${gtagScripts}, ns.html=${noscript}`,
-        'Loading GTM and gtag.js together double-counts every page view.');
+  const ga4Config = /gtag\(\s*'config'\s*,\s*'G-[A-Z0-9]+'/.test(html);
+  gtmScripts === 1 && gtagScripts === 1 && noscript === 1 && ga4Config
+    ? pass('HEAD-06', 'Each analytics library loaded once',
+        `1 gtm.js, 1 gtag.js, 1 noscript iframe, GA4 configured. `
+        + 'Ensure GTM-NQ6GK9QG has no Google Analytics: Configuration tag, or events double-count.')
+    : fail('HEAD-06', 'Each analytics library loaded once',
+        `gtm.js=${gtmScripts}, gtag/js=${gtagScripts}, ns.html=${noscript}, ga4Config=${ga4Config}`,
+        'Load gtm.js and gtag.js exactly once each in <head>, and call gtag(\'config\', \'G-...\') once.');
 }
 
 // --- HEAD-07: the GTM container id agrees across the tree ----------------

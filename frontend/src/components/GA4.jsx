@@ -10,9 +10,18 @@ import { useLocation } from 'react-router-dom';
  * per-page metadata: an SPA has exactly one HTML document, so one snippet in
  * that document covers every route. There is nothing to add per page.
  *
- * gtag.js is deliberately NOT loaded. When tags are configured in GTM, adding
- * gtag.js as well sends two copies of every event and corrupts every metric.
- * GA4 itself is added later, inside the GTM container.
+ * gtag.js IS loaded, from the <head> of index.html, with the project's GA4
+ * Measurement ID. This component owns SPA page views only.
+ *
+ * Tag Manager (GTM-NQ6GK9QG) is also installed in that same document, for any
+ * tag that is not GA4. That is safe only because GA4 is NOT also configured
+ * inside the GTM container. A Google Analytics: Configuration tag in GTM plus
+ * gtag.js here means two paths to GA4 and every event counted twice. If one is
+ * added later, remove the other.
+ *
+ * gtag('config', ..., { send_page_view: true }) in index.html covers the
+ * initial document load. Every later client-side navigation is covered by the
+ * pushes below, because gtag.js cannot observe a React Router transition.
  *
  * ── SPA page views ─────────────────────────────────────────────────────────
  * Google documents two mutually exclusive ways to count page views in an SPA:

@@ -66,16 +66,32 @@ if (nsIdx === -1) {
   pass('ANL-03', 'GTM noscript iframe', `Present ${placement} at byte ${nsIdx}`);
 }
 
-// --- exactly one analytics loader ---------------------------------------
-const loadsGtag = /gtag\/js\?id=|googletagmanager\.com\/gtag/.test(ga4);
-const htmlGtag = /gtag\/js\?id=|googletagmanager\.com\/gtag/.test(html);
-if (loadsGtag || htmlGtag) {
-  fail('ANL-04', 'Single analytics loader',
-    `Direct gtag.js loading is still present (GA4.jsx: ${loadsGtag}, index.html: ${htmlGtag}). GTM would then fire page_view twice per navigation.`,
-    'Remove the gtag.js injection from GA4.jsx; let GTM own the tag.');
+// --- exactly one path to GA4 -------------------------------------------
+// GA4 now loads from index.html via gtag.js, not through the GTM container.
+// The invariant is not "gtag.js is absent" — it is that there is exactly one
+// of each loader, so no tag is declared twice in the document. GA4.jsx must
+// not inject gtag.js a second time, which is a real double-count risk.
+const loadsGtagInJsx = /gtag\/js\?id=|googletagmanager\.com\/gtag/.test(ga4);
+const gtagInHtml = [...html.matchAll(/googletagmanager\.com\/gtag\/js\?id=/g)].length;
+const gtmInHtml = [...html.matchAll(/googletagmanager\.com\/gtm\.js/g)].length;
+const measurementId = /gtag\('config',\s*'(G-[A-Z0-9]+)'/.exec(html)?.[1] ?? null;
+
+if (loadsGtagInJsx) {
+  fail('ANL-04', 'Single path to GA4',
+    'GA4.jsx also injects gtag.js while index.html already loads it, so the library is fetched twice.',
+    'Remove the gtag.js injection from GA4.jsx; index.html owns the loader.');
+} else if (gtagInHtml !== 1 || gtmInHtml !== 1) {
+  fail('ANL-04', 'Single path to GA4',
+    `Expected exactly one gtag.js and one gtm.js in index.html; found gtag=${gtagInHtml}, gtm=${gtmInHtml}.`,
+    'Load each library exactly once in the <head> of index.html.');
+} else if (!measurementId) {
+  fail('ANL-04', 'Single path to GA4',
+    'gtag.js is loaded but no gtag(\'config\', \'G-...\') call was found, so GA4 never receives events.',
+    "Add gtag('config', 'G-XXXXXXX') in index.html.");
 } else {
-  pass('ANL-04', 'Single analytics loader',
-    'GTM is the only loader; GA4.jsx no longer injects gtag.js, so page_view cannot double-fire');
+  pass('ANL-04', 'Single path to GA4',
+    `1 gtm.js, 1 gtag.js, configured for ${measurementId}; GA4.jsx does not inject a second loader. `
+    + 'GA4 must NOT also be configured inside GTM-NQ6GK9QG.');
 }
 
 // --- SPA page-view tracking ---------------------------------------------

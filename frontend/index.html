@@ -10,6 +10,22 @@
   })(window,document,'script','dataLayer','GTM-NQ6GK9QG');</script>
   <!-- End Google Tag Manager -->
 
+    <!-- Google Analytics 4 (gtag.js)
+         GA4 is loaded directly here rather than through the GTM container.
+         GTM stays installed for any non-GA4 tag; it must NOT also contain a
+         Google Analytics: Configuration tag, or every event is counted twice.
+         page_view on client-side route changes is pushed by
+         src/components/GA4.jsx (Google's documented "Option 2" for SPAs),
+         which gtag.js reads from the same dataLayer. -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6LWP2GPD16"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-6LWP2GPD16', { send_page_view: true });
+    </script>
+    <!-- End Google Analytics 4 -->
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <!-- Google Search Console: HTML tag verification method. -->
   <meta name="google-site-verification" content="fU_upEVgNZXNdkt65iyyAP4kor6o4AOFMVqQujLKAJI" />

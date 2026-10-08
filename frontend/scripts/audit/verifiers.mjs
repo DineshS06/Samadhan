@@ -144,11 +144,12 @@ function liveUrl(p) {
 export const VERIFIERS = {
   // ---------- SEO Basics ----------
   'SEO-001': () => {
-    // Analytics now ships through Google Tag Manager, not a direct gtag.js
-    // load. Verify the three things that can be verified from the repository:
-    // the container snippet is deployed, exactly one loader exists, and SPA
-    // navigation is reported. Whether the container forwards to a GA4 property
-    // is decided in the GTM UI and cannot be checked here.
+    // GA4 ships directly via gtag.js in index.html; Tag Manager stays installed
+    // for non-GA4 tags. Verify what is checkable from the repository: the GTM
+    // container is installed in <head>, gtag.js is present exactly once and is
+    // configured with a GA4 measurement ID, and SPA navigation is reported.
+    // Whether the GTM container ALSO forwards to GA4 is a GTM UI setting and
+    // cannot be read here, so it is surfaced rather than assumed.
     const html = ctx.indexHtml;
     const ga4 = ctx.ga4;
     const gtmId = 'GTM-NQ6GK9QG';
@@ -158,7 +159,9 @@ export const VERIFIERS = {
     const inHead = gtmIdx > headIdx && gtmIdx < bodyIdx;
     const noscript = html.includes('/ns.html?id=' + gtmId) && html.indexOf('ns.html?id=' + gtmId) > bodyIdx;
     const idPresent = html.includes(gtmId);
-    const doubleLoad = /gtag\/js\?id=|googletagmanager\.com\/gtag/.test(html) || /gtag\/js\?id=|googletagmanager\.com\/gtag/.test(ga4);
+    const gtagLoads = [...html.matchAll(/googletagmanager\.com\/gtag\/js\?id=/g)].length;
+    const jsxInjectsGtag = /gtag\/js\?id=|googletagmanager\.com\/gtag/.test(ga4);
+    const measurementId = /gtag\('config',\s*'(G-[A-Z0-9]+)'/.exec(html)?.[1] ?? null;
     const spaTracking = /dataLayer\.push/.test(ga4);
 
     if (!idPresent || !inHead) {
@@ -168,12 +171,21 @@ export const VERIFIERS = {
           remediation: 'Paste the GTM container snippet as the first child of <head> in index.html.',
           source: 'code', location: 'index.html' });
     }
-    if (doubleLoad) {
+    if (gtagLoads !== 1 || jsxInjectsGtag) {
       return P('FAIL',
-        'GTM and a direct gtag.js loader are both present; every page_view would be counted twice.',
-        { currentValue: 'two analytics loaders', requiredValue: 'exactly one loader (GTM)',
-          remediation: 'Remove the gtag.js injection from GA4.jsx.',
-          source: 'code', location: 'src/components/GA4.jsx' });
+        `gtag.js appears ${gtagLoads} time(s) in index.html and GA4.jsx injects it: ${jsxInjectsGtag}. `
+        + 'The library must be fetched once, or every page_view is counted twice.',
+        { currentValue: `gtag.js x${gtagLoads}, GA4.jsx injects=${jsxInjectsGtag}`,
+          requiredValue: 'exactly one gtag.js load, in index.html only',
+          remediation: 'Load gtag.js once in index.html and remove any injection from GA4.jsx.',
+          source: 'code', location: 'index.html, src/components/GA4.jsx' });
+    }
+    if (!measurementId) {
+      return P('FAIL',
+        'gtag.js is loaded but no gtag(\'config\', \'G-...\') call is present, so GA4 receives nothing.',
+        { currentValue: 'no GA4 configuration', requiredValue: "gtag('config', 'G-XXXXXXX')",
+          remediation: "Add gtag('config', 'G-XXXXXXX') in the <head> of index.html.",
+          source: 'code', location: 'index.html' });
     }
     if (!spaTracking) {
       return P('PARTIAL',
@@ -183,14 +195,17 @@ export const VERIFIERS = {
           source: 'code' });
     }
     return P('BLOCKED',
-      `GTM container ${gtmId} is installed in <head> (noscript fallback present: ${noscript}), is the only ` +
-      'analytics loader, and client-side navigations push page_view to the dataLayer. Data cannot be ' +
-      'confirmed reaching a GA4 property because that requires the container to be configured in the GTM ' +
-      'UI (Google Analytics > Configuration) and a GA4 measurement ID, neither of which is verifiable here.',
-      { currentValue: 'container installed and tracking configured; GA4 forwarding unverified',
+      `GA4 is configured directly: gtag.js is loaded once in <head> and ` +
+      `gtag('config', '${measurementId}') is called. The GTM container ${gtmId} is also installed ` +
+      `(noscript fallback present: ${noscript}), and client-side navigations push page_view to the ` +
+      'dataLayer. Everything the repository controls is in place. It cannot be confirmed from source ' +
+      'that data is arriving in the GA4 property, because that needs the live property, and the GTM ' +
+      'container must NOT also hold a Google Analytics: Configuration tag or events count twice.',
+      { currentValue: `gtag.js configured for ${measurementId}; GTM installed; SPA tracking present`,
         requiredValue: 'GA4 property receiving page_view events',
-        remediation: 'In GTM: Google Analytics > Configuration > add the GA4 measurement ID, then verify in GA4 DebugView.',
-        source: 'code + GTM UI (not accessible here)', location: 'index.html, src/components/GA4.jsx' });
+        remediation: 'Confirm GTM-NQ6GK9QG has no Google Analytics: Configuration tag, then check GA4 Realtime.',
+        source: 'code (configured) + GA4 property (not accessible here)',
+        location: 'index.html, src/components/GA4.jsx' });
   },
 
   'SEO-003': () => {
