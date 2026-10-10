@@ -74,6 +74,27 @@
        browser in the support matrix runs. It was dead weight in <head>. -->
 </head>
 <body>
+    <!-- Crawler link graph. React renders every link after hydration, so the
+         served document has no links at all until JavaScript runs. A raw-HTML
+         crawl of this site found the homepage and its two assets, and nothing
+         else. These plain anchors give crawlers a link graph without a
+         prerender step. Browsers with JavaScript enabled never render this. -->
+    <noscript>
+      <nav aria-label="Site pages">
+        <h1>Samadhan</h1>
+        <p>Citizen grievances in, ranked constituency projects out.</p>
+        <ul>
+          <li><a href="/report-issue">Report a constituency issue</a></li>
+          <li><a href="/how-it-works">How it works</a></li>
+          <li><a href="/methodology">Priority methodology</a></li>
+          <li><a href="/faq">Frequently asked questions</a></li>
+          <li><a href="/about">About Samadhan</a></li>
+          <li><a href="/privacy">Privacy for citizen grievance data</a></li>
+          <li><a href="/accessibility">Accessibility statement</a></li>
+        </ul>
+      </nav>
+    </noscript>
+
   <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NQ6GK9QG"
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>

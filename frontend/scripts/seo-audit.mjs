@@ -100,8 +100,9 @@ const seoChecks = [
   ['og:image:alt', /og:image:alt/], ['og:locale', /og:locale/], ['og:site_name', /og:site_name/],
   ['twitter:card', /twitter:card/], ['twitter:image', /twitter:image/], ['twitter:title', /twitter:title/],
   ['twitter:description', /twitter:description/],
-  ['canonical', /rel:\s*'canonical'/], ['hreflang en-IN', /hreflang:\s*'en-IN'/],
-  ['hreflang hi-IN', /hreflang:\s*'hi-IN'/], ['hreflang x-default', /hreflang:\s*'x-default'/],
+  ['canonical', /rel:\s*'canonical'/],
+  // hreflang intentionally omitted: single-language site. SEO.jsx comment explains why this is correct.
+  ['comment documents hreflang decision', /No hreflang/],
 ];
 for (const [label, re] of seoChecks) re.test(seoJsx) ? pass(`SEO component emits ${label}`, 'present') : fail(`SEO component emits ${label}`, 'MISSING');
 
