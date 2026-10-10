@@ -214,8 +214,8 @@ export default function App() {
           <Route path='/' element={
             <>
               <SEO
-                title='AI Constituency Planning for MP Offices'
-                description='Turn multilingual citizen requests into ranked, evidence-backed constituency project plans using transparent demand, infrastructure gap, and severity scoring.'
+                title='Report Constituency Issues to Your MP'
+                description='Turn multilingual citizen requests into ranked constituency projects using a published, evidence-backed scoring model you can check.'
                 path='/'
                 schema={data.home}
               />
