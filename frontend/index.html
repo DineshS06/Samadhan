@@ -32,6 +32,20 @@
   <meta name="theme-color" content="#0B2A52">
   <meta name="description" content="Turn multilingual citizen requests into ranked constituency projects using a published, evidence-backed scoring model you can check.">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <!-- Canonical for the served document.
+       This MUST be the homepage. Vercel serves the same index.html for every
+       route (that is what the SPA rewrite does), so a non-JavaScript crawler
+       requesting /faq or /methodology receives this exact tag and would be told,
+       in effect, that those pages are duplicates of the homepage. Measured
+       before this comment existed: /FAQ, /Faq, /faq and /METHODOLOGY all
+       returned 200 while declaring canonical=https://samadhan-chi.vercel.app/.
+
+       That is why per-route canonical tags matter here. src/components/SEO.jsx
+       sets the correct per-route canonical at runtime for crawlers that render
+       JavaScript; this static tag is the fallback for those that do not, and
+       the only correct value it can carry is the homepage's own URL. Changing
+       it to a per-route guess would be worse, because the document genuinely
+       does not know its route. -->
   <link rel="canonical" href="https://samadhan-chi.vercel.app/">
   <link rel="icon" href="/Samadhan.png">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -70,19 +84,158 @@
        GTM UI (Google Analytics > Configuration, or a GA4 Event tag). Loading the
        snippet alone sends data to no property until that step is done. -->
 
-  <!-- No X-UA-Compatible: it only ever affected Internet Explorer, which no
-       browser in the support matrix runs. It was dead weight in <head>. -->
+  <!-- Structured data, served statically.
+
+       WHY THIS IS HERE AND NOT ONLY IN THE REACT COMPONENT.
+       src/components/SEO.jsx injects this JSON-LD at runtime, which means it
+       exists only after JavaScript executes. Measured before this block was
+       added: the served document carried ZERO JSON-LD blocks. Google renders
+       JavaScript before indexing, so this was not strictly fatal, but it left
+       every rich-result eligibility check dependent on a second render pass and
+       left non-JS consumers with no entity data at all.
+
+       Schema.org JSON-LD is not a keyword field. It describes entities and
+       relationships so Google can show rich results (FAQ accordions, sitelinks,
+       breadcrumbs). Stuffing target keywords into it does nothing for rankings
+       and is a recognised spam pattern. What earns visibility is words a person
+       actually typed, present in the page body.
+
+       This must mirror the on-page copy exactly. The FAQ questions below are
+       the same text src/App.jsx renders on /faq, because Google penalises
+       structured data that does not match visible content. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://samadhan-chi.vercel.app/#organization",
+        "name": "Samadhan",
+        "url": "https://samadhan-chi.vercel.app/",
+        "description": "A civic platform that turns citizen constituency grievances into ranked, explainable project recommendations."
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://samadhan-chi.vercel.app/#website",
+        "url": "https://samadhan-chi.vercel.app/",
+        "name": "Samadhan",
+        "publisher": { "@id": "https://samadhan-chi.vercel.app/#organization" },
+        "inLanguage": "en-IN"
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://samadhan-chi.vercel.app/#webpage",
+        "url": "https://samadhan-chi.vercel.app/",
+        "name": "Report Constituency Issues to Your MP | Samadhan",
+        "description": "Turn multilingual citizen requests into ranked constituency projects using a published, evidence-backed scoring model you can check.",
+        "isPartOf": { "@id": "https://samadhan-chi.vercel.app/#website" },
+        "about": { "@id": "https://samadhan-chi.vercel.app/#organization" },
+        "inLanguage": "en-IN"
+      }
+    ]
+  }
+  </script>
 </head>
+
 <body>
-    <!-- Crawler link graph. React renders every link after hydration, so the
-         served document has no links at all until JavaScript runs. A raw-HTML
-         crawl of this site found the homepage and its two assets, and nothing
-         else. These plain anchors give crawlers a link graph without a
-         prerender step. Browsers with JavaScript enabled never render this. -->
+    <!-- Indexable content.
+         WHY THIS BLOCK EXISTS. A crawler that does not execute JavaScript
+         receives an empty <div id="root"></div>. Measured on this site before
+         this block existed: 38 visible words, the same 38 on every route, and
+         zero occurrences of any scheme keyword. A score tool still reported
+         89, because it was scoring a nearly-empty shell.
+
+         WHAT IT IS NOW. Prose and headings only. An earlier version carried a
+         36-row CPGRAMS data table here; that was removed on purpose. The
+         figures are real but they go stale the moment DARPG updates, and a
+         keyword-dense block inside <noscript> is the pattern Google treats as
+         cloaking. Content that must stay accurate belongs on a real page that
+         can be re-generated and re-checked, not frozen into a document shell.
+
+         WHO SEES THIS. Browsers with JavaScript on render the React app and
+         never see this block. Crawlers that do not run JavaScript read it as
+         the document body. -->
+
     <noscript>
+      <h1>Samadhan: report a constituency issue and get it ranked</h1>
+      <p>
+        Samadhan turns citizen grievances into ranked constituency projects. You
+        report the problem in your own language, attach a location and evidence,
+        and receive a reference ID to track it. Your name and phone number stay
+        private. Every project is scored on published, checkable criteria.
+      </p>
+
+      <h2>What people report, and what we do about it</h2>
+      <p>
+        The categories below are the ones citizens most often raise on India's
+        central public grievance portal: PM-KISAN instalments, the rural
+        employment guarantee, ration distribution, and health cover. Samadhan
+        groups a report by category so that one person's problem becomes a
+        visible pattern across a constituency instead of an isolated complaint.
+      </p>
+
+      <h2>What to do when a payment or service has not arrived</h2>
+      <p>
+        Most complaints about central schemes fall into a small number of
+        published causes. These are the ones DARPG reports under, and each has a
+        specific fix.
+      </p>
+      <h3>Categories DARPG reports the most grievances under</h3>
+      <ul>
+          <li>PMKISAN related issues</li>
+          <li>Pradhan Mantri Awaas Yojana, Gramin (Rural)</li>
+          <li>Swachh Bharat Mission, Rural</li>
+          <li>Housing and Urban Development Corporation</li>
+        </ul>
+
+      <h2>How a reported issue is ranked</h2>
+      <p>
+        Samadhan scores each verified grievance on three published components:
+        confirmed demand at 40 percent, measured infrastructure deficit at 40
+        percent, and severity at 20 percent. Every component is auditable, so
+        any ranking decision can be checked and challenged. No black box decides
+        what matters in your constituency.
+      </p>
+      <p>
+        <a href="/methodology">Read the full scoring methodology</a>, or
+        <a href="/how-it-works">see the six-step workflow</a> from report to ranked
+        project.
+      </p>
+
+      <h2>Report a problem in your constituency</h2>
+      <p>
+        You can report a problem in any language. Attach a location and any
+        evidence you have, and you will get a reference ID to track the report.
+        Contact details are stored separately from the public record.
+      </p>
+      <p><a href="/report-issue">Report a constituency issue</a></p>
+
+      <h2>Common questions</h2>
+      <h3>Why has my scheme payment not been credited?</h3>
+      <p>
+        Published reporting identifies a small set of recurring causes: an
+        incomplete e-KYC, an Aadhaar number not linked to the bank account, a
+        name mismatch between Aadhaar and the bank record, land bought or
+        inherited after 1 February 2019, and more than one claimant in the same
+        family. Check your status on the official portal first, then report it
+        here so the pattern is visible for your constituency.
+      </p>
+      <h3>How is an issue prioritised over another?</h3>
+      <p>
+        By the published 40-40-20 score, not by who asked loudest. Demand and
+        infrastructure deficit each carry 40 percent, severity carries 20, and
+        the components are published so any decision can be reviewed.
+      </p>
+      <h3>Who can see what I report?</h3>
+      <p>
+        The substance of a report is public so it can be counted. Your name,
+        phone number and contact details are stored separately and are not shown
+        on the public record. <a href="/privacy">Read the privacy policy</a>.
+      </p>
+      <p><a href="/faq">All frequently asked questions</a></p>
+
+      <h2>Every page on this site</h2>
       <nav aria-label="Site pages">
-        <h1>Samadhan</h1>
-        <p>Citizen grievances in, ranked constituency projects out.</p>
         <ul>
           <li><a href="/report-issue">Report a constituency issue</a></li>
           <li><a href="/how-it-works">How it works</a></li>
