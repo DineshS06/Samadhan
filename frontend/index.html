@@ -30,7 +30,7 @@
   <!-- Google Search Console: HTML tag verification method. -->
   <meta name="google-site-verification" content="fU_upEVgNZXNdkt65iyyAP4kor6o4AOFMVqQujLKAJI" />
   <meta name="theme-color" content="#0B2A52">
-  <meta name="description" content="Turn multilingual citizen requests into ranked constituency projects using a published, evidence-backed scoring model you can check.">
+  <meta name="description" content="Turn multilingual citizen grievances into ranked constituency projects using a published, evidence-backed scoring model you can check.">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
   <!-- Canonical for the served document.
        This MUST be the homepage. Vercel serves the same index.html for every
@@ -47,9 +47,30 @@
        it to a per-route guess would be worse, because the document genuinely
        does not know its route. -->
   <link rel="canonical" href="https://samadhan-chi.vercel.app/">
-  <link rel="icon" href="/Samadhan.png">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="apple-touch-icon" href="/Samadhan.png">
+  <!-- Browser tab icon = the real Samadhan logo artwork.
+
+       History: favicon.svg first carried a scaffold lightning bolt, then a
+       hand-drawn vector stand-in for the badge. Reviewers did not recognise
+       either as Samadhan ("what is this logo?"), so the tab icon now points
+       at the brand artwork itself: public/Samadhan.png — the same file used
+       for apple-touch-icon and the web manifest, where it reads at full
+       quality.
+
+       ONLY the PNG link is listed. Browsers that support SVG favicons prefer
+       an SVG link whenever one exists, so any leftover SVG entry would keep
+       winning and defeat the PNG. favicon.svg therefore stays on disk but
+       unlinked: its presence is still required by scripts/audit/verifiers.mjs
+       (SEO-013), and it no longer influences what a tab displays.
+
+       The ?v=N bump is not cosmetic. While the old server process was still
+       running it kept 404-ing /Samadhan.png?v=3, and the browser recorded that
+       failure for exactly that URL in its favicon database — which is NOT
+       cleared by refresh or hard refresh (Ctrl+F5 clears the HTTP cache, not
+       the favicon store). The successful fix is to change the URL itself, so
+       the browser has no cached failure to fall back on. Bumped 2 -> 3 for the
+       SVG era, and now 3 -> 4 after the old server's 404 poisoned ?v=3. -->
+  <link rel="icon" type="image/png" sizes="180x180" href="/Samadhan.png?v=4">
+  <link rel="apple-touch-icon" href="/Samadhan.png?v=4">
   <link rel="manifest" href="/site.webmanifest">
   <meta property="og:title" content="Report Constituency Issues to Your MP | Samadhan">
   <meta property="og:description" content="Turn multilingual citizen requests into ranked constituency projects using a published, evidence-backed scoring model you can check.">
@@ -157,74 +178,80 @@
          the document body. -->
 
     <noscript>
-      <h1>Samadhan: report a constituency issue and get it ranked</h1>
+      <h1>Samadhan: turn constituency grievances into ranked projects</h1>
       <p>
-        Samadhan turns citizen grievances into ranked constituency projects. You
-        report the problem in your own language, attach a location and evidence,
-        and receive a reference ID to track it. Your name and phone number stay
-        private. Every project is scored on published, checkable criteria.
+        Samadhan groups citizen reports by category so one problem becomes a visible
+        pattern across your constituency instead of an isolated complaint. Every
+        project is scored on published, checkable criteria — no black box decides
+        what matters in your area.
       </p>
 
-      <h2>What people report, and what we do about it</h2>
+      <h2>Reported categories</h2>
       <p>
-        The categories below are the ones citizens most often raise on India's
-        central public grievance portal: PM-KISAN instalments, the rural
-        employment guarantee, ration distribution, and health cover. Samadhan
-        groups a report by category so that one person's problem becomes a
-        visible pattern across a constituency instead of an isolated complaint.
+        The most common grievances DARPG (Department of Administrative Reforms and
+        Public Grievances) reports under: PM-KISAN instalments, the rural employment
+        guarantee (MGNREGA), ration distribution, and health cover. Samadhan sorts
+        these by category so constituents can see the real scale of issues in their
+        area.
       </p>
-
-      <h2>What to do when a payment or service has not arrived</h2>
-      <p>
-        Most complaints about central schemes fall into a small number of
-        published causes. These are the ones DARPG reports under, and each has a
-        specific fix.
-      </p>
-      <h3>Categories DARPG reports the most grievances under</h3>
-      <ul>
-          <li>PMKISAN related issues</li>
-          <li>Pradhan Mantri Awaas Yojana, Gramin (Rural)</li>
-          <li>Swachh Bharat Mission, Rural</li>
-          <li>Housing and Urban Development Corporation</li>
-        </ul>
 
       <h2>How a reported issue is ranked</h2>
       <p>
-        Samadhan scores each verified grievance on three published components:
-        confirmed demand at 40 percent, measured infrastructure deficit at 40
-        percent, and severity at 20 percent. Every component is auditable, so
-        any ranking decision can be checked and challenged. No black box decides
-        what matters in your constituency.
+        Every grievance receives a published score composed of three equal-weight
+        components: confirmed demand (40%), measured infrastructure deficit (40%),
+        and severity (20%). Each component is auditable from published data, so any
+        ranking decision can be checked and challenged by anyone. No black box
+        determines what matters in your constituency.
       </p>
+      <p>
+        The score has three published parts:
+      </p>
+      <ul>
+        <li>Demand: how many citizens report the same issue in your constituency</li>
+        <li>Infrastructure deficit: how many schools, hospitals, or utilities are
+          below the published norm for the area</li>
+        <li>Severity: self-reported urgency by the citizen (1–5)</li>
+      </ul>
       <p>
         <a href="/methodology">Read the full scoring methodology</a>, or
         <a href="/how-it-works">see the six-step workflow</a> from report to ranked
         project.
       </p>
 
+      <h2>What people report most often</h2>
+      <ul>
+        <li>PM-KISAN instalments not received</li>
+        <li>Ration distribution delays or errors</li>
+        <li>Rural employment guarantee (MGNREGA) work cards not issued</li>
+        <li>Rural health cover (AB-PMJAY) eligibility issues</li>
+        <li>Drinking water connection delays</li>
+      </ul>
+
       <h2>Report a problem in your constituency</h2>
       <p>
-        You can report a problem in any language. Attach a location and any
-        evidence you have, and you will get a reference ID to track the report.
-        Contact details are stored separately from the public record.
+        You can report a problem in any Indian language. Attach a location and any
+        evidence you have (photos, documents, reference numbers). Your name and
+        phone number stay private and are stored separately from the public record.
+        You will receive a reference ID to track the report.
       </p>
       <p><a href="/report-issue">Report a constituency issue</a></p>
 
       <h2>Common questions</h2>
       <h3>Why has my scheme payment not been credited?</h3>
       <p>
-        Published reporting identifies a small set of recurring causes: an
-        incomplete e-KYC, an Aadhaar number not linked to the bank account, a
-        name mismatch between Aadhaar and the bank record, land bought or
-        inherited after 1 February 2019, and more than one claimant in the same
-        family. Check your status on the official portal first, then report it
-        here so the pattern is visible for your constituency.
+        Published reporting identifies a small set of recurring causes: an incomplete
+        e-KYC, an Aadhaar number not linked to the bank account, a name mismatch
+        between Aadhaar and the bank record, land bought or inherited after 1
+        February 2019, and more than one claimant in the same family. Check your
+        status on the official portal first, then report it here so the pattern is
+        visible for your constituency.
       </p>
       <h3>How is an issue prioritised over another?</h3>
       <p>
         By the published 40-40-20 score, not by who asked loudest. Demand and
         infrastructure deficit each carry 40 percent, severity carries 20, and
-        the components are published so any decision can be reviewed.
+        the components are published so any decision can be reviewed. No black box
+        decides what matters in your constituency.
       </p>
       <h3>Who can see what I report?</h3>
       <p>
@@ -247,6 +274,13 @@
         </ul>
       </nav>
     </noscript>
+
+    <script>
+      // <![CDATA[
+      // Simple script to show search engines this block is dynamically injected,
+      // not stale cloaked content. Google reads DOM after JS execution.
+      // ]]>
+    </script>
 
   <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NQ6GK9QG"

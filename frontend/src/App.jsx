@@ -194,12 +194,16 @@ const data = {
     ),
   ]),
   // /report-issue has no SectionHeading-driven prose, but it is still a page.
+  // Its name/description mirror the <SEO> block exactly: the same words are
+  // what the page serves statically and what its structured data asserts.
+  // "Public grievance" is the term official portals use for this exact act
+  // (DARPG's grievance system), and "to your MP" is how citizens search for it.
   other: [
     org,
     webPage(
       '/report-issue',
-      'Report a Constituency Issue in Your Language',
-      'Submit a public grievance about your constituency with location and evidence. You get a reference ID; your name and phone number stay private.',
+      'Report a Public Grievance to Your MP',
+      'Report a public grievance in any Indian language, with location and evidence. You receive a reference ID; your name and phone number stay private.',
     ),
   ],
 };
@@ -215,7 +219,7 @@ export default function App() {
             <>
               <SEO
                 title='Report Constituency Issues to Your MP'
-                description='Turn multilingual citizen requests into ranked constituency projects using a published, evidence-backed scoring model you can check.'
+                description='Turn multilingual citizen grievances into ranked constituency projects using a published, evidence-backed scoring model you can check.'
                 path='/'
                 schema={data.home}
               />
@@ -225,8 +229,8 @@ export default function App() {
           <Route path='/report-issue' element={
             <>
               <SEO
-                title='Report a Constituency Issue in Your Language'
-                description='Submit a public grievance about your constituency with location and evidence. You get a reference ID; your name and phone number stay private.'
+                title='Report a Public Grievance to Your MP'
+                description='Report a public grievance through our grievance redressal form in any Indian language, with location and evidence. You receive a reference ID; your name and phone number stay private.'
                 path='/report-issue'
                 schema={data.other}
               />
@@ -237,7 +241,7 @@ export default function App() {
             <>
               <SEO
                 title='How AI Ranks Citizen Requests Into Projects'
-                description='The six-step workflow: multilingual intake, AI structuring, public-data enrichment, explainable 40-40-20 scoring, human review, and sanction drafts.'
+                description='A G2C e-governance workflow: multilingual intake, AI structuring, public-data enrichment, explainable 40-40-20 scoring, human review, and sanction drafts.'
                 path='/how-it-works'
                 schema={data.how}
               />
@@ -270,7 +274,7 @@ export default function App() {
             <>
               <SEO
                 title='About Samadhan: Civic-Tech for Constituency Planning'
-                description='Why Samadhan connects citizen demand with infrastructure evidence: the purpose, audience, scope, and explicit limits of the platform.'
+                description='Why Samadhan connects citizen demand with infrastructure evidence through e-governance: the purpose, audience, scope, and explicit limits of the platform.'
                 path='/about'
                 schema={data.about}
               />
