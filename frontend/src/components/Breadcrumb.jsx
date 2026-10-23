@@ -42,6 +42,18 @@ const breadcrumbMap = {
     { name: 'Home', url: SITE_URL },
     { name: 'MP Dashboard', url: SITE_URL + '/mp' },
   ],
+  '/how-to-report': [
+    { name: 'Home', url: SITE_URL },
+    { name: 'How to Report an Issue', url: SITE_URL + '/how-to-report' },
+  ],
+  '/mplads': [
+    { name: 'Home', url: SITE_URL },
+    { name: 'MPLADS Fund', url: SITE_URL + '/mplads' },
+  ],
+  '/constituency': [
+    { name: 'Home', url: SITE_URL },
+    { name: 'Constituency', url: SITE_URL + '/constituency' },
+  ],
 };
 
 export function getBreadcrumbs(pathname) {

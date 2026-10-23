@@ -292,3 +292,33 @@
 .related__link:hover{border-color:var(--blue);background:var(--soft)}
 .related__link--hub{background:var(--navy);border-color:var(--navy);color:#fff}
 .related__link--hub:hover{background:#0a4080;border-color:#0a4080}
+
+/* ----------------------------------------------------------------------
+   Guide-page tables (.data-table / .table-scroll)
+   The /how-to-report comparison table was written against these class names
+   but neither rule existed in this stylesheet, so the table rendered as an
+   unstyled grid of cells — no borders, no padding, no header treatment. On a
+   360px-wide phone the three columns also forced the whole page to scroll
+   sideways. .table-scroll gives the table its own scroll container so the
+   page itself never overflows.
+   ---------------------------------------------------------------------- */
+.table-scroll{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.data-table{width:100%;margin:22px 0;border:1px solid var(--border);border-radius:12px;
+  border-collapse:separate;border-spacing:0;background:#fff;font-size:14px;overflow:hidden}
+.data-table th,.data-table td{padding:12px 14px;text-align:left;vertical-align:top;
+  border-bottom:1px solid var(--border)}
+.data-table th{background:var(--soft);color:var(--navy);font-size:12px;
+  font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.data-table tbody tr:last-child td{border-bottom:0}
+.data-table td:first-child{white-space:nowrap}
+@media(max-width:720px){
+  .data-table{font-size:13px}
+  .data-table th,.data-table td{padding:10px 12px;min-width:150px}
+  .data-table td:first-child{white-space:normal}
+}
+
+/* Long-form guide pages: default list rhythm inside .reading-column. */
+.reading-column ul,.reading-column ol{margin:14px 0;padding-left:22px;color:var(--muted);
+  font-size:16px;line-height:1.75}
+.reading-column li+li{margin-top:8px}
+.reading-column li strong{color:var(--ink)}

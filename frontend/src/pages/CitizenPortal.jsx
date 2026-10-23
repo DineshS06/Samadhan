@@ -13,6 +13,7 @@ import {
   getConstituenciesForState,
 } from '../i18n/translations'
 import { INDIAN_STATES } from '../data/formConfig'
+import { formatConstituencyName } from '../data/districtConstituencies'
 
 const CATEGORY_ICONS = {
   roads: '🛣️', water: '💧', health: '🏥', education: '📚', power: '⚡', housing: '🏠',
@@ -330,7 +331,7 @@ export default function CitizenPortal() {
                       {constituencies ? (
                         <select value={form.constituency} onChange={(e) => set('constituency', e.target.value)} className={inputClass} required>
                           <option value="">{t.constituencyPh}</option>
-                          {constituencies.map((c) => <option key={c} value={c}>{c}</option>)}
+                          {constituencies.map((c) => <option key={c} value={c}>{formatConstituencyName(c)}</option>)}
                         </select>
                       ) : (
                         <input type="text" value={form.constituency} onChange={(e) => set('constituency', e.target.value)} className={inputClass} placeholder={t.constituencyPh} required />
@@ -391,30 +392,36 @@ export default function CitizenPortal() {
             </Section>
 
             <Section title={t.location}>
-              {!locationReady ? (
-                <p className="text-sm text-slate-600 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">{t.locationLockedHint}</p>
-              ) : (
-                <div className="space-y-4">
-                  <button type="button" onClick={useMyLocation} disabled={geoLoading}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#032B5B] hover:bg-[#0a4080] text-white text-sm font-medium px-4 py-2.5 rounded-lg disabled:opacity-50">
-                    {geoLoading ? t.gpsLoading : `📍 ${t.useGps}`}
-                  </button>
-                  {form.geolocation && (
-                    <p className="text-xs text-green-700 font-mono">✓ {t.gpsCaptured}</p>
-                  )}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <FormField label={t.village} required={!form.geolocation}>
-                      <input type="text" value={form.village} onChange={(e) => set('village', e.target.value)} className={inputClass} placeholder={t.villagePh} required={!form.geolocation} />
-                    </FormField>
-                    <FormField label={t.ward} required>
-                      <input type="text" value={form.ward_block} onChange={(e) => set('ward_block', e.target.value)} className={inputClass} placeholder={t.wardPh} />
-                    </FormField>
-                    <FormField label={t.pincode} required>
-                      <input type="text" inputMode="numeric" pattern="[0-9]{6}" maxLength={6} value={form.pincode} onChange={(e) => set('pincode', e.target.value)} className={inputClass} required />
-                    </FormField>
-                  </div>
+              <div className="space-y-4">
+                {/* The GPS button used to sit inside the `locationReady` branch,
+                    which is only true once state + district + constituency are
+                    already filled. That made the feature circular: the one
+                    control that can fill state and district from a coordinate
+                    was hidden until those fields were filled by hand. It is now
+                    always rendered, and the handler already back-fills state and
+                    district from the reverse geocode. */}
+                <button type="button" onClick={useMyLocation} disabled={geoLoading}
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#032B5B] hover:bg-[#0a4080] text-white text-sm font-medium px-4 py-2.5 rounded-lg disabled:opacity-50">
+                  {geoLoading ? t.gpsLoading : `📍 ${t.useGps}`}
+                </button>
+                {form.geolocation && (
+                  <p className="text-xs text-green-700 font-mono">✓ {t.gpsCaptured}</p>
+                )}
+                {!locationReady && (
+                  <p className="text-sm text-slate-600 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">{t.locationLockedHint}</p>
+                )}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormField label={t.village} required={!form.geolocation}>
+                    <input type="text" value={form.village} onChange={(e) => set('village', e.target.value)} className={inputClass} placeholder={t.villagePh} required={!form.geolocation} />
+                  </FormField>
+                  <FormField label={t.ward} required>
+                    <input type="text" value={form.ward_block} onChange={(e) => set('ward_block', e.target.value)} className={inputClass} placeholder={t.wardPh} />
+                  </FormField>
+                  <FormField label={t.pincode} required>
+                    <input type="text" inputMode="numeric" pattern="[0-9]{6}" maxLength={6} value={form.pincode} onChange={(e) => set('pincode', e.target.value)} className={inputClass} required />
+                  </FormField>
                 </div>
-              )}
+              </div>
             </Section>
 
             <Section title={t.describeIssue}>

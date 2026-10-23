@@ -37,6 +37,8 @@ export const TOPICS = [
     pages: [
       { path: '/faq', role: 'hub', label: 'Questions about reporting an issue' },
       { path: '/report-issue', role: 'detail', label: 'Report a constituency issue' },
+      { path: '/how-to-report', role: 'detail', label: 'How to report an issue to your MP' },
+      { path: '/mplads', role: 'detail', label: 'MPLADS constituency development fund' },
       { path: '/privacy', role: 'detail', label: 'How your details are handled' },
       { path: '/accessibility', role: 'detail', label: 'Accessibility of the form' },
     ],
@@ -64,6 +66,19 @@ export const TOPICS = [
       { path: '/privacy', role: 'detail', label: 'Privacy and data handling' },
       { path: '/accessibility', role: 'detail', label: 'Accessibility commitments' },
       { path: '/methodology', role: 'detail', label: 'Limits of the scoring model' },
+      { path: '/constituency', role: 'detail', label: 'What a constituency is and who your MP is' },
+    ],
+  },
+  {
+    id: 'guides',
+    hub: '/how-to-report',
+    title: 'Practical guides for citizens',
+    blurb:
+      'Step-by-step routes from a local problem to the official process that funds or fixes it — who to contact, what evidence to attach, and what happens after you submit.',
+    pages: [
+      { path: '/how-to-report', role: 'hub', label: 'How to report an issue to your MP' },
+      { path: '/mplads', role: 'detail', label: 'The MPLADS constituency development fund' },
+      { path: '/constituency', role: 'detail', label: 'Constituencies, Lok Sabha seats, and your MP' },
     ],
   },
 ];

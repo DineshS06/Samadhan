@@ -75,7 +75,6 @@ export const DISTRICT_CONSTITUENCIES = {
     'Kanchipuram': ['KANCHIPURAM'],
     'Villupuram': ['VILLUPURAM'],
     'Thanjavur': ['THANJAVUR'],
-    'Madurai': ['MADURAI'],
     'Virudhunagar': ['VIRUDHUNAGAR'],
     'Ramanathapuram': ['RAMANATHAPURAM'],
     'Thoothukudi': ['THOOTHUKUDI'],
@@ -179,7 +178,6 @@ export const DISTRICT_CONSTITUENCIES = {
     'Sabarkantha': ['SABARKANTHA'],
     'Aravalli': ['SABARKANTHA'],
     'Kutch': ['KACHCHH'],
-    'Banaskantha': ['BANASKANTHA'],
     'Panchmahal': ['PANCHMAHAL'],
     'Dahod': ['DAHOD'],
     'Valsad': ['VALSAD'],
@@ -262,10 +260,8 @@ export const DISTRICT_CONSTITUENCIES = {
     'Gonda': ['GONDA'],
     'Faizabad': ['FAIZABAD'],
     'Ambedkar Nagar': ['AMBEDKAR NAGAR'],
-    'Sultanpur': ['SULTANPUR'],
     'Pratapgarh': ['PRATAPGARH'],
     'Allahabad': ['PRAYAGRAJ'],
-    'Pratapgarh': ['PRATAPGARH'],
   },
   'Bihar': {
     'Patna': ['PATNA'],
@@ -281,7 +277,6 @@ export const DISTRICT_CONSTITUENCIES = {
     'Samastipur': ['SAMASTIPUR'],
     'Begusarai': ['BEGUSARAI'],
     'Khagaria': ['KHAGARIA'],
-    'Bhagalpur': ['BHAGALPUR'],
     'Banka': ['BANKA'],
     'Munger': ['MUNGER'],
     'Lakhisarai': ['LAKHISARAI'],
@@ -294,7 +289,6 @@ export const DISTRICT_CONSTITUENCIES = {
     'Rohtas': ['ROHTAS'],
     'Buxar': ['BUXAR'],
     'Bhojpur': ['ARA'],
-    'Buxar': ['BUXAR'],
     'Katihar': ['KATIHAR'],
     'Purnia': ['PURNIA'],
     'Araria': ['ARARIA'],
@@ -307,7 +301,6 @@ export const DISTRICT_CONSTITUENCIES = {
     'Sheohar': ['SHEOHAR'],
     'East Champaran': ['EAST CHAMPARAN'],
     'West Champaran': ['WEST CHAMPARAN'],
-    'Gopalganj': ['GOPALGANJ'],
   },
   'West Bengal': {
     'Kolkata': ['KOLKATA NORTH', 'KOLKATA SOUTH'],
@@ -362,7 +355,6 @@ export const DISTRICT_CONSTITUENCIES = {
     'Gajapati': ['GAJAPATI'],
     'Ganjam': ['BERHAMPUR'],
     'Kandhamal': ['KANDHAMAL'],
-    'Boudh': ['BOUDH'],
   },
   'Punjab': {
     'Ludhiana': ['LUDHIANA'],
@@ -370,13 +362,11 @@ export const DISTRICT_CONSTITUENCIES = {
     'Jalandhar': ['JALANDHAR'],
     'Patiala': ['PATIALA'],
     'Bathinda': ['BATHINDA'],
-    'Amritsar': ['AMRITSAR'],
     'Tarn Taran': ['TARN TARAN'],
     'Gurdaspur': ['GURDASPUR'],
     'Pathankot': ['PATHANKOT'],
     'Hoshiarpur': ['HOSHIARPUR'],
     'Kapurthala': ['KAPURTHALA'],
-    'Jalandhar': ['JALANDHAR'],
     'SBS Nagar': ['SBS NAGAR'],
     'Fatehgarh Sahib': ['FATEHGHAR SAHIB'],
     'Rupnagar': ['RUPNAGAR'],
@@ -419,30 +409,17 @@ export const DISTRICT_CONSTITUENCIES = {
     'Ratlam': ['RATLAM'],
     'Mandsaur': ['MANSAUR'],
     'Neemuch': ['NEEMUCH'],
-    'Ujjain': ['UJJAIN'],
     'Dewas': ['DEWAS'],
     'Shajapur': ['SHAJAPUR'],
     'Agar Malwa': ['AGAR MALWA'],
     'Morena': ['MORENA'],
     'Bhind': ['BHIND'],
-    'Gwalior': ['GWALIOR'],
     'Sheopur': ['SHEOPUR'],
     'Tikamgarh': ['TIKAMGARH'],
     'Chhatarpur': ['CHHATARPUR'],
     'Panna': ['PANNA'],
     'Damoh': ['DAMOH'],
     'Katni': ['KATNI'],
-    'Jabalpur': ['JABALPUR'],
-    'Narsinghpur': ['NARSINGHPUR'],
-    'Seoni': ['SEONI'],
-    'Balaghat': ['BALAGHAT'],
-    'Mandla': ['MANDLA'],
-    'Chhindwara': ['CHHINDWARA'],
-    'Betul': ['BETUL'],
-    'Hoshangabad': ['HOSHANGABAD'],
-    'Raisen': ['RAISEN'],
-    'Vidisha': ['VIDISHA'],
-    'Sagar': ['SAGAR'],
   },
   'Assam': {
     'Kamrup': ['GUWAHATI'],
@@ -460,14 +437,6 @@ export const DISTRICT_CONSTITUENCIES = {
     'Silchar': ['SILCHAR'],
     'Cachar': ['CACHAR'],
     'Hailakandi': ['HAILAKANDI'],
-  },
-  'Odisha': {
-    'Bhubaneswar': ['BHUBANESWAR'],
-    'Cuttack': ['CUTTACK'],
-    'Puri': ['PURI'],
-    'Sambalpur': ['SAMBALPUR'],
-    'Rourkela': ['ROURKELA'],
-    'Berhampur': ['BERHAMPUR'],
   },
 };
 
@@ -494,4 +463,25 @@ export function getAllConstituenciesForState(state) {
   }
   // Remove duplicates while preserving order
   return [...new Set(all)];
+}
+
+/**
+ * Display formatter for constituency names.
+ *
+ * The source dataset (data/constituencies.json, via myneta/ADR) stores every
+ * name in capitals — "VISAKHAPATNAM", "ARAKU (ST)". Rendering that raw inside a
+ * select next to a title-cased district list read like two different datasets
+ * and looked like shouting on a phone. The stored value must stay untouched
+ * because the backend matches on it, so the transformation happens at render
+ * time only.
+ *
+ * Reserved-category markers are re-uppercased because "(sc)" reads as a typo.
+ */
+export function formatConstituencyName(name) {
+  if (!name) return '';
+  return String(name)
+    .toLowerCase()
+    .replace(/(^|[\s-])([a-z])/g, (_, sep, ch) => sep + ch.toUpperCase())
+    .replace(/\((sc|st)\)/gi, (m) => m.toUpperCase())
+    .replace(/\b(i{1,3}|iv|v|vi{0,3}|ix|x)\b/gi, (m) => m.toUpperCase());
 }
