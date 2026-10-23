@@ -9,6 +9,7 @@ import { useLanguage } from '../i18n/LanguageContext'
 import {
   getLanguagesForState,
   getDistrictsForState,
+  getConstituenciesForStateAndDistrict,
   getConstituenciesForState,
 } from '../i18n/translations'
 import { INDIAN_STATES } from '../data/formConfig'
@@ -57,7 +58,14 @@ export default function CitizenPortal() {
 
   const availableLanguages = getLanguagesForState(form.state)
   const districts = getDistrictsForState(form.state)
-  const constituencies = getConstituenciesForState(form.state)
+  // Constituencies are filtered by both state AND district. When no district
+  // is selected, or the district has no specific mapping, fall back to all
+  // state-level constituencies so the form never blocks.
+  const constituencyCandidates = form.district
+    ? getConstituenciesForStateAndDistrict(form.state, form.district) ||
+      getConstituenciesForState(form.state)
+    : null
+  const constituencies = constituencyCandidates
   const locationReady = Boolean(form.state && form.district.trim() && form.constituency.trim())
 
   
@@ -71,11 +79,21 @@ export default function CitizenPortal() {
     setError(null)
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
-        const coords = { latitude: pos.coords.latitude, longitude: pos.coords.longitude, accuracy: pos.coords.accuracy }
+        const coords = {
+          latitude: pos.coords.latitude,
+          longitude: pos.coords.longitude,
+          accuracy: pos.coords.accuracy,
+        }
         set('geolocation', coords)
         // Reverse-geocode so village/ward/pincode autofill (citizen can override).
         const address = await reverseGeocode(coords)
         if (address) {
+          if (address.inIndia === false) {
+            setError(t.gpsOutsideIndia)
+            set('geolocation', coords)
+            setGeoLoading(false)
+            return
+          }
           setForm((f) => ({
             ...f,
             geolocation: coords,
@@ -85,11 +103,21 @@ export default function CitizenPortal() {
             district: f.district || address.district || '',
             state: f.state || address.state || '',
           }))
+        } else {
+          // Reverse geocode failed but we still have GPS coords — warn and let citizen type manually.
+          setError(t.gpsReverseFailed)
         }
         setGeoLoading(false)
       },
-      () => { setError(t.gpsFail); setGeoLoading(false) },
-      { enableHighAccuracy: true, timeout: 15000 },
+      (err) => {
+        let msg = t.gpsFail
+        if (err.code === 1) msg = t.gpsPermissionDenied
+        if (err.code === 2) msg = t.gpsPositionUnavailable
+        if (err.code === 3) msg = t.gpsTimeout
+        setError(msg)
+        setGeoLoading(false)
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
     )
   }
 
@@ -121,7 +149,29 @@ export default function CitizenPortal() {
     // PIN code: exactly 6 digits
     if (!/^\d{6}$/.test(form.pincode)) return t.valPincode
     if (!form.text.trim()) return t.valText
+    // Reject nonsense/random text: repeated chars, keyboard mashing, too short
+    if (_isGibberish(form.text)) return t.valNonsenseText
     return null
+  }
+
+  // Client-side gibberish detection so random text is flagged before submission.
+  function _isGibberish(text) {
+    if (!text || !text.trim()) return true
+    const t = text.trim()
+    if (t.length < 5) return true
+    if (/(.)\1{3,}/.test(t)) return true
+    if (/(.{2,4})\1{3,}/.test(t)) return true
+    const patterns = ['qwerty', 'asdfgh', 'zxcvbn', '12345', 'abcdef', 'poiuyt']
+    const tl = t.toLowerCase()
+    for (const p of patterns) if (tl.includes(p)) return true
+    const vowels = (tl.match(/[aeiou]/g) || []).length
+    const consonants = (tl.match(/[bcdfghjklmnpqrstvwxyz]/g) || []).length
+    const alpha = vowels + consonants
+    if (alpha > 0) {
+      const ratio = vowels / alpha
+      if ((ratio < 0.15 || ratio > 0.75) && /[bcdfghjklmnpqrstvwxyz]{5,}/.test(tl)) return true
+    }
+    return false
   }
 
   const describePlaceholder = () => {

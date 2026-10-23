@@ -1,5 +1,11 @@
 /** Full UI translations — English & Hindi */
 
+import { STATE_CONSTITUENCIES } from '../data/constituencyData';
+import { DISTRICT_CONSTITUENCIES } from '../data/districtConstituencies';
+import { getDistrictsForState as _getDistrictsForState } from '../data/districtConstituencies';
+import { getConstituenciesForStateAndDistrict as _getConstituenciesForStateAndDistrict } from '../data/districtConstituencies';
+import { getAllConstituenciesForState as _getAllConstituenciesForState } from '../data/districtConstituencies';
+
 export const CATEGORY_IDS = [
   'roads', 'water', 'health', 'education', 'power', 'housing',
   'agri', 'employment', 'safety', 'environment', 'transport', 'other',
@@ -8,21 +14,42 @@ export const CATEGORY_IDS = [
 export const CHANNEL_IDS = ['web', 'whatsapp', 'phone', 'twitter', 'meeting', 'letter']
 
 export const STATE_LANGUAGES = {
-  'Andhra Pradesh': ['English', 'Hindi', 'Telugu'],
-  'Telangana': ['English', 'Hindi', 'Telugu'],
-  'Tamil Nadu': ['English', 'Hindi', 'Tamil'],
-  'Karnataka': ['English', 'Hindi', 'Kannada'],
-  'Kerala': ['English', 'Hindi', 'Malayalam'],
-  'Maharashtra': ['English', 'Hindi', 'Marathi'],
-  'Gujarat': ['English', 'Hindi', 'Gujarati'],
-  'West Bengal': ['English', 'Hindi', 'Bengali'],
-  'Odisha': ['English', 'Hindi', 'Odia'],
-  'Punjab': ['English', 'Hindi', 'Punjabi'],
-  'Rajasthan': ['English', 'Hindi', 'Hindi'],
-  'Bihar': ['English', 'Hindi', 'Hindi'],
-  'Uttar Pradesh': ['English', 'Hindi', 'Hindi'],
+  'Andhra Pradesh': ['English', 'Telugu'],
+  'Arunachal Pradesh': ['English', 'Hindi'],
+  'Assam': ['English', 'Assamese', 'Hindi'],
+  'Bihar': ['English', 'Hindi'],
+  'Chhattisgarh': ['English', 'Hindi'],
+  'Goa': ['English', 'Konkani', 'Marathi'],
+  'Gujarat': ['English', 'Gujarati', 'Hindi'],
+  'Haryana': ['English', 'Hindi'],
+  'Himachal Pradesh': ['English', 'Hindi'],
+  'Jharkhand': ['English', 'Hindi'],
+  'Karnataka': ['English', 'Kannada', 'Hindi'],
+  'Kerala': ['English', 'Malayalam', 'Hindi'],
+  'Madhya Pradesh': ['English', 'Hindi'],
+  'Maharashtra': ['English', 'Marathi', 'Hindi'],
+  'Manipur': ['English', 'Manipuri', 'Hindi'],
+  'Meghalaya': ['English', 'Khasi', 'Hindi'],
+  'Mizoram': ['English', 'Mizo', 'Hindi'],
+  'Nagaland': ['English', 'Hindi'],
+  'Odisha': ['English', 'Odia', 'Hindi'],
+  'Punjab': ['English', 'Punjabi', 'Hindi'],
+  'Rajasthan': ['English', 'Hindi'],
+  'Sikkim': ['English', 'Nepali', 'Hindi'],
+  'Tamil Nadu': ['English', 'Tamil'],
+  'Telangana': ['English', 'Telugu', 'Urdu', 'Hindi'],
+  'Tripura': ['English', 'Bengali', 'Hindi'],
+  'Uttar Pradesh': ['English', 'Hindi'],
+  'Uttarakhand': ['English', 'Hindi'],
+  'West Bengal': ['English', 'Bengali', 'Hindi'],
   'Delhi': ['English', 'Hindi'],
-  'Jammu and Kashmir': ['English', 'Hindi', 'Urdu'],
+  'Jammu and Kashmir': ['English', 'Urdu', 'Hindi'],
+  'Ladakh': ['English', 'Hindi'],
+  'Lakshadweep': ['English', 'Malayalam', 'Hindi'],
+  'Puducherry': ['English', 'Tamil', 'Hindi'],
+  'Andaman and Nicobar Islands': ['English', 'Hindi'],
+  'Chandigarh': ['English', 'Hindi', 'Punjabi'],
+  'Dadra and Nagar Haveli and Daman and Diu': ['English', 'Gujarati', 'Hindi'],
 }
 
 export const UI = {
@@ -61,6 +88,11 @@ export const UI = {
     gpsLoading: 'Detecting location…',
     gpsCaptured: 'GPS location captured',
     gpsFail: 'Could not get GPS. Enter address manually.',
+    gpsOutsideIndia: 'GPS location is outside India. Please enter your address manually.',
+    gpsReverseFailed: 'Could not look up address from GPS. Please enter village/district manually.',
+    gpsPermissionDenied: 'Location access denied. Please enter your address manually.',
+    gpsPositionUnavailable: 'Location information is unavailable. Please enter your address manually.',
+    gpsTimeout: 'Location request timed out. Please enter your address manually.',
     geoUnsupported: 'Geolocation is not supported by your browser.',
     describe: 'Describe your problem',
     describeHint: 'Write in your selected language — include how long the issue has existed and who is affected',
@@ -123,6 +155,7 @@ export const UI = {
   valWard: 'Please enter the ward or block number.',
     valPincode: 'PIN Code must be a 6‑digit number.',
     valText: 'Please describe your problem.',
+    valNonsenseText: 'Please describe a real problem — random or meaningless text cannot be scored.',
     valFileSize: 'File must be under 5 MB.',
     loading: 'Loading dashboard…',
     loadFail: 'Failed to load dashboard data.',
@@ -150,6 +183,8 @@ export const UI = {
     mapLow: 'Low',
     mapMedium: 'Medium',
     mapHigh: 'High',
+    mapNoBoundary: 'No boundary data',
+    mapBoundaryNote: 'Constituency boundary overlay not available — showing grievance points only.',
     lastUpdated: 'Last updated',
     poweredBy: 'Powered by Gemini AI',
     modalTitle: 'Draft Administrative Sanction to District Collector under MPLADS',
@@ -242,6 +277,11 @@ export const UI = {
     gpsLoading: 'स्थान खोजा जा रहा है…',
     gpsCaptured: 'GPS स्थान दर्ज हो गया',
     gpsFail: 'GPS प्राप्त नहीं हुआ। पता मैन्युअल दर्ज करें।',
+    gpsOutsideIndia: 'GPS स्थान भारत के बाहर है। कृपया पता मैन्युअल दर्ज करें।',
+    gpsReverseFailed: 'GPS से पता lookup नहीं हो सका। कृपया गाँव/ज़िला मैन्युअल दर्ज करें।',
+    gpsPermissionDenied: 'स्थान पहुंच अस्वीकृत। कृपया पता मैन्युअल दर्ज करें।',
+    gpsPositionUnavailable: 'स्थान जानकारी उपलब्ध नहीं है। कृपया पता मैन्युअल दर्ज करें।',
+    gpsTimeout: 'स्थान अनुरोध समय पर नहीं हुआ। कृपया पता मैन्युअल दर्ज करें।',
     geoUnsupported: 'आपका ब्राउज़र जियोलोकेशन सपोर्ट नहीं करता।',
     describe: 'अपनी समस्या बताएं',
     describeHint: 'अपनी चुनी भाषा में लिखें — समस्या कब से है और किसे प्रभावित करती है',
@@ -304,6 +344,7 @@ export const UI = {
   valWard: 'कृपया वार्ड या ब्लॉक नंबर दर्ज करें।',
     valPincode: 'पिन कोड 6 अंकों की संख्या होनी चाहिए।',
     valText: 'कृपया समस्या का वर्णन करें।',
+    valNonsenseText: 'कृपया कोई वास्तविक समस्या बताएँ — बेतुका या अर्थहीन टेक्स्ट स्कोर नहीं कर सकता।',
     valFileSize: 'फ़ाइल 5 MB से छोटी होनी चाहिए।',
     loading: 'डैशबोर्ड लोड हो रहा है…',
     loadFail: 'डैशबोर्ड डेटा लोड नहीं हुआ।',
@@ -331,6 +372,8 @@ export const UI = {
     mapLow: 'कम',
     mapMedium: 'मध्यम',
     mapHigh: 'उच्च',
+    mapNoBoundary: 'सीमा डेटा उपलब्ध नहीं',
+    mapBoundaryNote: 'निर्वाचन क्षेत्र सीमा ओवरले उपलब्ध नहीं — केवल शिकायत बिंदु दिखाए जा रहे हैं।',
     lastUpdated: 'अंतिम अपडेट',
     poweredBy: 'Gemini AI द्वारा संचालित',
     modalTitle: 'जिला कलेक्टर को MPLADS के तहत प्रशासनिक स्वीकृति का मसौदा',
@@ -396,69 +439,12 @@ export const AP_DISTRICTS = [
   'YSR Kadapa',
 ]
 
-export const AP_CONSTITUENCIES = [
-  'Araku', 'Srikakulam', 'Vizianagaram', 'Visakhapatnam', 'Anakapalli',
-  'Kakinada', 'Amalapuram', 'Rajahmundry', 'Narasapur', 'Eluru',
-  'Machilipatnam', 'Vijayawada', 'Guntur', 'Narasaraopet', 'Bapatla',
-  'Ongole', 'Nandyal', 'Kurnool', 'Anantapur', 'Hindupur',
-  'Kadapa', 'Nellore', 'Tirupati', 'Chittoor', 'Rajampet',
-]
-
-/* ---------- Telangana ---------- */
-export const TS_DISTRICTS = ['Hyderabad', 'Rangareddy', 'Warangal', 'Karimnagar', 'Nizamabad', 'Khammam']
-export const TS_CONSTITUENCIES = ['Chevella', 'Hyderabad', 'Secunderabad', 'Malkajgiri']
-
-/* ---------- Tamil Nadu ---------- */
-export const TN_DISTRICTS = ['Chennai', 'Coimbatore', 'Madurai', 'Tiruchirappalli', 'Salem']
-export const TN_CONSTITUENCIES = ['Chennai South', 'Coimbatore', 'Madurai', 'Tiruchirappalli', 'Salem']
-
-/* ---------- Karnataka ---------- */
-export const KA_DISTRICTS = ['Bangalore Urban', 'Mysore', 'Belgaum', 'Gulbarga', 'Dharwad']
-export const KA_CONSTITUENCIES = ['Bangalore South', 'Mysore', 'Belgaum', 'Gulbarga', 'Dharwad']
-
-/* ---------- Kerala ---------- */
-export const KL_DISTRICTS = ['Thiruvananthapuram', 'Kochi', 'Kozhikode', 'Thrissur', 'Kollam']
-export const KL_CONSTITUENCIES = ['Thiruvananthapuram', 'Kochi', 'Kozhikode', 'Thrissur', 'Kollam']
-
-/* ---------- Maharashtra ---------- */
-export const MH_DISTRICTS = ['Mumbai', 'Pune', 'Nagpur', 'Nashik', 'Thane']
-export const MH_CONSTITUENCIES = ['Mumbai South', 'Pune', 'Nagpur', 'Nashik', 'Thane']
-
-/* ---------- Gujarat ---------- */
-export const GJ_DISTRICTS = ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Bhavnagar']
-export const GJ_CONSTITUENCIES = ['Ahmedabad West', 'Surat', 'Vadodara', 'Rajkot', 'Bhavnagar']
-
-/* ---------- West Bengal ---------- */
-export const WB_DISTRICTS = ['Kolkata', 'North 24 Parganas', 'South 24 Parganas', 'Howrah', 'Hooghly']
-export const WB_CONSTITUENCIES = ['Kolkata North', 'Kolkata South', 'Howrah', 'Hooghly', 'Burdwan']
-
-/* ---------- Odisha ---------- */
-export const OD_DISTRICTS = ['Bhubaneswar', 'Cuttack', 'Berhampur', 'Rourkela', 'Balasore']
-export const OD_CONSTITUENCIES = ['Bhubaneswar', 'Cuttack', 'Berhampur', 'Rourkela', 'Balasore']
-
-/* ---------- Punjab ---------- */
-export const PB_DISTRICTS = ['Ludhiana', 'Amritsar', 'Jalandhar', 'Patiala', 'Bathinda']
-export const PB_CONSTITUENCIES = ['Ludhiana', 'Amritsar', 'Jalandhar', 'Patiala', 'Bathinda']
-
-/* ---------- Rajasthan ---------- */
-export const RJ_DISTRICTS = ['Jaipur', 'Jodhpur', 'Udaipur', 'Bikaner', 'Ajmer']
-export const RJ_CONSTITUENCIES = ['Jaipur', 'Jodhpur', 'Udaipur', 'Bikaner', 'Ajmer']
-
-/* ---------- Bihar ---------- */
-export const BH_DISTRICTS = ['Patna', 'Gaya', 'Bhagalpur', 'Muzaffarpur', 'Darbhanga']
-export const BH_CONSTITUENCIES = ['Patna', 'Gaya', 'Bhagalpur', 'Muzaffarpur', 'Darbhanga']
-
-/* ---------- Uttar Pradesh ---------- */
-export const UP_DISTRICTS = ['Lucknow', 'Kanpur', 'Varanasi', 'Prayagraj', 'Meerut']
-export const UP_CONSTITUENCIES = ['Lucknow', 'Kanpur', 'Varanasi', 'Prayagraj', 'Meerut']
-
-/* ---------- Delhi ---------- */
-export const DL_DISTRICTS = ['New Delhi', 'North Delhi', 'South Delhi', 'East Delhi', 'West Delhi']
-export const DL_CONSTITUENCIES = ['New Delhi', 'North Delhi', 'South Delhi', 'East Delhi', 'West Delhi']
-
-/* ---------- Jammu and Kashmir ---------- */
-export const JK_DISTRICTS = ['Srinagar', 'Jammu', 'Anantnag', 'Baramulla', 'Udhampur']
-export const JK_CONSTITUENCIES = ['Srinagar', 'Jammu', 'Anantnag', 'Baramulla', 'Udhampur']
+/* ---------- Constituencies (all 543, from data/constituencies.json) ---------- */
+// Hardcoded *_CONSTITUENCIES arrays removed. Constituencies now come from
+// data/constituencies.json via STATE_CONSTITUENCIES / getAllConstituenciesForState,
+// which covers all 32 states and union territories with 538 constituencies.
+// *_DISTRICTS arrays below remain as hardcoded samples for 13 states;
+// other states return null and the form falls back to a free-text input.
 
 /* Helper functions */
 export function getLanguagesForState(state) {
@@ -466,43 +452,15 @@ export function getLanguagesForState(state) {
 }
 
 export function getDistrictsForState(state) {
-  switch (state) {
-    case 'Andhra Pradesh': return AP_DISTRICTS
-    case 'Telangana': return TS_DISTRICTS
-    case 'Tamil Nadu': return TN_DISTRICTS
-    case 'Karnataka': return KA_DISTRICTS
-    case 'Kerala': return KL_DISTRICTS
-    case 'Maharashtra': return MH_DISTRICTS
-    case 'Gujarat': return GJ_DISTRICTS
-    case 'West Bengal': return WB_DISTRICTS
-    case 'Odisha': return OD_DISTRICTS
-    case 'Punjab': return PB_DISTRICTS
-    case 'Rajasthan': return RJ_DISTRICTS
-    case 'Bihar': return BH_DISTRICTS
-    case 'Uttar Pradesh': return UP_DISTRICTS
-    case 'Delhi': return DL_DISTRICTS
-    case 'Jammu and Kashmir': return JK_DISTRICTS
-    default: return null
-  }
+  return _getDistrictsForState(state);
 }
 
 export function getConstituenciesForState(state) {
-  switch (state) {
-    case 'Andhra Pradesh': return AP_CONSTITUENCIES
-    case 'Telangana': return TS_CONSTITUENCIES
-    case 'Tamil Nadu': return TN_CONSTITUENCIES
-    case 'Karnataka': return KA_CONSTITUENCIES
-    case 'Kerala': return KL_CONSTITUENCIES
-    case 'Maharashtra': return MH_CONSTITUENCIES
-    case 'Gujarat': return GJ_CONSTITUENCIES
-    case 'West Bengal': return WB_CONSTITUENCIES
-    case 'Odisha': return OD_CONSTITUENCIES
-    case 'Punjab': return PB_CONSTITUENCIES
-    case 'Rajasthan': return RJ_CONSTITUENCIES
-    case 'Bihar': return BH_CONSTITUENCIES
-    case 'Uttar Pradesh': return UP_CONSTITUENCIES
-    case 'Delhi': return DL_CONSTITUENCIES
-    case 'Jammu and Kashmir': return JK_CONSTITUENCIES
-    default: return null
-  }
+  // District-based mapping first; fall back to full state list from
+  // constituencyData.js for states not yet mapped by district.
+  return _getAllConstituenciesForState(state) || STATE_CONSTITUENCIES[state] || null
+}
+
+export function getConstituenciesForStateAndDistrict(state, district) {
+  return _getConstituenciesForStateAndDistrict(state, district);
 }

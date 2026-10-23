@@ -52,6 +52,24 @@
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
+  <url>
+    <loc>https://samadhan-chi.vercel.app/how-to-report</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://samadhan-chi.vercel.app/mplads</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://samadhan-chi.vercel.app/constituency</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
   <!--
     /contact is NOT listed. Contact.jsx exists but is unrouted and still holds
     placeholder contact data (@samadhan.example, a stub form endpoint). Listing

@@ -30,6 +30,9 @@ automatic funding decision system.
 - [About](https://samadhan-chi.vercel.app/about) - purpose, audience, limits
 - [Privacy](https://samadhan-chi.vercel.app/privacy) - data handling and citizen contact details
 - [Accessibility](https://samadhan-chi.vercel.app/accessibility) - accessibility commitments
+- [How to Report a Constituency Issue](https://samadhan-chi.vercel.app/how-to-report) - step-by-step grievance filing guide
+- [MPLADS Fund](https://samadhan-chi.vercel.app/mplads) - constituency development fund for MPs
+- [Constituency in India](https://samadhan-chi.vercel.app/constituency) - Lok Sabha seats and your MP
 
 Private, non-indexed routes: `/mp/login`, `/mp` (MP office staff dashboard).
 

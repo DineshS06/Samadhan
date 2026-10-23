@@ -167,6 +167,52 @@ def _normalize_category(raw: str) -> str:
     return "Other"
 
 
+def _is_gibberish(text: str) -> bool:
+    """Detect if text is nonsense/random characters rather than a real grievance.
+
+    Returns True for: empty/too-short text, repeated characters, keyboard mashing
+    (qwerty/asdfgh/12345), or text with abnormal vowel/consonant patterns.
+    """
+    if not text or not text.strip():
+        return True
+
+    text = text.strip()
+
+    # Too short to be a meaningful grievance
+    if len(text) < 5:
+        return True
+
+    # Repeated characters: aaaa, 1111, zzzzzz
+    if re.search(r'(.)\1{3,}', text):
+        return True
+
+    # Repeating short patterns: asdfasdfasdf, abcabcabc
+    if re.search(r'(.{2,4})\1{3,}', text):
+        return True
+
+    # Keyboard mashing patterns
+    keyboard_patterns = ['qwerty', 'asdfgh', 'zxcvbn', '12345', 'abcdef', 'poiuyt']
+    text_lower = text.lower()
+    for pattern in keyboard_patterns:
+        if pattern in text_lower:
+            return True
+
+    # Vowel/consonant ratio check — normal Indian language text has vowels
+    # roughly between 15% and 70%. Gibberish falls outside or has long
+    # consonant runs.
+    vowels = sum(1 for c in text_lower if c in 'aeiou')
+    consonants = sum(1 for c in text_lower if c.isalpha() and c not in 'aeiou')
+    alpha_total = vowels + consonants
+
+    if alpha_total > 0:
+        vowel_ratio = vowels / alpha_total
+        if vowel_ratio < 0.15 or vowel_ratio > 0.75:
+            if re.search(r'[bcdfghjklmnpqrstvwxyz]{5,}', text_lower):
+                return True
+
+    return False
+
+
 def _mock_parse(raw_input_data: str, metadata: dict | None = None) -> dict:
     """Keyword-based fallback when API key is unavailable."""
     text = raw_input_data.lower()
@@ -206,8 +252,15 @@ def _mock_parse(raw_input_data: str, metadata: dict | None = None) -> dict:
     }
 
 
-def calculate_priority_score(ai_data: dict, db_data: dict) -> float:
-    """Merge AI output with open-data lookup into a weighted priority score."""
+def calculate_priority_score(ai_data: dict, db_data: dict, is_gibberish: bool = False) -> float:
+    """Merge AI output with open-data lookup into a weighted priority score.
+
+    If the input text is detected as gibberish/nonsense, the score collapses
+    to ~1 so it is never prioritized over a real grievance.
+    """
+    if is_gibberish:
+        return round(1.0, 1)
+
     gap_score = 100 if db_data.get("existing_schools", 0) == 0 else 20
 
     if db_data.get("water_scarcity_index") == "High":
@@ -287,6 +340,22 @@ def process_grievance_submission(data: dict) -> dict:
 
     ai_data = parse_citizen_grievance(text, metadata)
 
+    # Nonsense/random text must never score as a real grievance.
+    is_gibberish = _is_gibberish(text)
+    if is_gibberish:
+        ai_data["severity_score"] = 1
+        ai_data["category"] = "Other"
+        ai_data["summary"] = "Input appears to be nonsensical or random text — not a valid grievance."
+        ai_data["gibberish_detected"] = True
+    else:
+        ai_data["gibberish_detected"] = False
+
+    # Penalize very short descriptions — they don't give enough information
+    # to assess the problem properly, so the severity score is reduced.
+    text_len = len(text)
+    if not is_gibberish and text_len < 20:
+        ai_data["severity_score"] = max(1, ai_data.get("severity_score", 3) - (2 if text_len < 10 else 1))
+
     location_keyword = (
         data.get("village")
         or data.get("ward_block")
@@ -298,7 +367,7 @@ def process_grievance_submission(data: dict) -> dict:
         district=data.get("district", ""),
         state=data.get("state", ""),
     )
-    score = calculate_priority_score(ai_data, db_data)
+    score = calculate_priority_score(ai_data, db_data, is_gibberish=is_gibberish)
 
     location_display = ", ".join(
         p for p in [

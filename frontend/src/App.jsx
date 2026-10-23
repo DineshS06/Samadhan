@@ -25,6 +25,9 @@ const Accessibility = lazy(() => import('./pages/Accessibility'));
 const MPDashboard = lazy(() => import('./pages/MPDashboard'));
 const MPLogin = lazy(() => import('./pages/MPLogin'));
 const NotFound = lazy(() => import('./pages/NotFound'));
+const HowToReport = lazy(() => import('./pages/HowToReport'));
+const Mplads = lazy(() => import('./pages/Mplads'));
+const Constituency = lazy(() => import('./pages/Constituency'));
 
 function RouteFallback() {
   return (
@@ -301,6 +304,60 @@ export default function App() {
                 schema={data.accessibility}
               />
               <Accessibility />
+            </>
+          } />
+          <Route path='/how-to-report' element={
+            <>
+              <SEO
+                title='How to Report a Constituency Issue to Your MP'
+                description='Step-by-step guide to filing a public grievance with your Member of Parliament. Grievance redressal through DARPG CPGRAMS, MPLADS constituency funds, and Samadhan scoring.'
+                path='/how-to-report'
+                schema={{
+                  '@type': 'WebPage',
+                  '@id': SITE_URL + '/how-to-report#webpage',
+                  url: SITE_URL + '/how-to-report',
+                  name: 'How to Report a Constituency Issue to Your MP',
+                  description: 'Step-by-step guide to filing a public grievance with your Member of Parliament. Grievance redressal through DARPG CPGRAMS, MPLADS constituency funds, and Samadhan scoring.',
+                  inLanguage: 'en-IN',
+                }}
+              />
+              <HowToReport />
+            </>
+          } />
+          <Route path='/mplads' element={
+            <>
+              <SEO
+                title='MPLADS Fund — Constituency Development Fund for MPs'
+                description='MPLADS (Members of Parliament Local Area Development Scheme) is India\u2019s constituency development fund. How it works, eligible works, and how citizens can suggest projects to their MP.'
+                path='/mplads'
+                schema={{
+                  '@type': 'WebPage',
+                  '@id': SITE_URL + '/mplads#webpage',
+                  url: SITE_URL + '/mplads',
+                  name: 'MPLADS Fund — Constituency Development Fund for MPs',
+                  description: 'MPLADS (Members of Parliament Local Area Development Scheme) is India\u2019s constituency development fund. How it works, eligible works, and how citizens can suggest projects to their MP.',
+                  inLanguage: 'en-IN',
+                }}
+              />
+              <Mplads />
+            </>
+          } />
+          <Route path='/constituency' element={
+            <>
+              <SEO
+                title='Constituency in India — Lok Sabha Seats and Your MP'
+                description='What a constituency means in India, how Lok Sabha seats work, and how to find your Member of Parliament. Electoral district, MPLADS, and citizen grievance redressal.'
+                path='/constituency'
+                schema={{
+                  '@type': 'WebPage',
+                  '@id': SITE_URL + '/constituency#webpage',
+                  url: SITE_URL + '/constituency',
+                  name: 'Constituency in India — Lok Sabha Seats and Your MP',
+                  description: 'What a constituency means in India, how Lok Sabha seats work, and how to find your Member of Parliament. Electoral district, MPLADS, and citizen grievance redressal.',
+                  inLanguage: 'en-IN',
+                }}
+              />
+              <Constituency />
             </>
           } />
           <Route path='/mp/login' element={

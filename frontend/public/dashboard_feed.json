@@ -93,5 +93,17 @@
       "label": "Gajuwaka"
     }
   ],
-  "last_updated": "2026-07-08T18:32:22.027204+05:30"
+  "last_updated": "2026-07-08T18:32:22.027204+05:30",
+  "map": {
+    "center": [17.948925, 83.231312],
+    "zoom": 11,
+    "bounds": [[17.5, 82.9], [18.4, 83.5]],
+    "boundary_url": "/geo/india_pc_2019_simplified.geojson",
+    "data_source": "DataMeet India PC 2019"
+  },
+  "mp_office": {
+    "name": "Demo MP",
+    "constituency": "Visakhapatnam",
+    "state": "Andhra Pradesh"
+  }
 }
