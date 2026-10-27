@@ -193,7 +193,16 @@ export default function ConstituencyMap({ points = [], mapConfig, mpOffice, focu
       if (!boundaryIndexUrl) return false
       const indexResponse = await fetch(boundaryIndexUrl, { signal })
       if (!indexResponse.ok) return false
-      const index = await indexResponse.json()
+      let index
+      try {
+        index = await indexResponse.json()
+      } catch (err) {
+        // The host may rewrite a missing index to the SPA HTML with a 200
+        // status. Treat that (or any malformed index) as "no per-seat data"
+        // so the caller can still draw the national fallback boundary.
+        if (err?.name === 'AbortError') throw err
+        return false
+      }
       const seats = Array.isArray(index?.seats) ? index.seats : []
       const wanted = canonicalSeatName(constituency, constituencyState)
       if (!wanted) return false
