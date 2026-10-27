@@ -97,6 +97,36 @@ export const INTENTS = [
       'Read by people using assistive technology, or by accessibility reviewers. Terms are the standards '
       + 'they will search for.',
   },
+  {
+    path: '/how-to-report',
+    cluster: 'guides',
+    primary: 'how to report a constituency issue',
+    secondary: ['CPGRAMS grievance', 'public grievance India', 'escalate a grievance', 'RTI request'],
+    intent: 'informational',
+    rationale:
+      'A citizen with a problem is deciding where to send it. The page has to answer that before it can '
+      + 'ask them to use this site, so it leads with the official channels and their differences.',
+  },
+  {
+    path: '/mplads',
+    cluster: 'guides',
+    primary: 'MPLADS fund',
+    secondary: ['MPLADS 5 crore per year', 'MP local area development scheme', 'MPLADS eligible works', 'CAG MPLADS report'],
+    intent: 'informational',
+    rationale:
+      'People search for the amount, what it can be spent on, and whether their MP has used it. The page '
+      + 'answers all three with dates and figures rather than a scheme summary.',
+  },
+  {
+    path: '/constituency',
+    cluster: 'guides',
+    primary: 'Lok Sabha constituency',
+    secondary: ['543 Lok Sabha seats', 'reserved constituencies SC ST', 'delimitation commission', 'find my MP'],
+    intent: 'informational',
+    rationale:
+      'The query is usually "which constituency am I in" or "how many seats does my state have". The page '
+      + 'answers both and explains why the boundaries have not moved since 2008.',
+  },
 ];
 
 export default INTENTS;

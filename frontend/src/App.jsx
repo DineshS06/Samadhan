@@ -126,7 +126,7 @@ const howTo = {
   name: 'How Samadhan turns citizen input into a project recommendation',
   description: 'One workflow connects multilingual intake, AI structuring, public-data enrichment, transparent scoring, and human approval.',
   step: [
-    { '@type': 'HowToStep', position: 1, name: 'Ingest', text: 'Capture text, voice transcripts, images, letters, meetings, and mocked social posts.' },
+    { '@type': 'HowToStep', position: 1, name: 'Ingest', text: 'Capture text, voice transcripts, images, letters, meetings, and social posts.' },
     { '@type': 'HowToStep', position: 2, name: 'Understand', text: 'Extract language, category, location, urgency, affected group, and summary.' },
     { '@type': 'HowToStep', position: 3, name: 'Enrich', text: 'Match the location and category to selected public or curated indicators.' },
     { '@type': 'HowToStep', position: 4, name: 'Score', text: 'Combine demand, deficit, and severity into an explainable score.' },

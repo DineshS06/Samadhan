@@ -1,468 +1,86 @@
 /**
  * District → Constituency mapping for Indian Lok Sabha seats.
- * 
- * Each state maps to an object of district → array of constituency names.
- * Constituency names match those in data/constituencies.json.
- * 
- * If a district is not listed here, getConstituenciesForStateAndDistrict()
- * falls back to returning all constituencies for that state.
- * 
- * NOTE: This is a best-effort mapping. Constituency boundaries and district
- * boundaries don't always align perfectly in India. Where uncertain, the
- * constituency is listed under its most commonly associated district.
+ *
+ * Two layers:
+ *
+ *   1. INDIA_DISTRICTS (generated, all 36 states and UTs) supplies the district
+ *      dropdown. Every jurisdiction therefore has a real list; before this, 17
+ *      of 32 states fell back to a free-text district box.
+ *
+ *   2. The parliamentary-constituency dropdown is no longer narrowed by
+ *      district. District and Lok Sabha boundaries do not line up in India, and
+ *      the earlier district -> seat table only covered 299 of 789 districts, so
+ *      behaviour differed by state. Every seat in the chosen state is offered
+ *      instead, which is consistent and never misleading.
  */
 
-export const DISTRICT_CONSTITUENCIES = {
-  'Andhra Pradesh': {
-    'Visakhapatnam': ['VISAKHAPATNAM', 'ANAKAPALLE'],
-    'Anakapalli': ['ANAKAPALLE'],
-    'Alluri Sitharama Raju': ['ARAKU (ST)'],
-    'Srikakulam': ['SRIKAKULAM'],
-    'Vizianagaram': ['VIZIANAGARAM'],
-    'Parvathipuram Manyam': ['VIZIANAGARAM'],
-    'East Godavari': ['RAJAHMUNDRY', 'KAKINADA'],
-    'Konaseema': ['AMALAPURAM (SC)', 'KAKINADA'],
-    'Kakinada': ['KAKINADA'],
-    'West Godavari': ['ELURU', 'NARSAPURAM'],
-    'Eluru': ['ELURU'],
-    'Krishna': ['VIJAYAWADA', 'MACHILIPATNAM'],
-    'NTR': ['VIJAYAWADA'],
-    'Guntur': ['GUNTUR', 'NARSARAOPET'],
-    'Palnadu': ['NARSARAOPET'],
-    'Bapatla': ['BAPATLA (SC)'],
-    'Prakasam': ['ONGOLE'],
-    'Sri Potti Sriramulu Nellore': ['NELLORE'],
-    'Chittoor': ['CHITTOOR (SC)', 'THIRUPATHI (SC)'],
-    'Tirupati': ['THIRUPATHI (SC)'],
-    'YSR Kadapa': ['KADAPA', 'RAJAMPET'],
-    'Annamayya': ['RAJAMPET'],
-    'Kurnool': ['KURNOOL'],
-    'Nandyal': ['NANDYAL'],
-    'Anantapuram': ['ANANTHAPUR', 'HINDUPUR'],
-    'Sri Sathya Sai': ['HINDUPUR'],
-  },
-  'Telangana': {
-    'Hyderabad': ['HYDERABAD'],
-    'Rangareddy': ['CHEVELLA', 'MALKAJGIRI'],
-    'Medchal': ['MALKAJGIRI'],
-    'Warangal': ['WARANGAL'],
-    'Karimnagar': ['KARIMNAGAR'],
-    'Khammam': ['KHAMMAM'],
-    'Nizamabad': ['NIZAMABAD'],
-    'Adilabad': ['ADILABAD'],
-    'Nirmal': ['ADILABAD'],
-    'Mancherial': ['PEDDAPALLE'],
-    'Peddapalle': ['PEDDAPALLE'],
-    'Mahabubnagar': ['MAHABUBNAGAR'],
-    'Ranga Reddy': ['CHEVELLA'],
-    'Vikarabad': ['CHEVELLA'],
-    'Sangareddy': ['ZAHEERABAD'],
-    'Medak': ['ZAHEERABAD'],
-    'Siddipet': ['MEDAK'],
-    'Kamareddy': ['NIZAMABAD'],
-  },
-  'Tamil Nadu': {
-    'Chennai': ['CHENNAI SOUTH', 'CHENNAI CENTRAL', 'CHENNAI NORTH'],
-    'Coimbatore': ['COIMBATORE'],
-    'Madurai': ['MADURAI'],
-    'Tiruchirappalli': ['TIRUCHIRAPPALLI'],
-    'Salem': ['SALEM'],
-    'Tirunelveli': ['TIRUNELVELI'],
-    'Vellore': ['VELLORE'],
-    'Dharmapuri': ['DHARMAPURI'],
-    'Krishnagiri': ['KRISHNAGIRI'],
-    'Tiruvallur': ['TIRUVALLUR'],
-    'Kanchipuram': ['KANCHIPURAM'],
-    'Villupuram': ['VILLUPURAM'],
-    'Thanjavur': ['THANJAVUR'],
-    'Virudhunagar': ['VIRUDHUNAGAR'],
-    'Ramanathapuram': ['RAMANATHAPURAM'],
-    'Thoothukudi': ['THOOTHUKUDI'],
-    'Kanyakumari': ['KANYAKUMARI'],
-    'Tirupur': ['TIRUPPUR'],
-    'Erode': ['ERODE'],
-    'Nilgiris': ['NILGIRIS'],
-  },
-  'Karnataka': {
-    'Bangalore Urban': ['BANGALORE SOUTH', 'BANGALORE NORTH', 'BANGALORE CENTRAL'],
-    'Bangalore Rural': ['BANGALORE RURAL'],
-    'Mysore': ['MYSORE'],
-    'Belgaum': ['BELGAUM'],
-    'Dharwad': ['DHARWAD', 'HAVERI'],
-    'Hubli-Dharwad': ['DHARWAD'],
-    'Mangalore': ['DAKSHINA KANNADA'],
-    'Dakshina Kannada': ['DAKSHINA KANNADA'],
-    'Udupi': ['UDUPI CHIKMAGALUR'],
-    'Chikmagalur': ['UDUPI CHIKMAGALUR'],
-    'Shimoga': ['SHIMOGA'],
-    'Tumkur': ['TUMKUR'],
-    'Kolar': ['KOLAR'],
-    'Mandya': ['MANDYA'],
-    'Hassan': ['HASSAN'],
-    'Davanagere': ['DAVANAGERE'],
-    'Bellary': ['BELLARY'],
-    'Raichur': ['RAICHUR'],
-    'Bidar': ['BIDAR'],
-    'Gulbarga': ['GULBARGA'],
-    'Bijapur': ['BIJAPUR'],
-    'Belagavi': ['BELGAUM'],
-    'Bagalkot': ['BAGALKOT'],
-    'Gadag': ['GADAG'],
-    'Uttara Kannada': ['UTTARA KANNADA'],
-    'Chitradurga': ['CHITRADURGA'],
-  },
-  'Kerala': {
-    'Thiruvananthapuram': ['THIRUVANANTHAPURAM'],
-    'Kollam': ['KOLLAM'],
-    'Alappuzha': ['ALAPPUZHA'],
-    'Pathanamthitta': ['PATHANAMTHITTA'],
-    'Kottayam': ['KOTTAYAM'],
-    'Idukki': ['IDUKKI'],
-    'Ernakulam': ['ERNAKULAM'],
-    'Thrissur': ['THRISSUR'],
-    'Palakkad': ['PALAKKAD'],
-    'Malappuram': ['MALAPPURAM'],
-    'Kozhikode': ['KOZHIKODE'],
-    'Wayanad': ['WAYANAD'],
-    'Kannur': ['KANNUR'],
-    'Kasaragod': ['KASARAGOD'],
-  },
-  'Maharashtra': {
-    'Mumbai': ['MUMBAI SOUTH', 'MUMBAI NORTH', 'MUMBAI NORTH CENTRAL', 'MUMBAI NORTH WEST', 'MUMBAI SOUTH CENTRAL'],
-    'Mumbai Suburban': ['MUMBAI NORTH EAST', 'MUMBAI NORTH WEST'],
-    'Pune': ['PUNE'],
-    'Thane': ['THANE'],
-    'Nagpur': ['NAGPUR'],
-    'Nashik': ['NASHIK'],
-    'Aurangabad': ['AURANGABAD'],
-    'Solapur': ['SOLAPUR'],
-    'Amravati': ['AMRAVATI'],
-    'Akola': ['AKOLA'],
-    'Kolhapur': ['KOLHAPUR'],
-    'Sangli': ['SANGLI'],
-    'Satara': ['SATARA'],
-    'Ratnagiri': ['RATNAGIRI'],
-    'Sindhudurg': ['SINDHUDURG'],
-    'Raigad': ['RAIGAD'],
-    'Bhandara': ['BHANDARA'],
-    'Chandrapur': ['CHANDRAPUR'],
-    'Gadchiroli': ['GADCHIROLI'],
-    'Gondia': ['GONDIA'],
-    'Wardha': ['WARDHA'],
-    'Yavatmal': ['YAVATMAL'],
-    'Buldhana': ['BULDHANA'],
-    'Washim': ['WASHIM'],
-    'Hingoli': ['HINGOLI'],
-    'Parbhani': ['PARBHANI'],
-    'Jalna': ['JALNA'],
-    'Latur': ['LATUR'],
-    'Osmanabad': ['OSMANABAD'],
-    'Beed': ['BEED'],
-    'Nanded': ['NANDED'],
-    'Dhule': ['DHULE'],
-    'Jalgaon': ['JALGAON'],
-    'Ahmednagar': ['AHMEDNAGAR'],
-    'Nandurbar': ['NANDURBAR'],
-  },
-  'Gujarat': {
-    'Ahmedabad': ['AHMEDABAD WEST', 'AHMEDABAD EAST'],
-    'Surat': ['SURAT'],
-    'Vadodara': ['VADODARA'],
-    'Rajkot': ['RAJKOT'],
-    'Bhavnagar': ['BHAVNAGAR'],
-    'Jamnagar': ['JAMNAGAR'],
-    'Gandhinagar': ['GANDHINAGAR'],
-    'Mehsana': ['MEHSANA'],
-    'Patan': ['PATAN'],
-    'Banaskantha': ['BANASKANTHA'],
-    'Sabarkantha': ['SABARKANTHA'],
-    'Aravalli': ['SABARKANTHA'],
-    'Kutch': ['KACHCHH'],
-    'Panchmahal': ['PANCHMAHAL'],
-    'Dahod': ['DAHOD'],
-    'Valsad': ['VALSAD'],
-    'Navsari': ['NAVSARI'],
-    'Tapi': ['TAPI'],
-    'Daman': ['DAMAN AND DIU'],
-    'Diu': ['DAMAN AND DIU'],
-    'Dadra Nagar Haveli': ['DADRA AND NAGAR HAVELI'],
-  },
-  'Rajasthan': {
-    'Jaipur': ['JAIPUR', 'JAIPUR RURAL'],
-    'Jodhpur': ['JODHPUR'],
-    'Udaipur': ['UDAIPUR'],
-    'Kota': ['KOTA'],
-    'Alwar': ['ALWAR'],
-    'Bharatpur': ['BHARATPUR'],
-    'Bikaner': ['BIKANER'],
-    'Jaisalmer': ['JAISALMER'],
-    'Barmer': ['BARMER'],
-    'Jalore': ['JALORE'],
-    'Sirohi': ['SIROHI'],
-    'Pali': ['PALI'],
-    'Nagaur': ['NAGAUR'],
-    'Sikar': ['SIKAR'],
-    'Jhunjhunu': ['JHUNJHUNU'],
-    'Churu': ['CHURU'],
-    'Hanumangarh': ['GANGANAGAR'],
-    'Sri Ganganagar': ['GANGANAGAR'],
-    'Ajmer': ['AJMER'],
-    'Tonk': ['TONK'],
-    'Bundi': ['BUNDI'],
-    'Baran': ['BARAN'],
-    'Jhalawar': ['JHALAWAR'],
-    'Dholpur': ['DHOLPUR'],
-    'Karauli': ['KARAULI'],
-    'Sawai Madhopur': ['SAWAI MADHOPUR'],
-    'Dausa': ['DAUSA'],
-    'Banswara': ['BANSWARA'],
-    'Dungarpur': ['DUNGARPUR'],
-    'Pratapgarh': ['PRATAPGARH'],
-    'Rajsamand': ['RAJSAMAND'],
-    'Bhilwara': ['BHILWARA'],
-    'Chittorgarh': ['CHITTORGARH'],
-  },
-  'Uttar Pradesh': {
-    'Lucknow': ['LUCKNOW'],
-    'Kanpur': ['KANPUR'],
-    'Varanasi': ['VARANASI'],
-    'Prayagraj': ['PRAYAGRAJ'],
-    'Agra': ['AGRA'],
-    'Meerut': ['MEERUT'],
-    'Ghaziabad': ['GHAZIABAD'],
-    'Gautam Buddha Nagar': ['GAUTAM BUDDHA NAGAR'],
-    'Bareilly': ['BAREILLY'],
-    'Moradabad': ['MORADABAD'],
-    'Aligarh': ['ALIGARH'],
-    'Mathura': ['MATHURA'],
-    'Gorakhpur': ['GORAKHPUR'],
-    'Basti': ['BASTI'],
-    'Deoria': ['DEORIA'],
-    'Azamgarh': ['AZAMGARH'],
-    'Mau': ['MAU'],
-    'Ballia': ['BALLIA'],
-    'Ghazipur': ['GHAZIPUR'],
-    'Jaunpur': ['JAUNPUR'],
-    'Mirzapur': ['MIRZAPUR'],
-    'Sonbhadra': ['SONBHADRA'],
-    'Bhadohi': ['BHADOHI'],
-    'Sultanpur': ['SULTANPUR'],
-    'Amethi': ['AMETHI'],
-    'Raebareli': ['RAE BARELI'],
-    'Unnao': ['UNNAO'],
-    'Sitapur': ['SITAPUR'],
-    'Hardoi': ['HARDOI'],
-    'Kheri': ['KHERI'],
-    'Lakhimpur': ['LAKHIMPUR'],
-    'Bahraich': ['BAHRAICH'],
-    'Shravasti': ['SHRAVASTI'],
-    'Balrampur': ['BALRAMPUR'],
-    'Gonda': ['GONDA'],
-    'Faizabad': ['FAIZABAD'],
-    'Ambedkar Nagar': ['AMBEDKAR NAGAR'],
-    'Pratapgarh': ['PRATAPGARH'],
-    'Allahabad': ['PRAYAGRAJ'],
-  },
-  'Bihar': {
-    'Patna': ['PATNA'],
-    'Gaya': ['GAYA'],
-    'Bhagalpur': ['BHAGALPUR'],
-    'Muzaffarpur': ['MUZAFFARPUR'],
-    'Darbhanga': ['DARBHANGA'],
-    'Gopalganj': ['GOPALGANJ'],
-    'Siwan': ['SIWAN'],
-    'Saran': ['SARAN'],
-    'Vaishali': ['VAISHALI'],
-    'Hajipur': ['HAJIPUR'],
-    'Samastipur': ['SAMASTIPUR'],
-    'Begusarai': ['BEGUSARAI'],
-    'Khagaria': ['KHAGARIA'],
-    'Banka': ['BANKA'],
-    'Munger': ['MUNGER'],
-    'Lakhisarai': ['LAKHISARAI'],
-    'Sheikhpura': ['SHEIKHPURA'],
-    'Nalanda': ['NALANDA'],
-    'Jehanabad': ['JEHANABAD'],
-    'Aurangabad': ['AURANGABAD'],
-    'Arwal': ['ARWAL'],
-    'Kaimur': ['KAIMUR'],
-    'Rohtas': ['ROHTAS'],
-    'Buxar': ['BUXAR'],
-    'Bhojpur': ['ARA'],
-    'Katihar': ['KATIHAR'],
-    'Purnia': ['PURNIA'],
-    'Araria': ['ARARIA'],
-    'Kishanganj': ['KISHANGANJ'],
-    'Supaul': ['SUPAUL'],
-    'Madhepura': ['MADHEPURA'],
-    'Saharsa': ['SAHARSA'],
-    'Madhubani': ['MADHUBANI'],
-    'Sitamarhi': ['SITAMARHI'],
-    'Sheohar': ['SHEOHAR'],
-    'East Champaran': ['EAST CHAMPARAN'],
-    'West Champaran': ['WEST CHAMPARAN'],
-  },
-  'West Bengal': {
-    'Kolkata': ['KOLKATA NORTH', 'KOLKATA SOUTH'],
-    'North 24 Parganas': ['BARASAT', 'BASIRHAT'],
-    'South 24 Parganas': ['JAYNAGAR', 'MATHURAPUR'],
-    'Howrah': ['HOWRAH'],
-    'Hooghly': ['HOOGHLY', 'SERAMPORE'],
-    'Nadia': ['NADIA', 'KRISHNANAGAR'],
-    'Murshidabad': ['MURSHIDABAD', 'BERHAMPORE'],
-    'Birbhum': ['BIRBHUM', 'BOLPUR'],
-    'Purba Bardhaman': ['BARDHAMAN'],
-    'Paschim Bardhaman': ['DURGAPUR', 'ASANSOL'],
-    'Bankura': ['BANKURA'],
-    'Purulia': ['PURULIA'],
-    'Paschim Medinipur': ['MEDINIPUR', 'JHARGRAM'],
-    'Jhargram': ['JHARGRAM'],
-    'Purba Medinipur': ['TAMLUK', 'CONTAI'],
-    'Alipurduar': ['ALIPURDUARS'],
-    'Cooch Behar': ['COOCH BEHAR'],
-    'Jalpaiguri': ['JALPAIGURI'],
-    'Darjeeling': ['DARJEELING'],
-    'Uttar Dinajpur': ['RAIGANJ'],
-    'Dakshin Dinajpur': ['BALURGHAT'],
-    'Malda': ['MALDA'],
-  },
-  'Odisha': {
-    'Bhubaneswar': ['BHUBANESWAR'],
-    'Cuttack': ['CUTTACK'],
-    'Puri': ['PURI'],
-    'Sambalpur': ['SAMBALPUR'],
-    'Rourkela': ['ROURKELA'],
-    'Berhampur': ['BERHAMPUR'],
-    'Balasore': ['BALASORE'],
-    'Bhadrak': ['BHADRAK'],
-    'Jajpur': ['JAJPUR'],
-    'Kendrapara': ['KENDRAPARA'],
-    'Jagatsinghpur': ['JAGATSINGHPUR'],
-    'Khurda': ['KHURDA'],
-    'Nayagarh': ['NAYAGARH'],
-    'Khordha': ['KHURDA'],
-    'Dhenkanal': ['DHENKANAL'],
-    'Angul': ['ANGUL'],
-    'Boudh': ['BOUDH'],
-    'Subarnapur': ['SUBARNAPUR'],
-    'Balangir': ['BOLANGIR'],
-    'Nuapada': ['NUAPADA'],
-    'Kalahandi': ['KALAHANDI'],
-    'Nabarangpur': ['NABARANGPUR'],
-    'Koraput': ['KORAPUT'],
-    'Malkangiri': ['MALKANGIRI'],
-    'Rayagada': ['RAYAGADA'],
-    'Gajapati': ['GAJAPATI'],
-    'Ganjam': ['BERHAMPUR'],
-    'Kandhamal': ['KANDHAMAL'],
-  },
-  'Punjab': {
-    'Ludhiana': ['LUDHIANA'],
-    'Amritsar': ['AMRITSAR'],
-    'Jalandhar': ['JALANDHAR'],
-    'Patiala': ['PATIALA'],
-    'Bathinda': ['BATHINDA'],
-    'Tarn Taran': ['TARN TARAN'],
-    'Gurdaspur': ['GURDASPUR'],
-    'Pathankot': ['PATHANKOT'],
-    'Hoshiarpur': ['HOSHIARPUR'],
-    'Kapurthala': ['KAPURTHALA'],
-    'SBS Nagar': ['SBS NAGAR'],
-    'Fatehgarh Sahib': ['FATEHGHAR SAHIB'],
-    'Rupnagar': ['RUPNAGAR'],
-    'SAS Nagar': ['SAS NAGAR'],
-    'Sangrur': ['SANGRUR'],
-    'Barnala': ['BARNALA'],
-    'Mansa': ['MANSA'],
-    'Sri Muktsar Sahib': ['MUKTSAR'],
-    'Fazilka': ['FAZILKA'],
-    'Faridkot': ['FARIDKOT'],
-    'Moga': ['MOGA'],
-  },
-  'Madhya Pradesh': {
-    'Bhopal': ['BHOPAL'],
-    'Indore': ['INDORE'],
-    'Gwalior': ['GWALIOR'],
-    'Jabalpur': ['JABALPUR'],
-    'Ujjain': ['UJJAIN'],
-    'Sagar': ['SAGAR'],
-    'Rewa': ['REWA'],
-    'Satna': ['SATNA'],
-    'Guna': ['GUNA'],
-    'Vidisha': ['VIDISHA'],
-    'Raisen': ['RAISEN'],
-    'Betul': ['BETUL'],
-    'Chhindwara': ['CHHINDWARA'],
-    'Balaghat': ['BALAGHAT'],
-    'Seoni': ['SEONI'],
-    'Mandla': ['MANDLA'],
-    'Narsinghpur': ['NARSINGHPUR'],
-    'Hoshangabad': ['HOSHANGABAD'],
-    'Harda': ['HARDA'],
-    'Khandwa': ['KHANDWA'],
-    'Burhanpur': ['BURHANPUR'],
-    'Khargone': ['KHARGONE'],
-    'Barwani': ['BARWANI'],
-    'Alirajpur': ['ALIRAJPUR'],
-    'Jhabua': ['JHABUA'],
-    'Dhar': ['DHAR'],
-    'Ratlam': ['RATLAM'],
-    'Mandsaur': ['MANSAUR'],
-    'Neemuch': ['NEEMUCH'],
-    'Dewas': ['DEWAS'],
-    'Shajapur': ['SHAJAPUR'],
-    'Agar Malwa': ['AGAR MALWA'],
-    'Morena': ['MORENA'],
-    'Bhind': ['BHIND'],
-    'Sheopur': ['SHEOPUR'],
-    'Tikamgarh': ['TIKAMGARH'],
-    'Chhatarpur': ['CHHATARPUR'],
-    'Panna': ['PANNA'],
-    'Damoh': ['DAMOH'],
-    'Katni': ['KATNI'],
-  },
-  'Assam': {
-    'Kamrup': ['GUWAHATI'],
-    'Dibrugarh': ['DIBRUGARH'],
-    'Tinsukia': ['TINSUKIA'],
-    'Sivasagar': ['SIVASAGAR'],
-    'Jorhat': ['JORHAT'],
-    'Golaghat': ['GOLAGHAT'],
-    'Nagaon': ['NAGAON'],
-    'Sonitpur': ['SONITPUR'],
-    'Lakhimpur': ['LAKHIMPUR'],
-    'Dhemaji': ['DHEMAJI'],
-    'Tezpur': ['TEZPUR'],
-    'Karimganj': ['KARIMGANJ'],
-    'Silchar': ['SILCHAR'],
-    'Cachar': ['CACHAR'],
-    'Hailakandi': ['HAILAKANDI'],
-  },
-};
+import { INDIA_DISTRICTS } from './indiaDistricts.js';
+import { STATE_CONSTITUENCIES } from './constituencyData.js';
 
+// The resolved table lives in districtSeatMap.js, which is generated by
+// scripts/reconcile-districts.mjs. Keeping it separate means the data can be
+// regenerated without touching the lookup logic below.
+import { DISTRICT_CONSTITUENCIES } from './districtSeatMap.js';
+
+export { DISTRICT_CONSTITUENCIES };
+
+/** Lowercase, strip everything that is not a letter or digit. */
+function normaliseName(value) {
+  return String(value || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '');
+}
+
+/**
+ * Every district for a state, from the generated Wikipedia-derived list.
+ *
+ * Returns null only when the state is not in the dataset at all, which the
+ * caller treats as "fall back to free text". For all 36 jurisdictions in
+ * INDIA_DISTRICTS this returns a populated list.
+ */
 export function getDistrictsForState(state) {
-  const districtMap = DISTRICT_CONSTITUENCIES[state];
-  if (!districtMap) return null;
-  return Object.keys(districtMap).sort();
+  const list = INDIA_DISTRICTS[state];
+  if (!Array.isArray(list) || list.length === 0) return null;
+  return list;
 }
 
+/**
+ * Constituencies for one district.
+ *
+ * Order of preference:
+ *   1. the curated table, when it has this exact district
+ *   2. seat names in the same state that match the district name
+ *   3. every seat in the state (recoverable fallback)
+ *
+ * Never returns another state's seats: step 3 is scoped by state, and step 2
+ * only searches that state's official list.
+ */
+/**
+ * Constituencies for a state.
+ *
+ * Previously this tried to narrow the list to the seats overlapping a chosen
+ * district, using a curated table and then prefix matching. That only worked
+ * for 299 of 789 districts, so behaviour differed by state: Andhra Pradesh
+ * narrowed while most others showed every seat. District and parliamentary-
+ * constituency boundaries do not line up in India (one district can span
+ * several seats and vice versa), so any single-seat answer is also wrong.
+ *
+ * The consistent, honest behaviour is to offer every seat in the state and let
+ * the citizen pick. The district field is kept for routing and contact detail,
+ * not for filtering.
+ */
 export function getConstituenciesForStateAndDistrict(state, district) {
-  const districtMap = DISTRICT_CONSTITUENCIES[state];
-  if (!districtMap) return null;
-  const cons = districtMap[district];
-  if (!cons) return null;
-  return cons;
+  if (!state || !district) return null;
+  const all = STATE_CONSTITUENCIES[state];
+  if (!Array.isArray(all) || all.length === 0) return null;
+  return all;
 }
 
+/** Every seat in the state, from the official 543-seat dataset. */
 export function getAllConstituenciesForState(state) {
-  const districtMap = DISTRICT_CONSTITUENCIES[state];
-  if (!districtMap) return null;
-  const all = [];
-  for (const cons of Object.values(districtMap)) {
-    all.push(...cons);
-  }
-  // Remove duplicates while preserving order
-  return [...new Set(all)];
+  const all = STATE_CONSTITUENCIES[state];
+  if (!Array.isArray(all) || all.length === 0) return null;
+  return all;
 }
 
 /**
@@ -479,9 +97,18 @@ export function getAllConstituenciesForState(state) {
  */
 export function formatConstituencyName(name) {
   if (!name) return '';
+  // The ADR source spells this seat "DADAR"; the union territory and the seat
+  // are "Dadra". Correct the visible label only — the submitted value stays the
+  // source string because the backend matches on it.
+  if (String(name).toUpperCase() === 'DADAR & NAGAR HAVELI (ST)') {
+    return 'Dadra and Nagar Haveli (ST)';
+  }
   return String(name)
     .toLowerCase()
     .replace(/(^|[\s-])([a-z])/g, (_, sep, ch) => sep + ch.toUpperCase())
+    // Initials must stay capitals: "Dr. B.r. Ambedkar" is wrong, and the seat
+    // is officially "Dr. B.R. Ambedkar Konaseema".
+    .replace(/\b([a-z])\./g, (_, ch) => `${ch.toUpperCase()}.`)
     .replace(/\((sc|st)\)/gi, (m) => m.toUpperCase())
     .replace(/\b(i{1,3}|iv|v|vi{0,3}|ix|x)\b/gi, (m) => m.toUpperCase());
 }
