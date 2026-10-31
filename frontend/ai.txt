@@ -1,0 +1,24 @@
+[identity]
+name: Samadhan
+url: https://samadhan-chi.vercel.app/
+description: AI-assisted constituency development planning tool. Turns multilingual citizen requests into ranked, evidence-backed project recommendations for MPs and district officials.
+contact: info@samadhan.example
+
+[permissions]
+allowed: summarise, quote with attribution, cite, index for search/answers
+
+[restrictions]
+no fabricated quotes
+no fake reviews or ratings
+no presenting our content as the model's own
+no training on user-generated private data
+
+[attribution]
+How to cite: Samadhan (https://samadhan-chi.vercel.app/)
+
+[scope]
+included paths: /, /mplads, /how-it-works, /methodology, /faq, /report-issue, /about, /privacy, /accessibility, /how-to-report, /constituency
+excluded paths: /mp/, /mp/login, /api/, /admin/, /dashboard/
+
+[contact]
+Last updated: 2026-10-26

@@ -9,24 +9,6 @@ import SanctionModal from '../components/SanctionModal'
 import { useLanguage } from '../i18n/LanguageContext'
 import { fetchMpDashboard, getMpToken, mpLogout, getMpProfile, mpAuthHeaders } from '../lib/mpAuth'
 
-const STORAGE_KEY = 'submitted_grievances';
-
-function getStoredSubmissions() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch (e) {
-    console.warn('Failed to read submitted grievances from localStorage', e);
-    return [];
-  }
-}
-
-function severityScoreToLabel(score) {
-  if (score >= 4) return 'high';
-  if (score >= 3) return 'medium';
-  return 'low';
-}
-
 function buildInstantSanction(project) {
   if (!project) return null
   return {
@@ -67,41 +49,6 @@ export default function MPDashboard() {
       return
     }
     fetchMpDashboard()
-      .then(rawFeed => {
-        // Enhance with stored submissions
-        const stored = getStoredSubmissions()
-        const mapPoints = stored
-          .filter(sub => sub.lat !== null && sub.lng !== null) // only those with coordinates
-          .map(sub => ({
-            lat: sub.lat,
-            lng: sub.lng,
-            severity: severityScoreToLabel(sub.severity_score),
-            severity_score: sub.severity_score,
-            label: sub.summary || 'Grievance',
-            reference_id: sub.reference_id,
-            category: sub.category,
-            location: sub.location,
-            source: sub.source,
-          }))
-        // Combine existing heatmap_points with new points (avoid duplicates by reference_id)
-        const existingPoints = rawFeed.heatmap_points || []
-        const existingIds = new Set(
-          existingPoints
-            .map(p => p.reference_id)
-            .filter(id => id !== undefined && id !== null)
-        )
-        const uniqueNewPoints = mapPoints.filter(p => !existingIds.has(p.reference_id))
-        const enhancedFeed = {
-          ...rawFeed,
-          heatmap_points: [...existingPoints, ...uniqueNewPoints],
-          // Update total_grievances metric to include stored submissions
-          metrics: {
-            ...rawFeed.metrics,
-            total_grievances: (rawFeed.metrics.total_grievances || 0) + stored.length,
-          }
-        }
-        return enhancedFeed
-      })
       .then(setFeed)
       .catch((ex) => {
         if (ex.message === 'SESSION_EXPIRED') {
@@ -151,18 +98,27 @@ export default function MPDashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC] px-4">
         <div className="text-center">
-          <p className="text-red-600 mb-4">{error || t.loadFail}</p>
+          <p role="alert" className="text-red-600 mb-4">{error || t.loadFail}</p>
           <Link to="/mp/login" className="text-[#032B5B] underline">{t.mpLoginBtn}</Link>
         </div>
       </div>
     )
   }
 
+  // The office line used to concatenate the name straight into the
+  // constituency with no separator, rendering "Demo MPVisakhapatnam". Build it
+  // once, in order, so the spacing cannot go missing again.
+  const officeName = feed.mp_office?.name || mpProfile?.name || ''
+  const officeConstituency = feed.mp_office?.constituency || mpProfile?.constituency || ''
+  const officePlace = [officeConstituency, feed.mp_office?.state || mpProfile?.state]
+    .filter(Boolean)
+    .join(', ')
+
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
-      <Header subtitle={`${t.mpSubtitle} — ${feed.mp_office?.constituency || mpProfile?.constituency || ''}`} />
+      <Header subtitle={officeConstituency ? `${t.mpSubtitle} — ${officeConstituency}` : t.mpSubtitle} showLangToggle />
 
-      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-2 flex items-center justify-between text-xs text-slate-600">
+      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-2 flex items-center justify-between gap-3 text-xs text-slate-600">
       {/* The dashboard had no h1 anywhere, so it had no top-level heading for
           assistive tech or heading navigation. Visually hidden so the bar
           stays compact. */}
@@ -172,12 +128,11 @@ export default function MPDashboard() {
           ? ` — ${feed.mp_office?.constituency || mpProfile?.constituency}`
           : ''}
       </h1>
-        <span>
-          {t.mpLoggedInAs}: <strong className="text-[#032B5B]">{feed.mp_office?.name || mpProfile?.name}</strong>
-          {feed.mp_office?.constituency || mpProfile?.constituency || ''}
-              {feed.mp_office?.state || mpProfile?.state ? `, ${feed.mp_office?.state || mpProfile?.state}` : ''}
+        <span className="min-w-0 truncate">
+          {t.mpLoggedInAs}: <strong className="text-[#032B5B]">{officeName}</strong>
+          {officePlace ? ` — ${officePlace}` : ''}
         </span>
-        <button type="button" onClick={handleLogout} className="text-[#032B5B] hover:text-[#F28C0F] font-medium">
+        <button type="button" onClick={handleLogout} className="shrink-0 whitespace-nowrap text-[#032B5B] hover:text-[#F28C0F] font-medium">
           {t.mpLogout}
         </button>
       </div>
@@ -209,7 +164,9 @@ export default function MPDashboard() {
           >
             {feed._dataSource === 'static'
               ? 'Sample data: the API is unreachable, so these are the committed placeholder figures, not live figures for this office.'
-              : 'No data available: the API and the committed dataset both failed to load. All counts are zero.'}
+              : feed._dataSource === 'static-empty'
+                ? 'No grievances recorded for this constituency yet. The sample figures on this static build belong to Visakhapatnam, so they are not shown here.'
+                : 'No data available: the API and the committed dataset both failed to load. All counts are zero.'}
           </div>
         )}
       </main>
@@ -226,7 +183,7 @@ export default function MPDashboard() {
         />
       )}
       {toast && (
-        <div className="fixed bottom-6 right-6 bg-[#032B5B] text-white text-sm px-5 py-3 rounded-lg shadow-xl max-w-sm z-50">{toast}</div>
+        <div role="status" aria-live="polite" className="fixed bottom-6 left-4 right-4 sm:left-auto sm:right-6 bg-[#032B5B] text-white text-sm px-5 py-3 rounded-lg shadow-xl max-w-sm z-50">{toast}</div>
       )}
     </div>
   )

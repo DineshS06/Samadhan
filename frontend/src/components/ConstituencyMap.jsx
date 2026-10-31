@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { useLanguage } from '../i18n/LanguageContext'
+import { canonicalSeatName, normalizePlace, normalizeState, selectBoundaryFeature } from '../lib/seatNames.js'
 
 const SEVERITY_COLORS = { high: '#EF4444', medium: '#F28C0F', low: '#22C55E' }
 
@@ -85,6 +86,7 @@ export default function ConstituencyMap({ points = [], mapConfig, mpOffice, focu
   const boundaryLayerRef = useRef(null)
 
   const constituency = mpOffice?.constituency || mapConfig?.constituency || 'Visakhapatnam'
+  const constituencyState = mpOffice?.state || mapConfig?.state || ''
   const configuredCenter = mapConfig?.center
   const centerLat = configuredCenter?.[0] ?? CONSTITUENCY_CENTERS[constituency]?.[0] ?? INDIA_CENTER[0]
   const centerLng = configuredCenter?.[1] ?? CONSTITUENCY_CENTERS[constituency]?.[1] ?? INDIA_CENTER[1]
@@ -94,6 +96,17 @@ export default function ConstituencyMap({ points = [], mapConfig, mpOffice, focu
   const boundaryUrl = mapConfig?.boundary_url && !String(mapConfig.boundary_url).startsWith('/api/')
     ? mapConfig.boundary_url
     : null
+  // Preferred source: an index of one GeoJSON per constituency. The map draws a
+  // single seat, so fetching its own full-detail polygon beats downloading the
+  // all-India collection. `boundaryUrl` stays as the fallback.
+  const boundaryIndexUrl = mapConfig?.boundary_index_url
+    && !String(mapConfig.boundary_index_url).startsWith('/api/')
+    ? String(mapConfig.boundary_index_url)
+    : null
+  // 'loading' | 'ready' | 'missing' | 'unmatched' | 'error'
+  const [boundaryStatus, setBoundaryStatus] = useState(
+    boundaryUrl || boundaryIndexUrl ? 'loading' : 'missing',
+  )
 
   // Initialise map once. Subsequent prop changes (points, boundaryUrl) are handled
   // by separate effects that mutate the existing map — no full rebuild.
@@ -124,40 +137,118 @@ export default function ConstituencyMap({ points = [], mapConfig, mpOffice, focu
     map.setView([centerLat, centerLng], zoom)
   }, [centerLat, centerLng, zoom])
 
-  // Boundary layer — only fetch when boundaryUrl is set; skip otherwise so the
-  // map renders without a boundary instead of hitting a dead API path. The
-  // existing layer is always removed first so a previous boundary is cleaned up
-  // when the URL changes to null or to a different value.
+  // Boundary layer — fetch the single seat's own polygon from the per-seat
+  // index, then fall back to the all-India file. The existing layer is always
+  // removed first so a previous boundary is cleaned up when the URL changes.
   useEffect(() => {
     const map = mapRef.current
     if (!map) return
     const ctrl = new AbortController()
+    const { signal } = ctrl
 
     if (boundaryLayerRef.current) {
       map.removeLayer(boundaryLayerRef.current)
       boundaryLayerRef.current = null
     }
 
-    if (!boundaryUrl) return
+    if (!boundaryUrl && !boundaryIndexUrl) {
+      setBoundaryStatus('missing')
+      return
+    }
 
-    fetch(boundaryUrl, { signal: ctrl.signal })
-      .then((r) => r.json())
-      .then((geojson) => {
-        if (!mapRef.current) return
-        const layer = L.geoJSON(geojson, {
-          style: { color: '#032B5B', weight: 2.5, fillColor: '#032B5B', fillOpacity: 0.08 },
-        }).addTo(map)
-        boundaryLayerRef.current = layer
-        try {
-          map.fitBounds(layer.getBounds(), { padding: [24, 24] })
-        } catch { /* keep default view */ }
-      })
-      .catch((err) => {
-        if (err?.name !== 'AbortError') { /* swallow network errors */ }
-      })
+    setBoundaryStatus('loading')
+
+    // Draw the first feature that belongs to this seat. Returns false when the
+    // payload has no matching feature, so the caller can try the fallback.
+    const draw = (geojson) => {
+      if (!mapRef.current || signal.aborted) return false
+      const feature = selectBoundaryFeature(geojson, constituency, constituencyState)
+      if (!feature) return false
+      const layer = L.geoJSON(feature, {
+        style: { color: '#032B5B', weight: 2.5, fillColor: '#032B5B', fillOpacity: 0.08 },
+      }).addTo(map)
+      boundaryLayerRef.current = layer
+      setBoundaryStatus('ready')
+
+      // The per-seat payload arrives in a few milliseconds, which can be before
+      // the map container has been laid out. Fitting a zero-size viewport makes
+      // Leaflet fall back to world zoom, so re-measure and retry briefly.
+      const fit = (attempt = 0) => {
+        if (signal.aborted || !mapRef.current) return
+        map.invalidateSize()
+        const size = map.getSize()
+        if (size.x > 40 && size.y > 40) {
+          try {
+            map.fitBounds(layer.getBounds(), { padding: [24, 24] })
+          } catch { /* keep default view */ }
+          return
+        }
+        if (attempt < 20) setTimeout(() => fit(attempt + 1), 50)
+      }
+      fit()
+      return true
+    }
+
+    const loadSeat = async () => {
+      if (!boundaryIndexUrl) return false
+      const indexResponse = await fetch(boundaryIndexUrl, { signal })
+      if (!indexResponse.ok) return false
+      let index
+      try {
+        index = await indexResponse.json()
+      } catch (err) {
+        // The host may rewrite a missing index to the SPA HTML with a 200
+        // status. Treat that (or any malformed index) as "no per-seat data"
+        // so the caller can still draw the national fallback boundary.
+        if (err?.name === 'AbortError') throw err
+        return false
+      }
+      const seats = Array.isArray(index?.seats) ? index.seats : []
+      const wanted = canonicalSeatName(constituency, constituencyState)
+      if (!wanted) return false
+
+      let matches = seats.filter((s) => normalizePlace(s.pc_name) === wanted)
+      if (matches.length === 0) {
+        matches = seats.filter((s) => {
+          const name = normalizePlace(s.pc_name)
+          return name && (name.includes(wanted) || wanted.includes(name))
+        })
+      }
+      const wantedState = normalizeState(constituencyState)
+      if (wantedState) {
+        const inState = matches.filter((s) => normalizeState(s.st_name) === wantedState)
+        if (inState.length > 0) matches = inState
+      }
+      // Two seats can share a name in the source data (two "Mumbai South"
+      // entries). Drawing either one would be wrong, so leave it unmatched.
+      if (matches.length !== 1) return false
+
+      const dir = boundaryIndexUrl.replace(/index\.json(\?.*)?$/, '')
+      const seatResponse = await fetch(dir + matches[0].file, { signal })
+      if (!seatResponse.ok) return false
+      return draw(await seatResponse.json())
+    }
+
+    const loadFallback = async () => {
+      if (!boundaryUrl) return false
+      const response = await fetch(boundaryUrl, { signal })
+      if (!response.ok) return false
+      return draw(await response.json())
+    }
+
+    ;(async () => {
+      try {
+        if (await loadSeat()) return
+        if (await loadFallback()) return
+        if (!signal.aborted) setBoundaryStatus('unmatched')
+      } catch (err) {
+        if (err?.name === 'AbortError' || signal.aborted) return
+        setBoundaryStatus('error')
+      }
+    })()
 
     return () => ctrl.abort()
-  }, [boundaryUrl])
+  }, [boundaryUrl, boundaryIndexUrl, constituency, constituencyState])
 
   // Marker layer — diff by reference_id, only add/remove what changed.
   // Severity colour is derived from point.severity if present, otherwise from
@@ -216,7 +307,10 @@ export default function ConstituencyMap({ points = [], mapConfig, mpOffice, focu
   const validPoints = points.filter((p) => isInsideIndia(p.lat, p.lng))
   const gpsCount = validPoints.filter((p) => p.source === 'citizen_gps').length
   const localityCount = validPoints.length - gpsCount
-  const boundaryMissing = !boundaryUrl
+  // Only warn once we know there is no outline to draw — not while it is still
+  // loading, and not when it loaded fine.
+  const boundaryProblem =
+    boundaryStatus === 'missing' || boundaryStatus === 'unmatched' || boundaryStatus === 'error'
 
   return (
     <div className="bg-white rounded-xl border border-slate-200 shadow-sm h-full flex flex-col">
@@ -229,12 +323,12 @@ export default function ConstituencyMap({ points = [], mapConfig, mpOffice, focu
           {validPoints.length} {t.mapIssuesMapped}
           {gpsCount > 0 && ` · ${gpsCount} ${t.mapGpsCount}`}
           {localityCount > 0 && ` · ${localityCount} ${t.mapLocalityCount}`}
-          {boundaryMissing && ` · ${t.mapNoBoundary || 'Constituency boundary data not available'}`}
+          {boundaryProblem && ` · ${t.mapNoBoundary || 'Constituency boundary data not available'}`}
         </p>
       </div>
       <div className="flex-1 p-4 min-h-[360px]">
         <div ref={containerRef} className="w-full h-[340px] rounded-lg overflow-hidden border border-slate-200 z-0" />
-        {boundaryMissing && (
+        {boundaryProblem && (
           <div className="mt-2 p-2 text-xs text-amber-700 bg-amber-50 rounded border border-amber-200">
             {t.mapBoundaryNote || 'Constituency boundary overlay not available — showing grievance points only.'}
           </div>

@@ -47,6 +47,7 @@ export default function SEO({
   path = '/',
   noIndex = false,
   schema = [],
+  aiSummary,
 }) {
   useEffect(() => {
     document
@@ -65,6 +66,7 @@ export default function SEO({
     add('meta', { name: 'description', content: description });
     add('meta', { name: 'robots', content: robots });
     add('meta', { name: 'googlebot', content: robots });
+    if (aiSummary) add('meta', { name: 'ai-summary', content: aiSummary });
     add('meta', { property: 'og:title', content: full });
     add('meta', { property: 'og:description', content: description });
     add('meta', { property: 'og:type', content: 'website' });
@@ -84,13 +86,17 @@ export default function SEO({
     add('meta', { name: 'twitter:image:alt', content: 'Samadhan AI constituency planning platform preview' });
 
     add('link', { rel: 'canonical', href: u });
+    if (!noIndex && aiSummary) {
+      add('link', { rel: 'alternate', type: 'text/markdown', href: u + '.md' });
+    }
 
     // No hreflang: the site ships one language. Emitting alternates that all
     // resolve to this same URL is an error signal, not a multilingual signal.
     // Add hreflang only alongside real, distinct localized pages.
 
-    if (!noIndex && schema.length)
-      add('script', { type: 'application/ld+json' }, JSON.stringify({ '@context': 'https://schema.org', '@graph': schema }));
+    const schemaList = Array.isArray(schema) ? schema : schema ? [schema] : [];
+    if (!noIndex && schemaList.length)
+      add('script', { type: 'application/ld+json' }, JSON.stringify({ '@context': 'https://schema.org', '@graph': schemaList }));
 
     return () => document.querySelectorAll('[data-seo-managed]').forEach((n) => n.remove());
   }, [title, description, path, noIndex, schema]);

@@ -1,7 +1,7 @@
 # Samadhan - AI Constituency Development Planning
 # Robots.txt for search engine crawlers
 
-# General crawlers
+# General crawlers (includes AI search and assistant crawlers)
 User-agent: *
 Allow: /
 Disallow: /mp/
@@ -10,6 +10,38 @@ Disallow: /grievance/
 Disallow: /mp/login
 Disallow: /404
 Crawl-delay: 2
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /mp/
+Disallow: /api/
+Disallow: /grievance/
+Disallow: /mp/login
+Disallow: /404
+
+User-agent: Claude-SearchBot
+Allow: /
+Disallow: /mp/
+Disallow: /api/
+Disallow: /grievance/
+Disallow: /mp/login
+Disallow: /404
+
+User-agent: Claude-User
+Allow: /
+Disallow: /mp/
+Disallow: /api/
+Disallow: /grievance/
+Disallow: /mp/login
+Disallow: /404
+
+User-agent: Perplexity-User
+Allow: /
+Disallow: /mp/
+Disallow: /api/
+Disallow: /grievance/
+Disallow: /mp/login
+Disallow: /404
 
 # Google
 User-agent: Googlebot
@@ -88,6 +120,25 @@ Disallow: /mp/
 Disallow: /api/
 Disallow: /grievance/
 
+# AI Training Bots (allowed — site owner permits crawling for training)
+User-agent: Google-Extended
+Allow: /
+Disallow: /mp/
+Disallow: /api/
+Disallow: /grievance/
+
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /mp/
+Disallow: /api/
+Disallow: /grievance/
+
+User-agent: Bytespider
+Allow: /
+Disallow: /mp/
+Disallow: /api/
+Disallow: /grievance/
+
 User-agent: DuckDuckBot
 Allow: /
 Disallow: /mp/
@@ -107,6 +158,10 @@ Disallow: /mp/
 Disallow: /api/
 Disallow: /grievance/
 Crawl-delay: 10
+
+# AI-readable site references
+# llms.txt — structured site index for LLM crawlers: /llms.txt
+# ai.txt — site prompt and contact information for AI agents: /ai.txt
 
 # Sitemap
 Sitemap: https://samadhan-chi.vercel.app/sitemap.xml

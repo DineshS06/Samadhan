@@ -97,6 +97,96 @@ export const INTENTS = [
       'Read by people using assistive technology, or by accessibility reviewers. Terms are the standards '
       + 'they will search for.',
   },
+  {
+    path: '/how-to-report',
+    cluster: 'guides',
+    primary: 'how to report a constituency issue',
+    secondary: ['CPGRAMS grievance', 'public grievance India', 'escalate a grievance', 'RTI request'],
+    intent: 'informational',
+    rationale:
+      'A citizen with a problem is deciding where to send it. The page has to answer that before it can '
+      + 'ask them to use this site, so it leads with the official channels and their differences.',
+  },
+  {
+    path: '/mplads',
+    cluster: 'guides',
+    primary: 'MPLADS fund',
+    secondary: ['MPLADS 5 crore per year', 'MP local area development scheme', 'MPLADS eligible works', 'CAG MPLADS report'],
+    intent: 'informational',
+    rationale:
+      'People search for the amount, what it can be spent on, and whether their MP has used it. The page '
+      + 'answers all three with dates and figures rather than a scheme summary.',
+  },
+  {
+    path: '/constituency',
+    cluster: 'guides',
+    primary: 'Lok Sabha constituency',
+    secondary: ['543 Lok Sabha seats', 'reserved constituencies SC ST', 'delimitation commission', 'find my MP'],
+    intent: 'informational',
+    rationale:
+      'The query is usually "which constituency am I in" or "how many seats does my state have". The page '
+      + 'answers both and explains why the boundaries have not moved since 2008.',
+  },
+  {
+    path: '/research',
+    cluster: 'guides',
+    primary: 'Samadhan research statistics',
+    secondary: ['AI citation data pages', 'constituency data for AI answers', 'LLM-friendly statistics'],
+    intent: 'informational',
+    rationale:
+      'The research hub lists all statistics pages with citation anchors. AI crawlers and retrieval systems '
+      + 'use it as the entry point to the site\'s data-backed content.',
+  },
+  {
+    path: '/research/constituencies',
+    cluster: 'oversight',
+    primary: 'Lok Sabha constituency statistics',
+    secondary: ['543 Lok Sabha seats', 'reserved SC ST seats', 'seats by state', 'single seat states'],
+    intent: 'informational',
+    rationale:
+      'Constituency counts per state are a common lookup for MP offices and civic researchers. The ranked '
+      + 'list gives every state and UT its seat count and reserved-seat breakdown.',
+  },
+  {
+    path: '/research/districts',
+    cluster: 'oversight',
+    primary: 'Indian districts statistics',
+    secondary: ['789 districts', 'districts by state', 'single district states', 'district count India'],
+    intent: 'informational',
+    rationale:
+      'District counts per state are used for planning and delimitation discussions. The ranked list covers '
+      + 'all 36 states and union territories.',
+  },
+  {
+    path: '/research/district-mapping',
+    cluster: 'oversight',
+    primary: 'district constituency mapping',
+    secondary: ['district to Lok Sabha seat mapping', 'resolved districts', 'district seat coverage'],
+    intent: 'informational',
+    rationale:
+      'District and parliamentary constituency boundaries do not align, so this page explains which districts '
+      + 'have resolved seat mappings and which fall back to the full state list.',
+  },
+  {
+    path: '/research/faqs',
+    cluster: 'scoring',
+    primary: 'citizen FAQ statistics',
+    secondary: ['FAQ topics', 'privacy FAQs', 'MPLADS FAQs', 'frequently asked questions'],
+    intent: 'informational',
+    rationale:
+      'The FAQ statistics page categorizes all 11 published questions by topic, making each answer citable '
+      + 'and quotable for AI answers.',
+  },
+  {
+    path: '/research/search-intents',
+    cluster: 'oversight',
+    primary: 'search intent statistics',
+    secondary: ['informational vs transactional', 'page intent mapping', 'search intent clusters'],
+    intent: 'informational',
+    rationale:
+      'The search-intents page maps all 17 public pages to their search intent type and cluster, showing '
+      + 'which pages target which citizen queries.',
+  },
 ];
 
 export default INTENTS;

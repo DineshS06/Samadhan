@@ -7,7 +7,7 @@ export default function Footer({ variant = 'citizen' }) {
         <div className='footer-brand'>
           <strong>Samadhan</strong>
           <p>AI-assisted constituency development planning for clearer, evidence-led public decisions.</p>
-          <span>Evaluation build · Not an emergency service</span>
+          <span>Not an emergency service</span>
         </div>
         <nav>
           <h2>Platform</h2>
@@ -15,6 +15,21 @@ export default function Footer({ variant = 'citizen' }) {
           <Link to='/how-it-works'>How it works</Link>
           <Link to='/methodology'>Priority methodology</Link>
           <Link to='/faq'>FAQs</Link>
+        </nav>
+        <nav>
+          <h2>Guides</h2>
+          <Link to='/how-to-report'>How to report an issue</Link>
+          <Link to='/mplads'>MPLADS fund</Link>
+          <Link to='/constituency'>Lok Sabha constituencies</Link>
+        </nav>
+        <nav>
+          <h2>Research</h2>
+          <Link to='/research'>Research hub</Link>
+          <Link to='/research/constituencies'>Constituency statistics</Link>
+          <Link to='/research/districts'>District statistics</Link>
+          <Link to='/research/district-mapping'>District mapping</Link>
+          <Link to='/research/faqs'>FAQ statistics</Link>
+          <Link to='/research/search-intents'>Search intent statistics</Link>
         </nav>
         <nav>
           <h2>Trust</h2>

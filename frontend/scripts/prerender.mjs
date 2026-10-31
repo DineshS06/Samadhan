@@ -39,6 +39,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { execFileSync } from "node:child_process";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = path.join(ROOT, "dist");
@@ -368,5 +369,31 @@ if (failed.length) {
   process.exit(1);
 }
 
+/* ── 5. Static .md files for Vercel (frontend-only deploy) ───────── */
+const GEN_MD = path.join(ROOT, "scripts", "generate_markdown.py");
+try {
+  execFileSync("python", [GEN_MD, DIST], {
+    encoding: "utf8",
+    stdio: "inherit",
+  });
+} catch (e) {
+  console.error(EMPTY_MSG + "generate_markdown.py failed: " + e.message);
+  process.exit(1);
+}
+
+// Dev test: every public route must have a .md file in dist.
+const missingMd = [];
+for (const r of PUBLIC) {
+  const mdFile = r.path === "/" || r.path === ""
+    ? path.join(DIST, "index.md")
+    : path.join(DIST, r.path.replace(/^\//, "") + ".md");
+  if (!fs.existsSync(mdFile)) {
+    missingMd.push(r.path);
+  }
+}
+if (missingMd.length) {
+  console.error(EMPTY_MSG + "public routes missing .md file: " + missingMd.join(", "));
+  process.exit(1);
+}
 console.log("prerender: wrote " + written.length + " route files, all " + checks.length + " checks pass");
 for (const w of written) console.log("  " + w.path.padEnd(16) + " -> " + path.relative(ROOT, w.file));

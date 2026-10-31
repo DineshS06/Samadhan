@@ -12,7 +12,7 @@ const nav = [
   ['/about', 'About'],
 ];
 
-export default function Header({ showLangToggle = true, subtitle = '' }) {
+export default function Header({ showLangToggle = false, subtitle = '' }) {
   const { lang, switchLang } = useLanguage();
   const [open, setOpen] = useState(false);
 

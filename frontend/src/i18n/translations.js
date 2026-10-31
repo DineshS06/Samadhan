@@ -1,10 +1,10 @@
 /** Full UI translations — English & Hindi */
 
-import { STATE_CONSTITUENCIES } from '../data/constituencyData';
-import { DISTRICT_CONSTITUENCIES } from '../data/districtConstituencies';
-import { getDistrictsForState as _getDistrictsForState } from '../data/districtConstituencies';
-import { getConstituenciesForStateAndDistrict as _getConstituenciesForStateAndDistrict } from '../data/districtConstituencies';
-import { getAllConstituenciesForState as _getAllConstituenciesForState } from '../data/districtConstituencies';
+import { STATE_CONSTITUENCIES } from '../data/constituencyData.js';
+import { DISTRICT_CONSTITUENCIES } from '../data/districtConstituencies.js';
+import { getDistrictsForState as _getDistrictsForState } from '../data/districtConstituencies.js';
+import { getConstituenciesForStateAndDistrict as _getConstituenciesForStateAndDistrict } from '../data/districtConstituencies.js';
+import { getAllConstituenciesForState as _getAllConstituenciesForState } from '../data/districtConstituencies.js';
 
 export const CATEGORY_IDS = [
   'roads', 'water', 'health', 'education', 'power', 'housing',
@@ -87,6 +87,8 @@ export const UI = {
     useGps: 'Use My Current Location (GPS)',
     gpsLoading: 'Detecting location…',
     gpsCaptured: 'GPS location captured',
+    gpsFilled: 'Filled from GPS',
+    gpsAccuracyPoor: 'The fix is coarse. Move outdoors or turn on precise location for a better address.',
     gpsFail: 'Could not get GPS. Enter address manually.',
     gpsOutsideIndia: 'GPS location is outside India. Please enter your address manually.',
     gpsReverseFailed: 'Could not look up address from GPS. Please enter village/district manually.',
@@ -165,6 +167,7 @@ export const UI = {
     metricAllocated: 'Allocated / Sanctioned Funds',
     tableTitle: 'Priority Project Leaderboard',
     tableSub: 'Ranked by AI demand index + open-data gap score',
+    tableEmpty: 'No grievances recorded for this constituency yet.',
     colRank: 'Rank',
     colProject: 'Project Name',
     colLocation: 'Location',
@@ -200,13 +203,17 @@ export const UI = {
     modalFullText: 'View full letter text',
     toastForward: 'Sanction note queued for District Collector review.',
     mpLoginTitle: 'MP / Staff Login',
-    mpLoginSubtitle: 'Secure access for elected representatives',
+    mpLoginSubtitle: 'Constituency dashboard access',
     mpLoginDesc: 'Sign in to view your constituency dashboard, citizen grievance map, and MPLADS prioritization.',
     mpUsername: 'MP Office Username',
+    mpState: 'State / UT',
+    mpConstituency: 'Parliamentary Constituency',
+    mpLoginHelpTitle: 'Any of the 543 seats',
+    mpLoginHelp: 'Choose your state and constituency. Every Lok Sabha seat has a dashboard; the shared password is the same for all of them.',
     mpPassword: 'Password',
     mpLoginBtn: 'Sign In to Dashboard',
     mpLoginLoading: 'Signing in…',
-    mpDemoAccounts: 'Shared MP accounts',
+    mpDemoAccounts: 'Shared account',
     mpDemoPassword: 'Shared password',
     mpLoggedInAs: 'Logged in as',
     mpLogout: 'Sign Out',
@@ -276,6 +283,8 @@ export const UI = {
     useGps: 'मेरा वर्तमान स्थान (GPS) उपयोग करें',
     gpsLoading: 'स्थान खोजा जा रहा है…',
     gpsCaptured: 'GPS स्थान दर्ज हो गया',
+    gpsFilled: 'GPS से भरा गया',
+    gpsAccuracyPoor: 'लोकेशन सटीक नहीं है। बेहतर पते के लिए खुले में जाएँ या सटीक लोकेशन चालू करें।',
     gpsFail: 'GPS प्राप्त नहीं हुआ। पता मैन्युअल दर्ज करें।',
     gpsOutsideIndia: 'GPS स्थान भारत के बाहर है। कृपया पता मैन्युअल दर्ज करें।',
     gpsReverseFailed: 'GPS से पता lookup नहीं हो सका। कृपया गाँव/ज़िला मैन्युअल दर्ज करें।',
@@ -354,6 +363,7 @@ export const UI = {
     metricAllocated: 'आवंटित / स्वीकृत निधि',
     tableTitle: 'प्राथमिकता परियोजना सूची',
     tableSub: 'AI मांग सूचकांक + खुले डेटा गैप स्कोर द्वारा क्रम',
+    tableEmpty: 'इस निर्वाचन क्षेत्र के लिए अभी कोई शिकायत दर्ज नहीं हुई है।',
     colRank: 'क्रम',
     colProject: 'परियोजना नाम',
     colLocation: 'स्थान',
@@ -389,16 +399,20 @@ export const UI = {
     modalFullText: 'पूरा पत्र देखें',
     toastForward: 'स्वीकृति नोट जिला कलेक्टर समीक्षा के लिए भेजा गया।',
     mpLoginTitle: 'MP / कर्मचारी लॉगिन',
-    mpLoginSubtitle: 'निर्वाचित प्रतिनिधियों के लिए सुरक्षित प्रवेश',
+    mpLoginSubtitle: 'निर्वाचन क्षेत्र डैशबोर्ड प्रवेश',
     mpLoginDesc: 'अपने निर्वाचन क्षेत्र डैशबोर्ड, नागरिक शिकायत मानचित्र और MPLADS प्राथमिकता देखने के लिए साइन इन करें।',
     mpUsername: 'MP कार्यालय उपयोगकर्ता नाम',
+    mpState: 'राज्य / केंद्र शासित प्रदेश',
+    mpConstituency: 'संसदीय निर्वाचन क्षेत्र',
+    mpLoginHelpTitle: 'सभी 543 सीटें',
+    mpLoginHelp: 'अपना राज्य और निर्वाचन क्षेत्र चुनें। हर लोकसभा सीट का डैशबोर्ड है; साझा पासवर्ड सभी के लिए एक ही है।',
     mpPassword: 'पासवर्ड',
     mpLoginBtn: 'डैशबोर्ड में साइन इन',
     mpLoginLoading: 'साइन इन हो रहा है…',
-    mpDemoAccounts: 'डेमो MP खाते',
-    mpDemoPassword: 'डेमो पासवर्ड',
+    mpDemoAccounts: 'साझा खाता',
+    mpDemoPassword: 'साझा पासवर्ड',
     mpLoggedInAs: 'लॉग इन',
-    mpLogout: 'साइन आउ트',
+    mpLogout: 'साइन आउट',
     trackYourGrievance: 'अपनी शिकायत की ट्रैकिंग करें',
     trackYourGrievanceSubtitle: 'अपनी शिकायत की स्थिति जानने के लिए अपना शिकायत आईडी दर्ज करें।',
     refIdPlaceholder: 'संदर्भ ID दर्ज करें',

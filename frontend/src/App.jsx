@@ -28,6 +28,12 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 const HowToReport = lazy(() => import('./pages/HowToReport'));
 const Mplads = lazy(() => import('./pages/Mplads'));
 const Constituency = lazy(() => import('./pages/Constituency'));
+const ResearchHub = lazy(() => import('./pages/ResearchHub'));
+const ResearchConstituencies = lazy(() => import('./pages/ResearchConstituencies'));
+const ResearchDistricts = lazy(() => import('./pages/ResearchDistricts'));
+const ResearchDistrictMapping = lazy(() => import('./pages/ResearchDistrictMapping'));
+const ResearchFaqs = lazy(() => import('./pages/ResearchFaqs'));
+const ResearchSearchIntents = lazy(() => import('./pages/ResearchSearchIntents'));
 
 function RouteFallback() {
   return (
@@ -126,7 +132,7 @@ const howTo = {
   name: 'How Samadhan turns citizen input into a project recommendation',
   description: 'One workflow connects multilingual intake, AI structuring, public-data enrichment, transparent scoring, and human approval.',
   step: [
-    { '@type': 'HowToStep', position: 1, name: 'Ingest', text: 'Capture text, voice transcripts, images, letters, meetings, and mocked social posts.' },
+    { '@type': 'HowToStep', position: 1, name: 'Ingest', text: 'Capture text, voice transcripts, images, letters, meetings, and social posts.' },
     { '@type': 'HowToStep', position: 2, name: 'Understand', text: 'Extract language, category, location, urgency, affected group, and summary.' },
     { '@type': 'HowToStep', position: 3, name: 'Enrich', text: 'Match the location and category to selected public or curated indicators.' },
     { '@type': 'HowToStep', position: 4, name: 'Score', text: 'Combine demand, deficit, and severity into an explainable score.' },
@@ -225,6 +231,7 @@ export default function App() {
                 description='Turn multilingual citizen grievances into ranked constituency projects using a published, evidence-backed scoring model you can check.'
                 path='/'
                 schema={data.home}
+                aiSummary='Turn multilingual citizen grievances into ranked constituency projects using a published, evidence-backed scoring model you can check.'
               />
               <Home />
             </>
@@ -236,6 +243,7 @@ export default function App() {
                 description='Report a public grievance through our grievance redressal form in any Indian language, with location and evidence. You receive a reference ID; your name and phone number stay private.'
                 path='/report-issue'
                 schema={data.other}
+                aiSummary='Report a public grievance through our grievance redressal form in any Indian language, with location and evidence. You receive a reference ID; your name and phone number stay private.'
               />
               <CitizenPortal />
             </>
@@ -247,6 +255,7 @@ export default function App() {
                 description='A G2C e-governance workflow: multilingual intake, AI structuring, public-data enrichment, explainable 40-40-20 scoring, human review, and sanction drafts.'
                 path='/how-it-works'
                 schema={data.how}
+                aiSummary='A G2C e-governance workflow: multilingual intake, AI structuring, public-data enrichment, explainable 40-40-20 scoring, human review, and sanction drafts.'
               />
               <HowItWorks />
             </>
@@ -258,6 +267,7 @@ export default function App() {
                 description='How Samadhan scores verified demand (40%), infrastructure deficit (40%), and severity (20%) into an explainable, auditable project review order.'
                 path='/methodology'
                 schema={data.method}
+                aiSummary='How Samadhan scores verified demand (40%), infrastructure deficit (40%), and severity (20%) into an explainable, auditable project review order.'
               />
               <Methodology />
             </>
@@ -269,6 +279,7 @@ export default function App() {
                 description='Clear answers on reporting a constituency issue, how priority scores work, privacy of contact details, data sources, and limits of AI-assisted planning.'
                 path='/faq'
                 schema={data.faq}
+                aiSummary='Clear answers on reporting a constituency issue, how priority scores work, privacy of contact details, data sources, and limits of AI-assisted planning.'
               />
               <FAQ />
             </>
@@ -280,6 +291,7 @@ export default function App() {
                 description='Why Samadhan connects citizen demand with infrastructure evidence through e-governance: the purpose, audience, scope, and explicit limits of the platform.'
                 path='/about'
                 schema={data.about}
+                aiSummary='Why Samadhan connects citizen demand with infrastructure evidence through e-governance: the purpose, audience, scope, and explicit limits of the platform.'
               />
               <About />
             </>
@@ -291,6 +303,7 @@ export default function App() {
                 description='What data Samadhan collects when you report a constituency issue, how it is used, who can access it, and how your contact details are protected.'
                 path='/privacy'
                 schema={data.privacy}
+                aiSummary='What data Samadhan collects when you report a constituency issue, how it is used, who can access it, and how your contact details are protected.'
               />
               <Privacy />
             </>
@@ -302,6 +315,7 @@ export default function App() {
                 description='Samadhan accessibility commitments for reporting a constituency issue: semantic design, keyboard access, multilingual input, and known limitations.'
                 path='/accessibility'
                 schema={data.accessibility}
+                aiSummary='Samadhan accessibility commitments for reporting a constituency issue: semantic design, keyboard access, multilingual input, and known limitations.'
               />
               <Accessibility />
             </>
@@ -320,6 +334,7 @@ export default function App() {
                   description: 'Step-by-step guide to filing a public grievance with your Member of Parliament. Grievance redressal through DARPG CPGRAMS, MPLADS constituency funds, and Samadhan scoring.',
                   inLanguage: 'en-IN',
                 }}
+                aiSummary='Step-by-step guide to filing a public grievance with your Member of Parliament. Grievance redressal through DARPG CPGRAMS, MPLADS constituency funds, and Samadhan scoring.'
               />
               <HowToReport />
             </>
@@ -338,6 +353,7 @@ export default function App() {
                   description: 'MPLADS (Members of Parliament Local Area Development Scheme) is India\u2019s constituency development fund. How it works, eligible works, and how citizens can suggest projects to their MP.',
                   inLanguage: 'en-IN',
                 }}
+                aiSummary='MPLADS (Members of Parliament Local Area Development Scheme) is India’s constituency development fund. How it works, eligible works, and how citizens can suggest projects to their MP.'
               />
               <Mplads />
             </>
@@ -356,8 +372,135 @@ export default function App() {
                   description: 'What a constituency means in India, how Lok Sabha seats work, and how to find your Member of Parliament. Electoral district, MPLADS, and citizen grievance redressal.',
                   inLanguage: 'en-IN',
                 }}
+                aiSummary='What a constituency means in India, how Lok Sabha seats work, and how to find your Member of Parliament. Electoral district, MPLADS, and citizen grievance redressal.'
               />
               <Constituency />
+            </>
+          } />
+          <Route path='/research' element={
+            <>
+              <SEO
+                title='Samadhan Research — Statistics Pages for AI Answers'
+                description='Original statistics pages for Lok Sabha constituencies, Indian districts, district-to-constituency mapping, citizen FAQs, and search intents. Every number computed from committed data.'
+                path='/research'
+                schema={{
+                  '@type': 'WebPage',
+                  '@id': SITE_URL + '/research#webpage',
+                  url: SITE_URL + '/research',
+                  name: 'Samadhan Research — Statistics Pages',
+                  description:
+                    'Original statistics pages for Lok Sabha constituencies, Indian districts, district-to-constituency mapping, citizen FAQs, and search intents. Every number computed from committed data.',
+                  inLanguage: 'en-IN',
+                  isPartOf: { '@id': SITE_URL + '/#website' },
+                  about: { '@id': SITE_URL + '/#organization' },
+                }}
+              />
+              <ResearchHub />
+            </>
+          } />
+          <Route path='/research/constituencies' element={
+            <>
+              <SEO
+                title='Lok Sabha Constituency Statistics 2026: 543 Seats Across 36 States and UTs'
+                description='543 Lok Sabha constituencies across 36 states and union territories. Uttar Pradesh leads with 80 seats (~14.7%). Ranked list, reserved-seat breakdown, and per-state entity facts.'
+                path='/research/constituencies'
+                schema={{
+                  '@type': 'WebPage',
+                  '@id': SITE_URL + '/research/constituencies#webpage',
+                  url: SITE_URL + '/research/constituencies',
+                  name: 'Lok Sabha Constituency Statistics 2026',
+                  description:
+                    '543 Lok Sabha constituencies across 36 states and union territories. Uttar Pradesh leads with 80 seats (~14.7%). Ranked list, reserved-seat breakdown, and per-state entity facts.',
+                  inLanguage: 'en-IN',
+                  isPartOf: { '@id': SITE_URL + '/#website' },
+                  about: { '@id': SITE_URL + '/#organization' },
+                }}
+              />
+              <ResearchConstituencies />
+            </>
+          } />
+          <Route path='/research/districts' element={
+            <>
+              <SEO
+                title='Indian Districts Statistics 2026: 789 Districts Across 36 States and UTs'
+                description='789 districts across 36 states and union territories. Uttar Pradesh leads with 75 districts (~9.5%). Ranked list and per-state district facts.'
+                path='/research/districts'
+                schema={{
+                  '@type': 'WebPage',
+                  '@id': SITE_URL + '/research/districts#webpage',
+                  url: SITE_URL + '/research/districts',
+                  name: 'Indian Districts Statistics 2026',
+                  description:
+                    '789 districts across 36 states and union territories. Uttar Pradesh leads with 75 districts (~9.5%). Ranked list and per-state district facts.',
+                  inLanguage: 'en-IN',
+                  isPartOf: { '@id': SITE_URL + '/#website' },
+                  about: { '@id': SITE_URL + '/#organization' },
+                }}
+              />
+              <ResearchDistricts />
+            </>
+          } />
+          <Route path='/research/district-mapping' element={
+            <>
+              <SEO
+                title='District-to-Constituency Mapping Statistics 2026: 299 Resolved Districts Across 15 States'
+                description='299 resolved districts across 15 states mapped to Lok Sabha seats (~38% coverage of 789 districts). Ranked list and per-state mapping coverage.'
+                path='/research/district-mapping'
+                schema={{
+                  '@type': 'WebPage',
+                  '@id': SITE_URL + '/research/district-mapping#webpage',
+                  url: SITE_URL + '/research/district-mapping',
+                  name: 'District-to-Constituency Mapping Statistics 2026',
+                  description:
+                    '299 resolved districts across 15 states mapped to Lok Sabha seats (~38% coverage of 789 districts). Ranked list and per-state mapping coverage.',
+                  inLanguage: 'en-IN',
+                  isPartOf: { '@id': SITE_URL + '/#website' },
+                  about: { '@id': SITE_URL + '/#organization' },
+                }}
+              />
+              <ResearchDistrictMapping />
+            </>
+          } />
+          <Route path='/research/faqs' element={
+            <>
+              <SEO
+                title='Citizen FAQ Statistics 2026: 11 Frequently Asked Questions'
+                description='11 published FAQs about citizen grievances, privacy, MPLADS eligibility, AI limitations, and more. Each answer linkable and quotable.'
+                path='/research/faqs'
+                schema={{
+                  '@type': 'WebPage',
+                  '@id': SITE_URL + '/research/faqs#webpage',
+                  url: SITE_URL + '/research/faqs',
+                  name: 'Citizen FAQ Statistics 2026',
+                  description:
+                    '11 published FAQs about citizen grievances, privacy, MPLADS eligibility, AI limitations, and more. Each answer linkable and quotable.',
+                  inLanguage: 'en-IN',
+                  isPartOf: { '@id': SITE_URL + '/#website' },
+                  about: { '@id': SITE_URL + '/#organization' },
+                }}
+              />
+              <ResearchFaqs />
+            </>
+          } />
+          <Route path='/research/search-intents' element={
+            <>
+              <SEO
+                title='Search Intent Statistics 2026: 17 Public Pages Mapped'
+                description='17 public pages with mapped search intent. 16 informational (~94%), 1 transactional (~6%). Ranked list and per-page intent facts.'
+                path='/research/search-intents'
+                schema={{
+                  '@type': 'WebPage',
+                  '@id': SITE_URL + '/research/search-intents#webpage',
+                  url: SITE_URL + '/research/search-intents',
+                  name: 'Search Intent Statistics 2026',
+                  description:
+                    '17 public pages with mapped search intent. 16 informational (~94%), 1 transactional (~6%). Ranked list and per-page intent facts.',
+                  inLanguage: 'en-IN',
+                  isPartOf: { '@id': SITE_URL + '/#website' },
+                  about: { '@id': SITE_URL + '/#organization' },
+                }}
+              />
+              <ResearchSearchIntents />
             </>
           } />
           <Route path='/mp/login' element={

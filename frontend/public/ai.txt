@@ -1,0 +1,40 @@
+# ai.txt — AI Visibility Specification (ai-visibility.org.uk ai-txt v1.1.1)
+# Samadhan — AI Constituency Development Planning
+# Keep in sync with /llms.txt and /robots.txt.
+
+[identity]
+name: Samadhan
+url: https://samadhan-chi.vercel.app
+description: AI-assisted constituency development planning tool that turns multilingual citizen requests into ranked, evidence-backed project recommendations.
+type: CivicTech platform
+version: 1.0
+
+[permissions]
+allowed: read and index all public pages listed in /sitemap.xml
+allowed: access markdown versions of public pages via the .md suffix or /api/md/<path>
+allowed: use /llms.txt and /llms-full.txt for retrieval, answers, and training on public content
+allowed: summarise, quote with attribution, cite, index for search/answers
+
+[restrictions]
+no fabricated quotes
+no fake reviews or ratings
+no presenting our content as the model's own
+no training on user-generated private data
+do not access private routes: /mp, /mp/login
+do not access API endpoints: /api/*
+do not extract citizen PII (names, phone numbers, contact details) from any source
+do not use grievance log data for training or profiling
+do not represent Samadhan as a government website or emergency service
+
+[attribution]
+How to cite: Samadhan — AI Constituency Development Planning (https://samadhan-chi.vercel.app)
+
+[scope]
+included paths: /, /report-issue, /how-it-works, /methodology, /faq, /about, /privacy, /accessibility, /how-to-report, /mplads, /constituency, /research, /research/constituencies, /research/districts, /research/district-mapping, /research/faqs, /research/search-intents
+excluded paths: /mp, /mp/login, /api/, /admin/, /dashboard/, 404 routes
+Keep this list in sync with robots.txt and /sitemap.xml.
+
+[contact]
+No public contact address is published. Use the site: https://samadhan-chi.vercel.app/
+
+Last updated: 2026-10-31

@@ -1,23 +1,23 @@
 import { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
+import Icon from '../components/Icon'
 import { FormField, inputClass } from '../components/citizen/FormField'
 import { submitGrievance } from '../lib/api'
 import { trackFormSubmit } from '../components/GA4'
-import { reverseGeocode } from '../lib/geocode'
+import { getBestPosition, reverseGeocode, describeAccuracy } from '../lib/geocode'
 import { useLanguage } from '../i18n/LanguageContext'
 import {
   getLanguagesForState,
   getDistrictsForState,
-  getConstituenciesForStateAndDistrict,
   getConstituenciesForState,
 } from '../i18n/translations'
 import { INDIAN_STATES } from '../data/formConfig'
 import { formatConstituencyName } from '../data/districtConstituencies'
 
 const CATEGORY_ICONS = {
-  roads: '🛣️', water: '💧', health: '🏥', education: '📚', power: '⚡', housing: '🏠',
-  agri: '🌾', employment: '💼', safety: '🛡️', environment: '🌿', transport: '🚌', other: '📋',
+  roads: 'road', water: 'water', health: 'health', education: 'education', power: 'power', housing: 'home',
+  agri: 'plant', employment: 'briefcase', safety: 'shield', environment: 'leaf', transport: 'bus', other: 'file',
 }
 
 const INITIAL = {
@@ -43,6 +43,9 @@ export default function CitizenPortal() {
   const [form, setForm] = useState(INITIAL)
   const [loading, setLoading] = useState(false)
   const [geoLoading, setGeoLoading] = useState(false)
+  // What the last GPS fix resolved to. Shown to the citizen so a wrong pin is
+  // visible immediately instead of silently filling the wrong village.
+  const [gpsInfo, setGpsInfo] = useState(null)
   const [result, setResult] = useState(null)
   const [error, setError] = useState(null)
   // Set when a submission could NOT be recorded. The form is deliberately left
@@ -59,14 +62,12 @@ export default function CitizenPortal() {
 
   const availableLanguages = getLanguagesForState(form.state)
   const districts = getDistrictsForState(form.state)
-  // Constituencies are filtered by both state AND district. When no district
-  // is selected, or the district has no specific mapping, fall back to all
-  // state-level constituencies so the form never blocks.
-  const constituencyCandidates = form.district
-    ? getConstituenciesForStateAndDistrict(form.state, form.district) ||
-      getConstituenciesForState(form.state)
-    : null
-  const constituencies = constituencyCandidates
+  // Constituencies are always a dropdown, never a free-text box. District and
+  // Lok Sabha boundaries do not align, so every seat in the chosen state is
+  // offered. The district is still required for routing. A free-text box here
+  // let a citizen type a seat that does not exist, and the backend then had no
+  // seat to route the grievance to.
+  const constituencies = getConstituenciesForState(form.state)
   const locationReady = Boolean(form.state && form.district.trim() && form.constituency.trim())
 
   
@@ -74,52 +75,110 @@ export default function CitizenPortal() {
     if (form.language && !availableLanguages.includes(form.language)) set('language', '')
   }, [form.state])
 
+  // Nominatim returns state and district names that do not always match our
+  // option strings ("Andaman and Nicobar" vs "Andaman and Nicobar Islands",
+  // "Y.S.R. Kadapa" vs "YSR Kadapa"). Comparing letters and digits only means
+  // the autofill selects a real option instead of leaving the select blank.
+  const matchOption = (value, options) => {
+    if (!value || !Array.isArray(options)) return ''
+    const norm = (s) => String(s).toLowerCase().replace(/[^a-z0-9]/g, '')
+    const target = norm(value)
+    if (!target) return ''
+    const exact = options.find((o) => norm(o) === target)
+    if (exact) return exact
+    const partial = options.find((o) => {
+      const n = norm(o)
+      return n.length >= 4 && target.length >= 4 && (n.startsWith(target) || target.startsWith(n))
+    })
+    return partial || ''
+  }
+
   const useMyLocation = () => {
     if (!navigator.geolocation) { setError(t.geoUnsupported); return }
     setGeoLoading(true)
     setError(null)
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
+    setGpsInfo(null)
+
+    getBestPosition()
+      .then(async (pos) => {
         const coords = {
           latitude: pos.coords.latitude,
           longitude: pos.coords.longitude,
           accuracy: pos.coords.accuracy,
         }
-        set('geolocation', coords)
         // Reverse-geocode so village/ward/pincode autofill (citizen can override).
         const address = await reverseGeocode(coords)
-        if (address) {
-          if (address.inIndia === false) {
-            setError(t.gpsOutsideIndia)
-            set('geolocation', coords)
-            setGeoLoading(false)
-            return
-          }
-          setForm((f) => ({
-            ...f,
-            geolocation: coords,
-            village: f.village || address.village || '',
-            ward_block: f.ward_block || address.ward || '',
-            pincode: f.pincode || address.pincode || '',
-            district: f.district || address.district || '',
-            state: f.state || address.state || '',
-          }))
-        } else {
-          // Reverse geocode failed but we still have GPS coords — warn and let citizen type manually.
-          setError(t.gpsReverseFailed)
+
+        // Check the country before storing the fix. The village field is only
+        // required when there is no GPS, so storing a foreign fix first would
+        // let a citizen outside India submit a grievance with no address at all.
+        if (address && address.inIndia === false) {
+          setError(t.gpsOutsideIndia)
+          setGeoLoading(false)
+          return
         }
+
+        set('geolocation', coords)
+
+        if (!address) {
+          // Coordinates are still useful for the map even without an address.
+          setGpsInfo({ ...coords, formatted: '', filled: [] })
+          setError(t.gpsReverseFailed)
+          setGeoLoading(false)
+          return
+        }
+
+        // Resolve the state from the fix first, then look the district up in
+        // that state's list. The GPS action is explicit, so a fix in a
+        // different state replaces a stale selection instead of silently
+        // keeping the wrong state. The constituency belongs to the old state,
+        // so it is cleared when the state changes; the citizen can choose the
+        // seat again. A resolved district also replaces a stale district.
+        const gpsState = matchOption(address.state, INDIAN_STATES)
+        const stateChanged = Boolean(gpsState && form.state && gpsState !== form.state)
+        const nextState = gpsState || form.state
+        const districtOptions = nextState ? getDistrictsForState(nextState) : null
+        const gpsDistrict = matchOption(address.district, districtOptions)
+        const nextDistrict = gpsDistrict || (stateChanged ? '' : form.district)
+        const nextVillage = form.village || address.village || address.ward || ''
+        const nextWard = form.ward_block || address.ward || address.block || ''
+        const nextPincode = form.pincode || address.pincode || ''
+
+        setForm((f) => ({
+          ...f,
+          geolocation: coords,
+          state: nextState || f.state,
+          district: nextDistrict || (stateChanged ? '' : f.district),
+          constituency: stateChanged ? '' : f.constituency,
+          village: f.village || nextVillage,
+          ward_block: f.ward_block || nextWard,
+          pincode: f.pincode || nextPincode,
+        }))
+
+        const filled = []
+        if (nextState && nextState !== form.state) filled.push(t.state)
+        if (nextDistrict && nextDistrict !== form.district) filled.push(t.district)
+        if (nextVillage && nextVillage !== form.village) filled.push(t.village)
+        if (nextWard && nextWard !== form.ward_block) filled.push(t.ward)
+        if (nextPincode && nextPincode !== form.pincode) filled.push(t.pincode)
+
+        setGpsInfo({
+          ...coords,
+          formatted: address.formatted || '',
+          road: address.road || '',
+          postOffice: address.postOffice || '',
+          filled,
+        })
         setGeoLoading(false)
-      },
-      (err) => {
+      })
+      .catch((err) => {
         let msg = t.gpsFail
         if (err.code === 1) msg = t.gpsPermissionDenied
         if (err.code === 2) msg = t.gpsPositionUnavailable
         if (err.code === 3) msg = t.gpsTimeout
         setError(msg)
         setGeoLoading(false)
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
-    )
+      })
   }
 
   const handleFile = (e) => {
@@ -156,21 +215,23 @@ export default function CitizenPortal() {
   }
 
   // Client-side gibberish detection so random text is flagged before submission.
+  // The local is named `value`, not `t`: the i18n checker scans for `t.<key>`
+  // and cannot tell a text variable from the translation object.
   function _isGibberish(text) {
     if (!text || !text.trim()) return true
-    const t = text.trim()
-    if (t.length < 5) return true
-    if (/(.)\1{3,}/.test(t)) return true
-    if (/(.{2,4})\1{3,}/.test(t)) return true
+    const value = text.trim()
+    if (value.length < 5) return true
+    if (/(.)\1{3,}/.test(value)) return true
+    if (/(.{2,4})\1{3,}/.test(value)) return true
     const patterns = ['qwerty', 'asdfgh', 'zxcvbn', '12345', 'abcdef', 'poiuyt']
-    const tl = t.toLowerCase()
-    for (const p of patterns) if (tl.includes(p)) return true
-    const vowels = (tl.match(/[aeiou]/g) || []).length
-    const consonants = (tl.match(/[bcdfghjklmnpqrstvwxyz]/g) || []).length
+    const lower = value.toLowerCase()
+    for (const p of patterns) if (lower.includes(p)) return true
+    const vowels = (lower.match(/[aeiou]/g) || []).length
+    const consonants = (lower.match(/[bcdfghjklmnpqrstvwxyz]/g) || []).length
     const alpha = vowels + consonants
     if (alpha > 0) {
       const ratio = vowels / alpha
-      if ((ratio < 0.15 || ratio > 0.75) && /[bcdfghjklmnpqrstvwxyz]{5,}/.test(tl)) return true
+      if ((ratio < 0.15 || ratio > 0.75) && /[bcdfghjklmnpqrstvwxyz]{5,}/.test(lower)) return true
     }
     return false
   }
@@ -295,7 +356,7 @@ export default function CitizenPortal() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
-      <Header subtitle={t.citizenSubtitle} />
+      <Header subtitle={t.citizenSubtitle} showLangToggle />
 
       <main className="flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-6 w-full">
         <div className="text-center mb-6">
@@ -318,7 +379,7 @@ export default function CitizenPortal() {
                   <>
                     <FormField label={t.district} required>
                       {districts ? (
-                        <select value={form.district} onChange={(e) => set('district', e.target.value)} className={inputClass} required>
+                        <select value={form.district} onChange={(e) => { set('district', e.target.value); set('constituency', '') }} className={inputClass} required>
                           <option value="">{t.districtPh}</option>
                           {districts.map((d) => <option key={d} value={d}>{d}</option>)}
                         </select>
@@ -342,6 +403,7 @@ export default function CitizenPortal() {
                       <div className="flex flex-wrap gap-2">
                         {availableLanguages.map((lang) => (
                           <button key={lang} type="button" onClick={() => set('language', lang)}
+                            aria-pressed={form.language === lang}
                             className={`px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${
                               form.language === lang ? 'border-[#F28C0F] bg-orange-50 text-[#032B5B]' : 'border-slate-200 text-slate-600 hover:border-slate-300'
                             }`}>{lang}</button>
@@ -380,10 +442,15 @@ export default function CitizenPortal() {
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {categoryIds.map((id) => (
                   <button key={id} type="button" onClick={() => set('category', id)}
+                    aria-pressed={form.category === id}
                     className={`text-left p-3 rounded-xl border-2 transition-all ${
                       form.category === id ? 'border-[#F28C0F] bg-orange-50' : 'border-slate-200 hover:border-slate-300'
                     }`}>
-                    <span className="text-lg">{CATEGORY_ICONS[id]}</span>
+                    <span className={`inline-flex items-center justify-center w-9 h-9 rounded-lg mb-1 ${
+                      form.category === id ? 'bg-orange-100 text-[#8a4b0a]' : 'bg-[#EAF3FF] text-[#032B5B]'
+                    }`}>
+                      <Icon name={CATEGORY_ICONS[id]} size={19} />
+                    </span>
                     <p className="font-semibold text-[#032B5B] text-xs mt-1 leading-tight">{tc(id)}</p>
                     <p className="text-[10px] text-slate-500 mt-0.5 leading-tight">{tcd(id)}</p>
                   </button>
@@ -402,10 +469,32 @@ export default function CitizenPortal() {
                     district from the reverse geocode. */}
                 <button type="button" onClick={useMyLocation} disabled={geoLoading}
                   className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#032B5B] hover:bg-[#0a4080] text-white text-sm font-medium px-4 py-2.5 rounded-lg disabled:opacity-50">
-                  {geoLoading ? t.gpsLoading : `📍 ${t.useGps}`}
+                  {geoLoading ? t.gpsLoading : <><Icon name='pin' size={16} /> {t.useGps}</>}
                 </button>
                 {form.geolocation && (
-                  <p className="text-xs text-green-700 font-mono">✓ {t.gpsCaptured}</p>
+                  <div role="status" aria-live="polite" className="rounded-lg border border-emerald-200 bg-emerald-50/70 px-3 py-2.5 text-xs text-emerald-900 space-y-1">
+                    <p className="font-semibold">
+                      ✓ {t.gpsCaptured}
+                      {Number.isFinite(form.geolocation.accuracy) && ` · ${describeAccuracy(form.geolocation.accuracy)}`}
+                    </p>
+                    <p className="font-mono text-[11px] text-emerald-800">
+                      {form.geolocation.latitude.toFixed(5)}, {form.geolocation.longitude.toFixed(5)}
+                    </p>
+                    {gpsInfo?.formatted && (
+                      <p className="text-emerald-800">{gpsInfo.formatted}</p>
+                    )}
+                    {(gpsInfo?.road || gpsInfo?.postOffice) && (
+                      <p className="text-emerald-800">
+                        {[gpsInfo.road, gpsInfo.postOffice].filter(Boolean).join(' · ')}
+                      </p>
+                    )}
+                    {gpsInfo?.filled?.length > 0 && (
+                      <p>{t.gpsFilled}: {gpsInfo.filled.join(', ')}</p>
+                    )}
+                    {form.geolocation.accuracy > 150 && (
+                      <p className="text-amber-800">{t.gpsAccuracyPoor}</p>
+                    )}
+                  </div>
                 )}
                 {!locationReady && (
                   <p className="text-sm text-slate-600 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">{t.locationLockedHint}</p>
@@ -415,7 +504,7 @@ export default function CitizenPortal() {
                     <input type="text" value={form.village} onChange={(e) => set('village', e.target.value)} className={inputClass} placeholder={t.villagePh} required={!form.geolocation} />
                   </FormField>
                   <FormField label={t.ward} required>
-                    <input type="text" value={form.ward_block} onChange={(e) => set('ward_block', e.target.value)} className={inputClass} placeholder={t.wardPh} />
+                    <input type="text" value={form.ward_block} onChange={(e) => set('ward_block', e.target.value)} className={inputClass} placeholder={t.wardPh} required />
                   </FormField>
                   <FormField label={t.pincode} required>
                     <input type="text" inputMode="numeric" pattern="[0-9]{6}" maxLength={6} value={form.pincode} onChange={(e) => set('pincode', e.target.value)} className={inputClass} required />
@@ -457,7 +546,7 @@ export default function CitizenPortal() {
               </FormField>
             </Section>
 
-            {error && <div className="text-sm text-red-700 bg-red-50 border border-red-200 px-4 py-3 rounded-lg mb-4">{error}</div>}
+            {error && <div role="alert" className="text-sm text-red-700 bg-red-50 border border-red-200 px-4 py-3 rounded-lg mb-4">{error}</div>}
 
             {/* Nothing was recorded. Say so plainly, keep the text on screen,
                 and never issue a reference ID for a grievance the system
