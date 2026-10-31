@@ -99,10 +99,11 @@
     "zoom": 11,
     "bounds": [[17.5, 82.9], [18.4, 83.5]],
     "boundary_url": "/geo/india_pc_2019_simplified.geojson",
+    "boundary_index_url": "/geo/pc/index.json",
     "data_source": "DataMeet India PC 2019"
   },
   "mp_office": {
-    "name": "Demo MP",
+    "name": "MP Office",
     "constituency": "Visakhapatnam",
     "state": "Andhra Pradesh"
   }
