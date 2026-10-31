@@ -3,6 +3,9 @@
 
 # General crawlers (includes AI search and assistant crawlers)
 User-agent: *
+# Content Signals (https://contentsignals.org/) — declares this site's preferences.
+# ai-train=yes is deliberate: the site owner permits crawling for model training.
+Content-Signal: ai-train=yes, search=yes, ai-input=yes
 Allow: /
 Disallow: /mp/
 Disallow: /api/

@@ -257,7 +257,7 @@ export const MARKDOWN_ROUTES: MarkdownRoute[] = [
         '/research',
         LAST_UPDATED,
       ),
-      '## Research Reports\n\nEach page publishes original statistics computed from data Samadhan already owns. Every number comes from a single tested calculation module — no number is typed in by hand twice.\n\n| Report | What it covers |\n|--------|---------------|\n| [Lok Sabha Constituency Statistics](/research/constituencies) | 543 Lok Sabha constituencies across 36 states and UTs, ranked by seat count with reserved-seat breakdown. |\n| [Indian Districts Statistics](/research/districts) | 789 districts across 36 states and UTs, ranked by district count. |\n| [District-to-Constituency Mapping](/research/district-mapping) | 299 resolved districts across 15 states mapped to Lok Sabha seats (~38% coverage of 789 districts). |\n| [Citizen FAQ Statistics](/research/faqs) | 11 frequently asked questions about citizen grievances, privacy, MPLADS, and AI limitations. |\n| [Search Intent Statistics](/research/search-intents) | 13 public pages with mapped search intent — 12 informational, 1 transactional. |\n\n## How to Cite\n\nEach research page includes a suggested citation with the page URL and month. Use the "Link to this finding" anchors on each page to cite a specific statistic directly.\n\n## AI-Fetch Friendly\n\nMarkdown versions: every page has a `.md` variant and an `/api/md/<path>` endpoint.\n\n',
+      '## Research Reports\n\nEach page publishes original statistics computed from data Samadhan already owns. Every number comes from a single tested calculation module — no number is typed in by hand twice.\n\n| Report | What it covers |\n|--------|---------------|\n| [Lok Sabha Constituency Statistics](/research/constituencies) | 543 Lok Sabha constituencies across 36 states and UTs, ranked by seat count with reserved-seat breakdown. |\n| [Indian Districts Statistics](/research/districts) | 789 districts across 36 states and UTs, ranked by district count. |\n| [District-to-Constituency Mapping](/research/district-mapping) | 299 resolved districts across 15 states mapped to Lok Sabha seats (~38% coverage of 789 districts). |\n| [Citizen FAQ Statistics](/research/faqs) | 11 frequently asked questions about citizen grievances, privacy, MPLADS, and AI limitations. |\n| [Search Intent Statistics](/research/search-intents) | 17 public pages with mapped search intent — 16 informational, 1 transactional. |\n\n## How to Cite\n\nEach research page includes a suggested citation with the page URL and month. Use the "Link to this finding" anchors on each page to cite a specific statistic directly.\n\n## AI-Fetch Friendly\n\nMarkdown versions: every page has a `.md` variant and an `/api/md/<path>` endpoint.\n\n',
       relatedSection([
         ['Lok Sabha Constituency Statistics', '/research/constituencies'],
         ['Indian Districts Statistics', '/research/districts'],
@@ -352,21 +352,21 @@ export const MARKDOWN_ROUTES: MarkdownRoute[] = [
     pattern: '/research/search-intents',
     renderer: () => [
       pageHeader(
-        'Search Intent Statistics 2026: 13 Public Pages Mapped',
-        '13 public pages with mapped search intent. 12 informational (~92%), 1 transactional (~8%). Ranked list and per-page intent facts.',
+        'Search Intent Statistics 2026: 17 Public Pages Mapped',
+        '17 public pages with mapped search intent. 16 informational (~94.1%), 1 transactional (~5.9%). Ranked list and per-page intent facts.',
         '/research/search-intents',
         LAST_UPDATED,
       ),
-      '## Key Findings\n\n- **Total pages with mapped intent:** 13 public pages have mapped search intent.\n- **Intent type distribution:** 12 pages are informational (~92%), 1 page is transactional (~8%).\n- **The only transactional page:** /report-issue is the only transactional page, targeting "report a constituency issue" — the wording a citizen would actually type.\n- **Intent clusters:** Multiple clusters including oversight, reporting, scoring, and guides.\n\n## 13 Pages by Search Intent Type (2026)\n\nPublic pages are listed by search intent type and cluster. Each entry includes its primary keyword and rationale.\n\n## Per-Page Intent Facts\n\nPer-page at-a-glance intent facts including intent type, cluster, primary keyword, and rationale.\n\n## Frequently Asked Questions\n\n- How many pages have mapped search intent? — 13 public pages.\n- What is the most common search intent type? — Informational (12 of 13 pages, ~92%).\n- What is the only transactional page? — /report-issue, targeting "report a constituency issue."\n\n## Suggested Citation\n\nSamadhan. Search Intent Statistics 2026: 13 Public Pages Mapped. https://samadhan-chi.vercel.app/research/search-intents. October 2026.\n\n',
+      '## Key Findings\n\n- **Total pages with mapped intent:** 17 public pages have mapped search intent.\n- **Intent type distribution:** 16 pages are informational (~94.1%), 1 page is transactional (~5.9%).\n- **The only transactional page:** /report-issue is the only transactional page, targeting "report a constituency issue" — the wording a citizen would actually type.\n- **Intent clusters:** Multiple clusters including oversight, reporting, scoring, and guides.\n\n## 17 Pages by Search Intent Type (2026)\n\nPublic pages are listed by search intent type and cluster. Each entry includes its primary keyword and rationale.\n\n## Per-Page Intent Facts\n\nPer-page at-a-glance intent facts including intent type, cluster, primary keyword, and rationale.\n\n## Frequently Asked Questions\n\n- How many pages have mapped search intent? — 17 public pages.\n- What is the most common search intent type? — Informational (16 of 17 pages, ~94.1%).\n- What is the only transactional page? — /report-issue, targeting "report a constituency issue."\n\n## Suggested Citation\n\nSamadhan. Search Intent Statistics 2026: 17 Public Pages Mapped. https://samadhan-chi.vercel.app/research/search-intents. October 2026.\n\n',
       relatedSection([
         ['Report a Public Grievance to Your MP', '/report-issue'],
         ['Lok Sabha Constituency Statistics', '/research/constituencies'],
         ['Citizen Grievance and Constituency Planning FAQs', '/faq'],
       ]),
     ].join(''),
-    title: 'Search Intent Statistics 2026: 13 Public Pages Mapped',
+    title: 'Search Intent Statistics 2026: 17 Public Pages Mapped',
     description:
-      '13 public pages with mapped search intent. 12 informational (~92%), 1 transactional (~8%). Ranked list and per-page intent facts.',
+      '17 public pages with mapped search intent. 16 informational (~94.1%), 1 transactional (~5.9%). Ranked list and per-page intent facts.',
   },
 ];
 

@@ -38,7 +38,7 @@ automatic funding decision system.
 - [Indian Districts Statistics](/research/districts.md) - 789 districts across 36 states and UTs
 - [District-to-Constituency Mapping](/research/district-mapping.md) - 299 resolved districts across 15 states
 - [Citizen FAQ Statistics](/research/faqs.md) - 11 frequently asked questions
-- [Search Intent Statistics](/research/search-intents.md) - 13 public pages mapped by search intent
+- [Search Intent Statistics](/research/search-intents.md) - 17 public pages mapped by search intent
 
 Private, non-indexed routes: `/mp/login`, `/mp` (MP office staff dashboard).
 
@@ -140,6 +140,6 @@ Pradhan Mantri Gram Sadak Yojana (PMGSY); MPLADS scheme guidelines
   - Markdown: /research/faqs.md
 
 - **Search Intent Statistics 2026** — https://samadhan-chi.vercel.app/research/search-intents
-  - 13 public pages with mapped search intent (#finding-total-intents)
-  - 12 informational (~92%), 1 transactional (~8%) (#finding-intent-types)
+  - 17 public pages with mapped search intent (#finding-total-intents)
+  - 16 informational (~94.1%), 1 transactional (~5.9%) (#finding-intent-types)
   - Markdown: /research/search-intents.md

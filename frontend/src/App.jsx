@@ -275,7 +275,7 @@ export default function App() {
           <Route path='/faq' element={
             <>
               <SEO
-                title='Citizen Grievance and Constituency Planning FAQs'
+                title='Citizen Grievance FAQ: Reporting, Scoring and Privacy'
                 description='Clear answers on reporting a constituency issue, how priority scores work, privacy of contact details, data sources, and limits of AI-assisted planning.'
                 path='/faq'
                 schema={data.faq}
@@ -401,14 +401,14 @@ export default function App() {
           <Route path='/research/constituencies' element={
             <>
               <SEO
-                title='Lok Sabha Constituency Statistics 2026: 543 Seats Across 36 States and UTs'
+                title='Lok Sabha Constituencies 2026: 543 Seats by State'
                 description='543 Lok Sabha constituencies across 36 states and union territories. Uttar Pradesh leads with 80 seats (~14.7%). Ranked list, reserved-seat breakdown, and per-state entity facts.'
                 path='/research/constituencies'
                 schema={{
                   '@type': 'WebPage',
                   '@id': SITE_URL + '/research/constituencies#webpage',
                   url: SITE_URL + '/research/constituencies',
-                  name: 'Lok Sabha Constituency Statistics 2026',
+                  name: 'Lok Sabha Constituencies 2026',
                   description:
                     '543 Lok Sabha constituencies across 36 states and union territories. Uttar Pradesh leads with 80 seats (~14.7%). Ranked list, reserved-seat breakdown, and per-state entity facts.',
                   inLanguage: 'en-IN',
@@ -422,14 +422,14 @@ export default function App() {
           <Route path='/research/districts' element={
             <>
               <SEO
-                title='Indian Districts Statistics 2026: 789 Districts Across 36 States and UTs'
+                title='789 Districts in India: Count by State and UT 2026'
                 description='789 districts across 36 states and union territories. Uttar Pradesh leads with 75 districts (~9.5%). Ranked list and per-state district facts.'
                 path='/research/districts'
                 schema={{
                   '@type': 'WebPage',
                   '@id': SITE_URL + '/research/districts#webpage',
                   url: SITE_URL + '/research/districts',
-                  name: 'Indian Districts Statistics 2026',
+                  name: '789 Districts in India: Count by State and UT 2026',
                   description:
                     '789 districts across 36 states and union territories. Uttar Pradesh leads with 75 districts (~9.5%). Ranked list and per-state district facts.',
                   inLanguage: 'en-IN',
@@ -443,14 +443,14 @@ export default function App() {
           <Route path='/research/district-mapping' element={
             <>
               <SEO
-                title='District-to-Constituency Mapping Statistics 2026: 299 Resolved Districts Across 15 States'
+                title='District-to-Constituency Mapping: 299 Resolved 2026'
                 description='299 resolved districts across 15 states mapped to Lok Sabha seats (~38% coverage of 789 districts). Ranked list and per-state mapping coverage.'
                 path='/research/district-mapping'
                 schema={{
                   '@type': 'WebPage',
                   '@id': SITE_URL + '/research/district-mapping#webpage',
                   url: SITE_URL + '/research/district-mapping',
-                  name: 'District-to-Constituency Mapping Statistics 2026',
+                  name: 'District-to-Constituency Mapping: 299 Resolved 2026',
                   description:
                     '299 resolved districts across 15 states mapped to Lok Sabha seats (~38% coverage of 789 districts). Ranked list and per-state mapping coverage.',
                   inLanguage: 'en-IN',
@@ -464,14 +464,14 @@ export default function App() {
           <Route path='/research/faqs' element={
             <>
               <SEO
-                title='Citizen FAQ Statistics 2026: 11 Frequently Asked Questions'
+                title='Citizen FAQs: 11 Questions on Grievances, MPLADS'
                 description='11 published FAQs about citizen grievances, privacy, MPLADS eligibility, AI limitations, and more. Each answer linkable and quotable.'
                 path='/research/faqs'
                 schema={{
                   '@type': 'WebPage',
                   '@id': SITE_URL + '/research/faqs#webpage',
                   url: SITE_URL + '/research/faqs',
-                  name: 'Citizen FAQ Statistics 2026',
+                  name: 'Citizen FAQs: 11 Questions on Grievances, MPLADS',
                   description:
                     '11 published FAQs about citizen grievances, privacy, MPLADS eligibility, AI limitations, and more. Each answer linkable and quotable.',
                   inLanguage: 'en-IN',

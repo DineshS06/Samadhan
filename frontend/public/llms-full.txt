@@ -402,16 +402,16 @@ Suggested citation: Samadhan. Citizen FAQ Statistics 2026: 11 Frequently Asked Q
 ---
 
 <!-- source: https://samadhan-chi.vercel.app/research/search-intents -->
-# Search Intent Statistics 2026: 13 Public Pages Mapped
+# Search Intent Statistics 2026: 17 Public Pages Mapped
 
-13 public pages with mapped search intent. 12 informational (~92%), 1 transactional (~8%). Ranked list and per-page intent facts.
+17 public pages with mapped search intent. 16 informational (~94.1%), 1 transactional (~5.9%). Ranked list and per-page intent facts.
 
 Key findings:
-- Total pages with mapped intent: 13 public pages have mapped search intent (#finding-total-intents)
-- Intent type distribution: 12 informational (~92%), 1 transactional (~8%) (#finding-intent-types)
+- Total pages with mapped intent: 17 public pages have mapped search intent (#finding-total-intents)
+- Intent type distribution: 16 informational (~94.1%), 1 transactional (~5.9%) (#finding-intent-types)
 - The only transactional page: /report-issue is the only transactional page, targeting "report a constituency issue" (#finding-transactional-page)
 - Intent clusters: 4 intent clusters: oversight, reporting, scoring, guides (#finding-clusters)
 
 Ranked list: 13 Pages by Search Intent Type (2026)
 
-Suggested citation: Samadhan. Search Intent Statistics 2026: 13 Public Pages Mapped. https://samadhan-chi.vercel.app/research/search-intents. October 2026.
+Suggested citation: Samadhan. Search Intent Statistics 2026: 17 Public Pages Mapped. https://samadhan-chi.vercel.app/research/search-intents. October 2026.

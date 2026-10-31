@@ -71,8 +71,7 @@ for (const m of appJsx.matchAll(/<Route\s+path='([^']*)'[\s\S]*?<SEO([\s\S]*?)\/
 }
 
 const PUBLIC = routes.filter((r) => !r.noIndex);
-if (PUBLIC.length < 8) {
-  console.error(EMPTY_MSG + "expected at least 8 public routes, parsed " + PUBLIC.length +
+if (PUBLIC.length < 8) {  console.error(EMPTY_MSG + "expected at least 8 public routes, parsed " + PUBLIC.length +
     ". The App.jsx <SEO> JSX shape likely changed; update this parser and scripts/seo-audit.mjs together.");
   process.exit(1);
 }
@@ -83,14 +82,17 @@ for (const must of ["/", "/report-issue", "/how-it-works", "/methodology", "/faq
   }
 }
 
-/* ── 2. Route-specific <noscript> bodies ────────────────────────────────────
+/* ── 2. Route-specific crawler-visible bodies ───────────────────────────────
  *
  * Every string below is lifted from the page component's own visible copy
- * (headings, hero leads, step ledes, FAQ data). Nothing here is invented, and
- * nothing here renders for a JavaScript browser — it replaces the old block
- * that was identical on all eight routes, which is what made every URL look
- * like the same page to a crawler. The shared page list at the end keeps
- * internal linking identical everywhere, matching the visible footer nav. */
+ * (headings, hero leads, step ledes, FAQ data). Nothing here is invented.
+ * These bodies are written into #root as real HTML, so a crawler that ignores
+ * <noscript> still reads the page. React clears #root on mount (see
+ * src/main.jsx), so a JavaScript browser never sees this block — the same
+ * words delivered as real markup, which is prerendering rather than cloaking.
+ * The shared page list at the end keeps internal linking identical everywhere,
+ * matching the visible footer nav. Every public route needs its own entry: a
+ * route without one silently inherits the homepage's copy. */
 
 let FAQS = [];
 try {
@@ -118,7 +120,24 @@ const faqItems = FAQS.slice(0, 5)
   .map((f) => `      <h3>${f.q}</h3>\n      <p>${f.a}</p>`)
   .join("\n");
 
-const NOSCRIPT = {
+/* Routes the map above does not cover fall back to this generic body rather
+ * than silently inheriting the homepage's copy, which is what let nine public
+ * routes look like duplicates of each other. It deliberately reuses the shared
+ * page list: "catches every route" must not mean "describes every route". */
+const SHELL_BODY = `
+      <h1>Samadhan — constituency development planning</h1>
+      <p>
+        Samadhan turns multilingual citizen requests into ranked, evidence-backed project
+        recommendations for MPs and district officials. Every project is scored on
+        published, checkable criteria using a transparent 40-40-20 model. The score
+        produces a review order, not an automatic funding decision.
+      </p>${SITE_NAV}`;
+
+const ROUTE_BODY = {
+  // The shell's own #root block is the homepage copy, so "/" needs no entry
+  // here. It is mapped to null rather than omitted so the "every public route
+  // has a body" check below can tell "deliberate" from "forgotten".
+  "/": null,
   "/": null, // the shell's own block IS the homepage copy; leave it untouched
   "/report-issue": `
       <h1>Report a Constituency Issue</h1>
@@ -223,6 +242,184 @@ ${faqItems}
         readers and search engines read the same outline, and the interface is usable
         by keyboard alone.
       </p>${SITE_NAV}`,
+  "/how-to-report": `
+      <h1>How to Report a Constituency Issue to Your MP</h1>
+      <p>
+        Most civic complaints in India are filed in the wrong place, which is why they go
+        nowhere. This guide explains which channel handles which kind of problem, what a
+        grievance needs to contain to be actionable, and how to follow it up.
+      </p>
+      <p>
+        The right channel depends on what you are asking for. There are three broad cases,
+        and they are handled by different systems.
+      </p>${SITE_NAV}`,
+  "/mplads": `
+      <h1>MPLADS Fund — ₹5 Crore a Year for Each MP</h1>
+      <p>
+        The Members of Parliament Local Area Development Scheme lets every MP recommend
+        development works in their constituency. It has existed since 1993, and the amount
+        has changed three times. This page sets out what the scheme actually pays for, what
+        it forbids, and how much each state's seats are worth.
+      </p>
+      <p>
+        MPLADS was formulated by the Government of India on 23 December 1993. It was
+        administered by the Ministry of Rural Development until October 1994, when the
+        Ministry of Statistics and Programme Implementation (MoSPI) took it over. MoSPI
+        still runs the scheme.
+      </p>${SITE_NAV}`,
+  "/constituency": `
+      <h1>Lok Sabha Constituency — 543 Seats and Your MP</h1>
+      <p>
+        A constituency is the electoral district that elects one Member of Parliament.
+        India has 543 of them, and the boundaries have been frozen since 2008. This page
+        explains how the seats are distributed, why the map has not changed, and how to
+        work out which constituency you are in.
+      </p>
+      <p>
+        A constituency is a geographical area whose residents elect one representative.
+        India uses the same word at two levels, which causes most of the confusion.
+      </p>${SITE_NAV}`,
+  "/research": `
+      <h1>Samadhan Research — Statistics Pages for AI Answers</h1>
+      <p>
+        Original statistics pages built only from data Samadhan already owns. Every number
+        comes from a single tested calculation in computeStudy — the same module powers the
+        page, its markdown version, llms.txt, and the FAQ.
+      </p>
+      <p>
+        Each research page includes a suggested citation with the page URL and month. Use
+        the Link to this finding anchors to cite a specific statistic directly.
+      </p>
+      <h2>Research reports</h2>
+      <ul>
+        <li><a href="/research/constituencies">Lok Sabha Constituency Statistics</a> — 543 Lok Sabha constituencies across 36 states and UTs, ranked by seat count with reserved-seat breakdown.</li>
+        <li><a href="/research/districts">Indian Districts Statistics</a> — 789 districts across 36 states and UTs, ranked by district count.</li>
+        <li><a href="/research/district-mapping">District-to-Constituency Mapping</a> — 299 resolved districts across 15 states mapped to Lok Sabha seats (~38% coverage of 789 districts).</li>
+        <li><a href="/research/faqs">Citizen FAQ Statistics</a> — 11 frequently asked questions about citizen grievances, privacy, MPLADS, and AI limitations.</li>
+        <li><a href="/research/search-intents">Search Intent Statistics</a> — 17 public pages with mapped search intent, 16 informational and 1 transactional.</li>
+      </ul>
+${SITE_NAV}`,
+  "/research/constituencies": `
+      <h1>Lok Sabha Constituency Statistics 2026: 543 Seats Across 36 States and UTs</h1>
+      <p>
+        543 total Lok Sabha constituencies across 36 states and union territories. Uttar
+        Pradesh leads with 80 seats, about 14.7% of all seats. 131 of the 543 seats are
+        reserved for Scheduled Castes and Scheduled Tribes.
+      </p>
+      <p>
+        Each finding states the count, the denominator, and the percentage. Use Link to
+        this finding to cite a specific number.
+      </p>
+      <h2>Key findings</h2>
+      <ul>
+        <li><strong>Total seats:</strong> 543 Lok Sabha constituencies across 36 states and union territories.</li>
+        <li><strong>State with the most seats:</strong> Uttar Pradesh leads with 80 seats (~14.7% of all seats).</li>
+        <li><strong>Reserved (SC/ST) seats:</strong> 131 of the 543 seats are reserved for Scheduled Castes and Scheduled Tribes.</li>
+        <li><strong>Single-seat states and UTs:</strong> Several states and union territories have only one Lok Sabha seat each.</li>
+      </ul>
+      <h2>Frequently asked questions</h2>
+      <ul>
+        <li><strong>How many Lok Sabha constituencies are there in India?</strong> 543 across 36 states and UTs.</li>
+        <li><strong>Which state has the most Lok Sabha seats?</strong> Uttar Pradesh with 80 seats (~14.7%).</li>
+        <li><strong>How many seats are reserved for SC/ST?</strong> 131. A reserved-seat breakdown is shown per state.</li>
+        <li><strong>Is this official government data?</strong> No. This is a civic-tech project built from the published 2024 Lok Sabha seat catalog. Not a government website.</li>
+      </ul>
+${SITE_NAV}`,
+  "/research/districts": `
+      <h1>Indian Districts Statistics 2026: 789 Districts Across 36 States and UTs</h1>
+      <p>
+        789 total districts across 36 states and union territories. Uttar Pradesh leads
+        with 75 districts, about 9.5% of all districts. Several states and union
+        territories have only one district each.
+      </p>
+      <p>
+        Each finding states the count, the denominator, and the percentage. Use Link to
+        this finding to cite a specific number.
+      </p>
+      <h2>Key findings</h2>
+      <ul>
+        <li><strong>Total districts:</strong> 789 districts across 36 states and union territories.</li>
+        <li><strong>State with the most districts:</strong> Uttar Pradesh leads with 75 districts (~9.5% of all districts).</li>
+        <li><strong>Single-district states and UTs:</strong> Several states and union territories have only one district each.</li>
+      </ul>
+      <h2>Frequently asked questions</h2>
+      <ul>
+        <li><strong>How many districts are there in India?</strong> 789 districts across 36 states and UTs.</li>
+        <li><strong>Which state has the most districts?</strong> Uttar Pradesh with 75 districts (~9.5%).</li>
+        <li><strong>Is this official government data?</strong> No. District lists are derived from Wikipedia and auto-generated by Samadhan's build scripts. Not a government website.</li>
+      </ul>
+${SITE_NAV}`,
+  "/research/district-mapping": `
+      <h1>District-to-Constituency Mapping Statistics 2026: 299 Resolved Districts Across 15 States</h1>
+      <p>
+        299 districts have resolved Lok Sabha seat mappings across 15 states — about 38%
+        of the 789 districts in India. The remaining districts fall back to the full state
+        seat list, because district and parliamentary constituency boundaries do not align
+        in India.
+      </p>
+      <p>
+        Each finding states the count, the denominator, and the percentage. Use Link to
+        this finding to cite a specific number.
+      </p>
+      <h2>Key findings</h2>
+      <ul>
+        <li><strong>Resolved district-to-seat mappings:</strong> 299 districts have resolved Lok Sabha seat mappings across 15 states.</li>
+        <li><strong>Coverage percentage:</strong> 299 of 789 districts (~38%) have a resolved seat mapping.</li>
+        <li><strong>Unresolved districts:</strong> 490 districts (~62%) fall back to the full state seat list, because district and parliamentary constituency boundaries do not align in India.</li>
+        <li><strong>States with curated mappings:</strong> 15 states have curated district-to-seat mappings.</li>
+      </ul>
+      <h2>Frequently asked questions</h2>
+      <ul>
+        <li><strong>Why don't all districts have a resolved seat mapping?</strong> Because district and parliamentary constituency boundaries do not line up in India. One district can span several seats and vice versa.</li>
+        <li><strong>How many districts have resolved mappings?</strong> 299 of 789 districts (~38%).</li>
+        <li><strong>Is this official government data?</strong> No. This is a civic-tech project. The mapping table is curated and resolved against the official 543-seat list, but it is not a government website or official channel.</li>
+      </ul>
+${SITE_NAV}`,
+  "/research/faqs": `
+      <h1>Citizen FAQ Statistics 2026: 11 Frequently Asked Questions</h1>
+      <p>
+        11 published frequently asked questions. Topics include account requirements,
+        report usefulness, phone privacy, MPLADS eligibility, AI misinterpretation,
+        government status, data sources, low-reporting areas, official overrides,
+        languages, and emergency services.
+      </p>
+      <p>
+        Each question is an anchored entity block with its answer, linkable and quotable
+        for citation, and each states its topic category.
+      </p>
+      <h2>Key findings</h2>
+      <ul>
+        <li><strong>Total FAQs:</strong> 11 published frequently asked questions.</li>
+        <li><strong>FAQ topics covered:</strong> Account requirements, report usefulness, phone privacy, MPLADS eligibility, AI misinterpretation, government status, data sources, low-reporting areas, official overrides, languages, and emergency services.</li>
+        <li><strong>Privacy FAQs:</strong> Address whether contact details are made public (answered: no).</li>
+        <li><strong>MPLADS FAQs:</strong> Address whether Samadhan decides MPLADS eligibility (answered: no).</li>
+      </ul>${SITE_NAV}`,
+  "/research/search-intents": `
+      <h1>Search Intent Statistics 2026: 17 Public Pages Mapped</h1>
+      <p>
+        17 public pages have mapped search intent. 16 pages are informational (94.1%), and
+        1 page is transactional (5.9%). The only transactional page is /report-issue,
+        targeting "report a constituency issue" — the wording a citizen would actually
+        type.
+      </p>
+      <p>
+        Public pages are listed by search intent type and cluster. Each entry includes its
+        primary keyword and rationale.
+      </p>
+      <h2>Key findings</h2>
+      <ul>
+        <li><strong>Total pages with mapped intent:</strong> 17 public pages have mapped search intent.</li>
+        <li><strong>Intent type distribution:</strong> 16 pages are informational (~94.1%), 1 page is transactional (~5.9%).</li>
+        <li><strong>The only transactional page:</strong> /report-issue is the only transactional page, targeting "report a constituency issue" — the wording a citizen would actually type.</li>
+        <li><strong>Intent clusters:</strong> Multiple clusters including oversight, reporting, scoring, and guides.</li>
+      </ul>
+      <h2>Frequently asked questions</h2>
+      <ul>
+        <li><strong>How many pages have mapped search intent?</strong> 17 public pages.</li>
+        <li><strong>What is the most common search intent type?</strong> Informational (16 of 17 pages, ~94.1%).</li>
+        <li><strong>What is the only transactional page?</strong> /report-issue, targeting "report a constituency issue."</li>
+      </ul>
+${SITE_NAV}`,
   "/mp": `
       <h1>MP dashboard — private staff area</h1>
       <p>This is a private area for authorised staff. JavaScript is required.</p>`,
@@ -231,8 +428,14 @@ ${faqItems}
       <p>This is a private area for authorised staff. JavaScript is required.</p>`,
 };
 
-/* ── 3. Transform helpers with hard anchors ─────────────────────────────── */
+const missingBody = PUBLIC.filter((r) => !(r.path in ROUTE_BODY)).map((r) => r.path);
+if (missingBody.length) {
+  console.error(EMPTY_MSG + "public routes with no crawler-visible body: " + missingBody.join(", ") +
+    ". Add an entry to ROUTE_BODY mined from the page's own visible copy (or null for '/' and the shell block).");
+  process.exit(1);
+}
 
+/* ── 3. Transform helpers with hard anchors ─────────────────────────────── */
 const escAttr = (s) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
 
 function mustReplace(haystack, re, replacement, label) {
@@ -249,6 +452,17 @@ function mustReplace(haystack, re, replacement, label) {
   }
   return haystack.replace(re, replacement);
 }
+
+/* The shell's #root block: its inner HTML is the homepage's crawler-visible
+ * copy, and every non-"/" route replaces it wholesale.
+ *
+ * The lookahead is what makes this safe. It requires the closing </div> to be
+ * followed by a <script>, which only the real #root close is (the shell's
+ * inline CDATA note then the module entry). A naive /<div id="root">[\s\S]*?<\/div>/
+ * would stop at the first close tag inside the block if the copy ever gains a
+ * nested <div>, stranding the remainder of the old copy in the document.
+ * Anchoring on the trailing script instead keeps the match whole. */
+const ROOT_RE = /<div id="root">[\s\S]*?<\/div>(?=\s*<script)/;
 
 function prerenderShell(shell, r) {
   const url = SITE_URL + (r.path === "/" ? "/" : r.path);
@@ -305,17 +519,20 @@ function prerenderShell(shell, r) {
     });
   h = h.replace(ldRe, "$1\n" + JSON.stringify(graph, null, 2) + "$3");
 
-  // <noscript> body: only routes with a dedicated block get swapped.
-  const ns = NOSCRIPT[r.path];
-  if (ns != null) {
-    const nsRe = /(<noscript>\s*)([\s\S]*?)(\s*<\/noscript>)/;
-    const nsMatches = h.match(new RegExp(nsRe.source, "g")) || [];
-    if (nsMatches.length !== 3) {
-      console.error(EMPTY_MSG + "expected exactly 3 <noscript> blocks in the shell, found " + nsMatches.length +
-        ". Update this anchor. (The first is the content block; the other two are GTM and the JS-required note.)");
-      process.exit(1);
-    }
-    h = h.replace(nsRe, "$1" + ns + "$3");
+  // Crawler-visible body. Written into #root as real HTML rather than inside
+  // <noscript>: measured 2026-10-31, a Ubersuggest crawl of the live site read
+  // 0 words and 0 H1 on all 17 routes, because every route's copy sat inside
+  // <noscript> and that crawler ignores it. src/main.jsx uses createRoot(),
+  // which clears #root on mount, so a JavaScript browser still gets the app.
+  //
+  // The shell ships the homepage's copy inside #root. "/" keeps that block
+  // untouched; every other route swaps it. noIndex routes are emptied, not
+  // filled — indexable prose on /mp would be worse than none, and they already
+  // carry X-Robots-Tag: noindex at the edge.
+  const body = r.noIndex ? "" : (ROUTE_BODY[r.path] ?? SHELL_BODY);
+  if (r.path !== "/") {
+    h = mustReplace(h, ROOT_RE,
+      '<div id="root">' + (body ? "\n" + body + "\n  " : "") + "</div>", "root body");
   }
   return h;
 }

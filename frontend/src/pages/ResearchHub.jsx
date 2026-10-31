@@ -27,7 +27,7 @@ const REPORTS = [
   {
     path: '/research/search-intents',
     title: 'Search Intent Statistics 2026',
-    summary: '13 public pages with mapped search intent, informational vs transactional breakdown.',
+    summary: '17 public pages with mapped search intent, informational vs transactional breakdown.',
   },
 ];
 

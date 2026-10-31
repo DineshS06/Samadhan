@@ -161,24 +161,31 @@
 <body>
     <!-- Indexable content.
          WHY THIS BLOCK EXISTS. A crawler that does not execute JavaScript
-         receives an empty <div id="root"></div>. Measured on this site before
-         this block existed: 38 visible words, the same 38 on every route, and
-         zero occurrences of any scheme keyword. A score tool still reported
-         89, because it was scoring a nearly-empty shell.
+         receives an empty #root. Measured on this site before this block
+         existed: 38 visible words, the same 38 on every route, and zero
+         occurrences of any scheme keyword.
 
-         WHAT IT IS NOW. Prose and headings only. An earlier version carried a
-         36-row CPGRAMS data table here; that was removed on purpose. The
-         figures are real but they go stale the moment DARPG updates, and a
-         keyword-dense block inside <noscript> is the pattern Google treats as
-         cloaking. Content that must stay accurate belongs on a real page that
-         can be re-generated and re-checked, not frozen into a document shell.
+         WHY IT IS NOT INSIDE A noscript ELEMENT. It used to be, and that was
+         the bug. Measured 2026-10-31, a Ubersuggest crawl of the live site
+         reported 0 words and 0 H1 on all 17 routes: that scanner reads
+         noscript as inert markup, so the whole block was invisible to it. The
+         copy now sits directly inside #root, where every crawler reads it.
 
-         WHO SEES THIS. Browsers with JavaScript on render the React app and
-         never see this block. Crawlers that do not run JavaScript read it as
-         the document body. -->
+         WHY THIS IS NOT CLOAKING. It is the same copy the page renders, served
+         as static HTML first and replaced on mount: React's createRoot() clears
+         #root, so a JavaScript browser never sees this exact node. Cloaking is
+         different content per user-agent; this is the same content, earlier.
+         Content that must stay accurate still belongs on a real page that can
+         be regenerated, not frozen here — an earlier 36-row CPGRAMS table was
+         removed for exactly that reason.
 
-    <noscript>
-      <h1>Samadhan: turn constituency grievances into ranked projects</h1>
+         WHAT REWRITES IT. scripts/prerender.mjs replaces this block per route
+         (every public route has its own copy, and a build fails if one is
+         missing). It is dropped entirely for /mp and /mp/login, which are
+         noindex and must not carry indexable prose. -->
+
+  <div id="root">
+    <h1>Samadhan: turn constituency grievances into ranked projects</h1>
       <p>
         Samadhan groups citizen reports by category so one problem becomes a visible
         pattern across your constituency instead of an isolated complaint. Every
@@ -273,7 +280,7 @@
           <li><a href="/accessibility">Accessibility statement</a></li>
         </ul>
       </nav>
-    </noscript>
+  </div>
 
     <script>
       // <![CDATA[
@@ -288,7 +295,6 @@
   <!-- End Google Tag Manager (noscript) -->
 
   <noscript>JavaScript is required to submit or track a grievance.</noscript>
-  <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>

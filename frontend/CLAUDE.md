@@ -5,12 +5,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Development Commands
 
 - `npm run dev` - Start development server with Vite
-- `npm run build` - Build production optimized bundle
+- `npm run build` - Build production bundle, then prerender per-route HTML
 - `npm run preview` - Preview production build locally
-- `npm run audit` - Run full SEO and syntax audit (combines syntax and SEO checks)
-- `npm run audit:seo` - Run SEO-specific audit only
+- `npm run audit` - Run the full audit chain (14 repo checks, ending with `audit:seo`)
+- `npm run audit:seo` - The 160-check evidence audit; gates on the deployed live site
+- `npm run audit:offline` - Same audit without live network checks
 - `npm run audit:syntax` - Run syntax checking only
-- `npm run validate:schema` - Validate structured data implementation
+- `npm run audit:schema` - Validate structured data implementation
+
+See the repository-root `AGENTS.md` for the authoritative command list, the audit
+baseline, and known pre-existing failures. `npm run validate:schema` never existed.
 
 ## Code Architecture
 
